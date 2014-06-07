@@ -23,6 +23,7 @@ private:
     JUDGE_RESULT judge_result;
     int scoreToadd;
     bool judgeSelfball(Player *, std::string);
+    std::string Targetname;
 
 public:
 	Referee();
@@ -39,6 +40,7 @@ public:
     JUDGE_RESULT judge(Player*,std::vector<Ball>);
     int getScoreToadd() const;
     void clearjudgeResult();
+    void setTargetname(std::vector<Ball>);
  };
 
 

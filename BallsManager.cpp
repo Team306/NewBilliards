@@ -96,6 +96,8 @@ void BallsManager::Update(Table& table, Player *currentplayer)
         cueBall.setBallState(STILL);
         cueBall.setPosition(Vector2(-100,-100));
         currentplayer->setCueball_in(1);
+        cueBall.setPosition(Vector2(-100, -100));
+        cueBall.setBallState(STILL);
     }
     for (unsigned i = 0; i < ballsList.size(); ++i)
     {

@@ -24,6 +24,7 @@ void Referee::init(int gameRule)
 {
 	// read config file
     judge_result = NOTJUDGE;
+    Targetname = "one";
     game_rule = (GAME_RULE)gameRule;
     std::ifstream fin;
     switch(game_rule){
@@ -227,38 +228,43 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
             break;
 
        case NINE_BALL:
-            for(int i = 0; i < _currentplayer->getOnpocketlist().size(); i++)
-                if(_currentplayer->getOnpocketlist()[i] == "nine")
+        for(int i = 0; i < onPocketlist.size(); i++)
+        {
+
+            if(onPocketlist[i] == "nine")
+            {
+                for(int k = 0; k < onPocketlist.size(); k++)
                 {
-                    for(int k = 0; k < _currentplayer->getOnpocketlist().size(); k++)
-                        if(_currentplayer->getOnpocketlist()[k] == "cueBall")
-                        {
-                            _currentplayer->setGameresult(FAIL);
-                            break;
-                        }
-                    /*if(_currentplayer->getGameresult() == NOTDEC)
-                        if(_currentplayer->getFirsthit() != Targetname)
-                        {
-                            _currentplayer->setGameresult(FAIL);
-                            break;
-                        }*/
-                    if(_currentplayer->getGameresult() == NOTDEC)
+                    if(onPocketlist[k] == "cueBall")
                     {
-                        _currentplayer->setGameresult(SUCCESS);
+                        _currentplayer->setGameresult(FAIL);
                         break;
                     }
-                    return TO_END;
                 }
+                if(_currentplayer->getGameresult() == NOTDEC)
+                {
+                    if(_currentplayer->getFirsthit() != Targetname)
+                        _currentplayer->setGameresult(FAIL);
+                    else
+                        _currentplayer->setGameresult(SUCCESS);
 
-            if(_currentplayer->getCueball_in())       //cueball in
-                return TO_FREE_BALL;
-            if(_currentplayer->getHitflag() == 0)
-                return TO_FREE_BALL;
-            /*if(_currentplayer->getFirsthit() != Targetname)
-                return TO_FREE_BALL;*/
-            if(_currentplayer->getOnpocketlist().size() != 0)
-                return TO_GOON;
-            return TO_EXCHANGE;
+                }
+                return TO_END;
+            }
+        }
+
+        if(_currentplayer->getCueball_in())       //cueball in
+            return TO_FREE_BALL;
+        if(_currentplayer->getHitflag() == 0)
+            return TO_FREE_BALL;
+        if(_currentplayer->getFirsthit() != Targetname)
+        {
+            std::cout<<Targetname<<std::endl;
+            return TO_FREE_BALL;
+        }
+        if(_currentplayer->getOnpocketlist().size() != 0)
+            return TO_GOON;
+        return TO_EXCHANGE;
     }
 }
 
@@ -292,4 +298,31 @@ bool Referee::judgeSelfball(Player *_currentplayer, std::string ballname){
 
 void Referee::clearjudgeResult(){
     judge_result = NOTJUDGE;
+}
+
+void Referee::setTargetname(std::vector<Ball> _ballslist)
+{
+    std::vector<std::string> ballname;
+    ballname.push_back("one");
+    ballname.push_back("two");
+    ballname.push_back("three");
+    ballname.push_back("four");
+    ballname.push_back("five");
+    ballname.push_back("six");
+    ballname.push_back("seven");
+    ballname.push_back("eight");
+    ballname.push_back("nine");
+    for(int i = 0; i < ballname.size(); i++)
+    {
+        int foundflag = 0;
+        for(int j = 0; j < _ballslist.size(); j++)
+            if(_ballslist[j].getName() == ballname[i])
+            {
+                Targetname = ballname[i];
+                foundflag = 1;
+                break;
+            }
+        if(foundflag == 1)
+            break;
+    }
 }
