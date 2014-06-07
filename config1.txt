@@ -1,0 +1,27 @@
+# config file
+
+# set ball radius in init method
+
+ballRadius 21
+
+# first line is the number of balls
+# and then give each ball's info
+# each line is X Y and R G B and ball name
+
+ballsList
+9
+880 340 243 199 1 one
+989.5 361.5 52 46 227 two
+953 383 220 7 7 three
+916.5 318.5 156 67 179 four
+989.5 318.5 250 146 8 five
+953 297 36 118 5 six
+916.5 361.5 133 65 37 seven
+1026 340 0 0 0 eight
+953 340 255 252 180 nine
+
+
+# get cue ball info
+
+cueBall
+240 360 195 195 195
