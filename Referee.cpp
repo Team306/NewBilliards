@@ -4,7 +4,7 @@
 #include "Referee.h"
 
 #ifndef EIGHT_BALL_CONFIG_FILENAME
-#define EIGHT_BALL_CONFIG_FILENAME "test8_config.txt"
+#define EIGHT_BALL_CONFIG_FILENAME "config.txt"
 #define NINE_BALL_CONFIG_FILENAME "config1.txt"
 #define SNOOKER_CONFIG_FILENAME "config2.txt"
 #endif

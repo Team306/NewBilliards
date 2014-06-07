@@ -143,12 +143,12 @@ bool Table::collidesWith(Ball& b)
     //topleft_pocket,2 points
     Vector2 detectP1(position.getX() + pocketRadius, position.getY());//top
     Vector2 detectP2(position.getX(), position.getY() + pocketRadius);//left
-    if(b.getPosition().distanceBetween(detectP1) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP1) <= b.getRadius())
     {
         b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
         return true;
     }
-    if(b.getPosition().distanceBetween(detectP2) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP2) <= b.getRadius())
     {
         b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
         return true;
@@ -157,12 +157,12 @@ bool Table::collidesWith(Ball& b)
     //topcenter_pocket, 2 points
     Vector2 detectP3(position.getX() + size.getX() / 2 - pocketRadius, position.getY());//left
     Vector2 detectP4(position.getX() + size.getX() / 2 + pocketRadius, position.getY());//right
-    if(b.getPosition().distanceBetween(detectP3) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP3) <= b.getRadius())
     {
         b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
         return true;
     }
-    if(b.getPosition().distanceBetween(detectP4) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP4) <= b.getRadius())
     {
         b.setSpeed(Vector2(0 - b.getSpeed().getY(),b.getSpeed().getX()));
         return true;
@@ -171,12 +171,12 @@ bool Table::collidesWith(Ball& b)
     //topright_pocket, 2 points
     Vector2 detectP5(position.getX() +size.getX() - pocketRadius, position.getY());//top
     Vector2 detectP6(position.getX() +size.getX(), position.getY() + pocketRadius);//left
-    if(b.getPosition().distanceBetween(detectP5) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP5) <= b.getRadius())
     {
         b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
         return true;
     }
-    if(b.getPosition().distanceBetween(detectP6) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP6) <= b.getRadius())
     {
         b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
         return true;
@@ -185,12 +185,12 @@ bool Table::collidesWith(Ball& b)
     //bottomleft_pocket, 2 points
     Vector2 detectP7(position.getX() + pocketRadius, position.getY() + size.getY());//bottom
     Vector2 detectP8(position.getX(), position.getY() + size.getY() - pocketRadius);//left
-    if(b.getPosition().distanceBetween(detectP7) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP7) <= b.getRadius())
     {
         b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
         return true;
     }
-    if(b.getPosition().distanceBetween(detectP8) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP8) <= b.getRadius())
     {
         b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
         return true;
@@ -199,12 +199,12 @@ bool Table::collidesWith(Ball& b)
     //bottomcenter_pocket, 2 points
     Vector2 detectP9(position.getX() + size.getX() / 2 + pocketRadius, position.getY() + size.getY());//right
     Vector2 detectP10(position.getX() + size.getX() / 2 - pocketRadius, position.getY() + size.getY());//left
-    if(b.getPosition().distanceBetween(detectP9) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP9) <= b.getRadius())
     {
         b.setSpeed(Vector2(0 - b.getSpeed().getY(),b.getSpeed().getX()));
         return true;
     }
-    if(b.getPosition().distanceBetween(detectP10) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP10) <= b.getRadius())
     {
         b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
         return true;
@@ -213,12 +213,12 @@ bool Table::collidesWith(Ball& b)
     //bottomright_pocket, 2 points
     Vector2 detectP11(position.getX() +size.getX(), position.getY() + size.getY() - pocketRadius);//right
     Vector2 detectP12(position.getX() +size.getX() - pocketRadius, position.getY() + size.getY());//bottom
-    if(b.getPosition().distanceBetween(detectP11) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP11) <= b.getRadius())
     {
         b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
         return true;
     }
-    if(b.getPosition().distanceBetween(detectP12) <= b.getRadius())
+    if(b.getPosition().DistanceTo(detectP12) <= b.getRadius())
     {
         b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
         return true;
@@ -243,10 +243,10 @@ bool Table::checkPockets(Ball& ball)
             R8.contains(ball.getPosition().getX(), ball.getPosition().getY(), false))
         return true;
 
-    if((ball.getPosition().distanceBetween(position) <= 0.5 * pocketRadius )||
-            (ball.getPosition().distanceBetween(p1) <= 0.5 * pocketRadius )||
-            (ball.getPosition().distanceBetween(p2) <= 0.5 * pocketRadius )||
-            (ball.getPosition().distanceBetween(p3) <= 0.5 * pocketRadius ))
+    if((ball.getPosition().DistanceTo(position) <= 0.5 * pocketRadius )||
+            (ball.getPosition().DistanceTo(p1) <= 0.5 * pocketRadius )||
+            (ball.getPosition().DistanceTo(p2) <= 0.5 * pocketRadius )||
+            (ball.getPosition().DistanceTo(p3) <= 0.5 * pocketRadius ))
         return true;
     return false;
 }

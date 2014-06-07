@@ -5,7 +5,7 @@
 
 
 #include <QPainter>
-#include "Vector2.h"
+#include "MyMath.h"
 #include "Ball.h"
 #include "Referee.h"
 

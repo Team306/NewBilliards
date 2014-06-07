@@ -4,7 +4,7 @@
 #define CUE_H 
 
 
-#include "Vector2.h"
+#include "MyMath.h"
 #include "Referee.h"
 
 // user controls it

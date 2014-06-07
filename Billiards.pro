@@ -16,21 +16,23 @@ TEMPLATE = app
 SOURCES += main.cpp\
     Game.cpp \
     Ball.cpp \
-    Vector2.cpp \
     BallsManager.cpp \
     Table.cpp \
     glwindow.cpp \
     Referee.cpp \
     Cue.cpp \
-    Player.cpp
+    Player.cpp \
+    CollideEngine.cpp \
+    MyMath.cpp
 
 HEADERS  += \
     Ball.h \
     BallsManager.h \
     Cue.h \
     Game.h \
-    Vector2.h \
     Table.h \
     glwindow.h \
     Referee.h \
-    Player.h
+    Player.h \
+    CollideEngine.h \
+    MyMath.h

@@ -4,16 +4,23 @@
 
 Ball::Ball()
 {
-	rightRotation = 0;
-	upRotation = 0;
-
-	ballState = STILL;
+    ballState = STILL;
 }
-
-Ball::Ball(Vector2 position, float radius)
+Ball::Ball(const Vector3& position, float radius)
     : position(position), radius(radius)
 {
-	// init rotation value
+    this->speed=Vector3(0,0,0);
+    this->anglespeed=Vector3(0,0,0);
+    this->Im=0.4f*M*(this->radius)*(this->radius);
+    Ball();
+}
+
+Ball::Ball(const Vector2& position, float radius)
+    : position(position), radius(radius)
+{
+    this->speed=Vector3(0,0,0);
+    this->anglespeed=Vector3(0,0,0);
+    this->Im=0.4f*M*(this->radius)*(this->radius);
     Ball();
 }
 
@@ -21,104 +28,161 @@ Ball::~Ball()
 {
 }
 
-Vector2 Ball::getPosition() const
+Vector3 Ball::getPosition() const
 {
-	return position;
+    return this->position;
 }
 
-void Ball::setPosition(Vector2 v)
+void Ball::setPosition(const Vector2& v)
 {
-	position = v;
+    position = Vector3(v);
 }
 
-Vector2 Ball::getSpeed() const
+void Ball::setPosition(const Vector3& v)
 {
-	return speed;
+    position = v;
 }
 
-void Ball::setSpeed(Vector2 v)
+Vector3 Ball::getSpeed() const
 {
-	speed = v;
-    if (speed.getX() != 0 || speed.getY() != 0)
-	{
-		ballState = RUNNING;
-	}
-	else
-	{
-		ballState = STILL;
-	}
+    return this->speed;
 }
+
+void Ball::setSpeed(const Vector3& v)
+{
+    if(v.Length()>=0)
+        this->ballState=RUNNING;
+    this->speed = v;
+}
+
+Vector3 Ball::getAngleSpeed() const
+{
+    return this->anglespeed;
+}
+
+void Ball::setAngleSpeed(const Vector3& v)
+{
+    if(v.Length()>=0)
+        this->ballState=RUNNING;
+    this->anglespeed = v;
+}
+
 
 float Ball::getRadius() const
 {
-	return radius;
+    return this->radius;
+}
+
+float Ball::getIm() const
+{
+    return this->Im;
 }
 
 int Ball::getBallState() const
 {
-	return ballState;
+    return ballState;
 }
 
 void Ball::setBallState(int newState)
 {
-	ballState = (BALL_STATE)newState;
+    ballState = (BALL_STATE)newState;
 }
 
 std::string Ball::getName() const
 {
-	return name;
+    return name;
 }
 
 void Ball::setName(std::string n)
 {
-	name = n;
+    name = n;
 }
 
 void Ball::setColor(QColor c)
 {
-	color = c;
+    color = c;
 }
 
-void Ball::Update()
+void Ball::ApplyImpulse(const Vector3& impulse,const Vector3& collideposition)
 {
-	position += speed;
-	// speed should slow down because of friction
-	// speed -= friction;
+    this->speed += (impulse/M);
+    //??
+    if(impulse[2]!=0.0 && fabs(impulse[2])>1)
+    {
+        this->speed.setX(this->speed[0]/impulse[2]);
+        this->speed.setY(this->speed[1]/impulse[2]);
+    }
+    this->speed.setZ(0.0f);
+    this->anglespeed+= CrossProduct(collideposition-this->position,impulse)/this->Im;
+    if(this->speed.Length()>0 || this->anglespeed.Length()>0)
+        this->ballState=RUNNING;
+}
 
-	// DO NOT DETECK COLLISION HERE!
+void Ball::Move()
+{
+    if(this->ballState==STILL)
+        return;
+    Vector3 rollspeed;
+    Vector3 wholespeed;
+    rollspeed=CrossProduct(this->anglespeed,Vector3(0,0,this->radius)); //(ωy*r,-ωx*r,0)
+    wholespeed=rollspeed+this->speed;
+
+    if(rollspeed.Length()<Froll_Threshold && this->speed.Length()<Froll_Threshold)
+    {
+        if(this->anglespeed[2]<Frotate_Threshold)
+        {
+            this->ballState=STILL;
+            this->speed=Vector3(0,0,0);
+            this->anglespeed=Vector3(0,0,0);
+        }
+        else
+        {
+            if (this->anglespeed[2]>0)
+                this->anglespeed.setZ(this->anglespeed[2]-Frotate_GroundToBall) ;
+            else
+                this->anglespeed.setZ(this->anglespeed[2]+Frotate_GroundToBall);
+        }
+    }
+    else
+    {
+        if(wholespeed.Length()<Fslip_Threshold)
+        {
+            this->ApplyImpulse(GetNormalize(this->speed)*(-M * Froll_GroundToBall), this->position);
+            this->anglespeed.setX( this->speed[1] / this->radius );
+            this->anglespeed.setY(- this->speed[0] / this->radius );
+        }
+        else
+        {
+            this->ApplyImpulse(GetNormalize(wholespeed)*(-M * Fslip_GroundToBall ), (this->position+Vector3(0, 0, this->radius)));//去除对ωz影响
+        }
+        if (this->anglespeed[2]>0)
+            this->anglespeed.setZ(this->anglespeed[2]-Frotate_GroundToBall);
+        else
+            this->anglespeed.setZ(this->anglespeed[2]+Frotate_GroundToBall);
+    }
+    this->position += (this->speed * 1.0f);
 }
 
 void Ball::Draw(QPainter& painter)
 {
-	if (ballState == ON_THE_POCKET)
-	{
-		return;
-	}
+    if (ballState == ON_THE_POCKET)
+    {
+        return;
+    }
 
-	// draw itself
-	QRadialGradient gradient(QPointF(radius, radius), radius, QPointF(radius * 0.5, radius * 0.5));
-	gradient.setColorAt(0, QColor(255, 255, 255, 255));
+    // draw itself
+    QRadialGradient gradient(QPointF(radius, radius), radius, QPointF(radius * 0.5, radius * 0.5));
+    gradient.setColorAt(0, QColor(255, 255, 255, 255));
     gradient.setColorAt(0.05, QColor(255, 255, 255));
-	gradient.setColorAt(1, color);
+    gradient.setColorAt(1, color);
 
-	painter.save();
-	painter.translate(position.getX() - radius, position.getY() - radius);
-	painter.setBrush(QBrush(gradient));
-	painter.setPen(color);
-	painter.drawEllipse(0, 0, radius * 2, radius * 2);
-	painter.restore();
+    painter.save();
+    painter.translate(position.getX() - radius, position.getY() - radius);
+    painter.setBrush(QBrush(gradient));
+    painter.setPen(color);
+    painter.drawEllipse(0, 0, radius * 2, radius * 2);
+    painter.restore();
 
-	// painter.setBrush(color);
+    // painter.setBrush(color);
     // painter.drawEllipse(QPoint(position.getX(), position.getY()), radius, radius);
-}
-
-// only return if 2 balls collide
-bool Ball::collidesWith(Ball& b)
-{
-	float distance = this->position.distanceBetween(b.position);
-	if (distance - this->radius - b.radius <= 0)
-	{
-		return true;
-	}
-	return false;
 }
