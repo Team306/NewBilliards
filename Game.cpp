@@ -68,6 +68,7 @@ void Game::Update()
 		case BALL_IS_RUNNING:
 			if (!ballsManager.isRunning())
 			{
+                std::cout<<current_player->getCueball_in()<<std::endl;
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_FREE_BALL){
                     gameState = FREE_BALL;
                     if(current_player->getPlayerflag() == LOCAL){

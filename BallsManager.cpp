@@ -93,6 +93,8 @@ void BallsManager::Update(Table& table, Player *currentplayer)
         //cueBall.setSpeed(Vector2((0 - cueBall.getSpeed().getX()), (0 - cueBall.getSpeed().getY())));
         // cueBall.setSpeed(Vector2((0 - cueBall.getSpeed().getX()), (0 - cueBall.getSpeed().getY())));
         cueBall.setSpeed(Vector3(0, 0,0));
+        cueBall.setBallState(STILL);
+        cueBall.setPosition(Vector2(-100,-100));
         currentplayer->setCueball_in(1);
     }
     for (unsigned i = 0; i < ballsList.size(); ++i)

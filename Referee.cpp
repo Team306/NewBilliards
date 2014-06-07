@@ -169,6 +169,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
         //eight on pocket
         for(int i=0; i<onPocketlist.size(); i++){
             if(onPocketlist[i] == "eight"){
+                //std::cout<<"8"<<std::endl;
                 for(int j=0; j<_ballslist.size(); j++){
                     if(judgeSelfball(_currentplayer, _ballslist[j].getName())){
                          _currentplayer->setGameresult(FAIL);
@@ -187,12 +188,9 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
                     if(_currentplayer->getGameresult() == NOTDEC){
                         _currentplayer->setGameresult(SUCCESS);
                     }
-                    return TO_END;
                 }
+                return TO_END;
 
-                if(_currentplayer->getGameresult() == FAIL){
-                    return TO_END;
-                }
             }
 
             if(judgeSelfball( _currentplayer,onPocketlist[i])){
@@ -214,9 +212,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
             if(judgeSelfball(_currentplayer,_currentplayer->getFirsthit())==false){
                 return TO_EXCHANGE;
             }
-            if(_currentplayer->getCueball_in()){       //cueball in
-                return TO_FREE_BALL;
-            }
+
             if(_currentplayer->getBalltype() == SMALL && _currentplayer->getFirsthit() != "one" && _currentplayer->getFirsthit() != "two"
                     && _currentplayer->getFirsthit() != "three" && _currentplayer->getFirsthit() != "four" && _currentplayer->getFirsthit() != "five"
                     &&_currentplayer->getFirsthit() != "six" &&_currentplayer->getFirsthit() != "seven"){
