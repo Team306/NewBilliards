@@ -54,8 +54,6 @@ void Game::Update()
         }
     }
 
-
-
 	switch (gameState)
 	{
 		case FREE_BALL:
@@ -115,8 +113,7 @@ void Game::Update()
             break;
         case START_FRAME:
         	break;
-        case NETWORK_CONNECT:
-
+        default:
             break;
 	}
 }
@@ -141,19 +138,20 @@ void Game::Draw(QPainter& painter)
             displayPlayer(painter);
             break;
         case END_FRAME:
-            //painter.setFont(font);
-            if(player1.getGameresult() == SUCCESS){
-                painter.drawText(QRectF(108, 88, 1000, 250), "PLAY1 WIN!!!");
-            }
-            else{
-                painter.drawText(QRectF(108, 88, 1000, 250), "PLAY2 WIN!!!");
-            }
             displayEndFrame(painter);
             break;
         case START_FRAME:
-            // print the title
+            // print the start frame
             displayStartFrame(painter);
         	break;
+        case WAIT_FOR_CONNECT:
+            displayWaitingFrame(painter);
+            break;
+        case START_AND_CONNECT_CHOOSE:
+            displayConnectChooseFrame(painter);
+            break;
+        default:
+            break;
     }
 
     // debug info
@@ -190,44 +188,16 @@ void Game::mousePress(int elapsed)
             break;    
         case START_FRAME:
         	// decide game mode
-            if (QRect(420, 300, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-            {
-                gameState = FREE_BALL;
-                gameMode = PRACTICE_MODE;
-                ballsManager.getCueBall().setPosition(Vector2(240, 360));
-            }
-            if (QRect(420, 400, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-            {
-                gameState = FREE_BALL;
-                gameMode = VERSUS_MODE;
-                ballsManager.getCueBall().setPosition(Vector2(240, 360));
-            }
-            if (QRect(420, 500, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-            {
-                gameState = FREE_BALL;
-                gameMode = NETWORK_MODE;
-                ballsManager.getCueBall().setPosition(Vector2(240, 360));
-            }
 
-            // choose rule
-            if (QRect(900, 500, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
-            {
-                gameRule = EIGHT_BALL;
-                init();
-            }
-            if (QRect(900, 550, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
-            {
-                gameRule = NINE_BALL;
-                init();
-            }
-            if (QRect(900, 600, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
-            {
-                gameRule = SNOOKER;
-                init();
-            }
+            checkStartFrameClick();
         	break;
-
-        case NETWORK_CONNECT:
+        case START_AND_CONNECT_CHOOSE:
+            checkConnectChooseFrame();
+            break;
+        case END_FRAME:
+            gameState = START_FRAME;
+            break;
+        default:
             break;
 	}
 }
@@ -328,6 +298,24 @@ void Game::displayStartFrame(QPainter& painter)
 void Game::displayEndFrame(QPainter& painter)
 {
     // display end frame here
+    QColor gray(20, 20, 20, 150);
+    painter.setPen(gray);
+    painter.setBrush(QBrush(gray));
+    painter.drawRect(QRectF(0, 0, 1280, 720));
+
+    QFont font("Consolas", 30, 30, false);
+    painter.setFont(font);
+    QColor miku_blue(00, 174, 255);
+    painter.setPen(miku_blue);
+
+    if (player1.getGameresult() == SUCCESS)
+    {
+        painter.drawText(QRectF(480, 320, 1000, 250), "Player 1 Wins!");
+    }
+    else
+    {
+        painter.drawText(QRectF(480, 320, 1000, 250), "Player 2 Wins!");
+    }
 }
 
 void Game::displayPlayer(QPainter& painter)
@@ -353,5 +341,110 @@ void Game::displayPlayer(QPainter& painter)
         painter.drawText(QRectF(300, 670, 1000, 250), "Player 1");
         painter.setFont(fontBig);
         painter.drawText(QRectF(820, 640, 1000, 250), "Player 2");            
+    }
+}
+
+void Game::displayWaitingFrame(QPainter& painter)
+{
+    QColor gray(20, 20, 20, 150);
+    painter.setPen(gray);
+    painter.setBrush(QBrush(gray));
+    painter.drawRect(QRectF(0, 0, 1280, 720));
+
+    QFont font("Consolas", 30, 30, false);
+    painter.setFont(font);
+    QColor miku_blue(00, 174, 255);
+    painter.setPen(miku_blue);
+    painter.drawText(QRectF(360, 320, 1000, 250), "Waiting for connecting...");    
+}
+
+void Game::displayConnectChooseFrame(QPainter& painter)
+{
+    QColor gray(20, 20, 20, 150);
+    painter.setPen(gray);
+    painter.setBrush(QBrush(gray));
+    painter.drawRect(QRectF(0, 0, 1280, 720));
+
+    QColor miku_blue(00, 174, 255);
+    painter.setPen(miku_blue);
+
+    QFont font("Consolas", 30, 30, false);
+    if (QRect(400, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        font.setPointSize(50);
+        painter.setFont(font);
+        painter.drawText(QRectF(365, 480, 300, 80), "Start");
+    }
+    else
+    {
+        font.setPointSize(30);
+        painter.setFont(font);
+        painter.drawText(QRectF(400, 500, 200, 50), "Start");
+    }
+
+    if (QRect(720, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        font.setPointSize(50);
+        painter.setFont(font);
+        painter.drawText(QRectF(670, 480, 300, 80), "Connect");
+    }
+    else
+    {
+        font.setPointSize(30);
+        painter.setFont(font);
+        painter.drawText(QRectF(720, 500, 200, 50), "Connect");
+    }
+}
+
+void Game::checkStartFrameClick()
+{
+    if (QRect(420, 300, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = FREE_BALL;
+        gameMode = PRACTICE_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(240, 360));
+    }
+    if (QRect(420, 400, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = FREE_BALL;
+        gameMode = VERSUS_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(240, 360));
+    }
+    if (QRect(420, 500, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = START_AND_CONNECT_CHOOSE;
+        gameMode = NETWORK_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(240, 360));
+    }
+
+    // choose rule
+    if (QRect(900, 500, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = EIGHT_BALL;
+        init();
+    }
+    if (QRect(900, 550, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = NINE_BALL;
+        init();
+    }
+    if (QRect(900, 600, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = SNOOKER;
+        init();
+    }
+}
+
+void Game::checkConnectChooseFrame()
+{
+    if (QRect(400, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = WAIT_FOR_CONNECT;
+        // set flag
+    }
+    if (QRect(720, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = WAIT_FOR_CONNECT;
+        // set flag
     }
 }

@@ -22,7 +22,8 @@ enum GAME_STATE
 	BALL_IS_RUNNING, 
 	START_FRAME, 
 	END_FRAME, 
-    NETWORK_CONNECT
+	WAIT_FOR_CONNECT, 
+	START_AND_CONNECT_CHOOSE, 
 };
 
 enum GAME_MODE 
@@ -72,6 +73,11 @@ public:
 	void displayStartFrame(QPainter &);
 	void displayEndFrame(QPainter &);
 	void displayPlayer(QPainter &);
+	void displayWaitingFrame(QPainter &);
+	void displayConnectChooseFrame(QPainter &);
+
+	void checkStartFrameClick();
+	void checkConnectChooseFrame();
 };
 
 
