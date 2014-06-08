@@ -54,6 +54,17 @@ Vector2 Table::getSize() const
 	return size;
 }
 
+QRect Table::GetWall(int i) const
+{
+    assert(i>=1 && i<=6);
+    if(i==1) return R1;
+    if(i==2) return R2;
+    if(i==3) return R3;
+    if(i==4) return R4;
+    if(i==5) return R5;
+    return R6;
+}
+
 // update and draw
 void Table::Update()
 {

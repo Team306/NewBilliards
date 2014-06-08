@@ -40,14 +40,8 @@ void BallsManager::Update(Table& table, Player *currentplayer)
 	}
 
     // detect collision
-    if (table.collidesWith(cueBall))
-    {
-    	// change speed or sth else
+    this->collideengine.WallToBallCollision(table,cueBall);
 
-    	// test
-        //cueBall.setSpeed(Vector2());
-        // cueBall.setSpeed(Vector2());
-    }
     for (unsigned i = 0; i < ballsList.size(); ++i)
     {
     	// first detect cue ball
@@ -68,11 +62,7 @@ void BallsManager::Update(Table& table, Player *currentplayer)
 		}
 
 		// and then detect the balls with table
-		if (table.collidesWith(ballsList[i]))
-		{
-			// change speed or sth else
-
-		}
+        this->collideengine.WallToBallCollision(table,ballsList[i]);
 
 		// finally detect other ball
     	for (unsigned j = i + 1; j < ballsList.size(); ++j)

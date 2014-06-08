@@ -8,6 +8,7 @@
 #include "MyMath.h"
 #include "Ball.h"
 #include "Referee.h"
+#include "assert.h"
 
 class Table
 {
@@ -31,6 +32,7 @@ public:
 
 	// get and set method
 	Vector2 getSize() const;
+    QRect GetWall(int i) const; //1-6 -> R1-R6
 	
 	// update and draw
 	void Update();
