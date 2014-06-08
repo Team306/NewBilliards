@@ -20,7 +20,8 @@ private:
     Vector2 picPosition;
     QPolygon T1,T2,T3,T4,T5,T6;
     float pocketRadius;
-    Vector2 p1,p2,p3,p4,p5;//pocket center position ->p0
+    float lineX;
+    Vector2 p0,p1,p2,p3,p4,p5;//pocket center position ->p0
     std::vector<Vector2> checkp;
     std::vector<Vector2> pocketp;
 

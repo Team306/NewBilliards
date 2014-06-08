@@ -18,10 +18,12 @@ void Table::init(Referee& referee)
     picSize.setXY(1280, 680);
     size.setXY(1200, 600);
     pocketRadius = 35;
+    lineX = (float)65 / (float)254 * size.getX();
 
-    p1.setXY(position.getX() + size.getX() - 5, position.getY() + 5);
-    p2.setXY(position.getX() + 5, position.getY() + size.getY() - 5);
-    p3.setXY(position.getX() + size.getX() - 5, position.getY() + size.getY() - 5);
+    p0.setXY(position.getX() + 8, position.getY() + 8);
+    p1.setXY(position.getX() + size.getX() - 8, position.getY() + 8);
+    p2.setXY(position.getX() + 8, position.getY() + size.getY() - 8);
+    p3.setXY(position.getX() + size.getX() - 8, position.getY() + size.getY() - 8);
     p4.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + pocketRadius);
     p5.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + picSize.getY() - pocketRadius);
 
@@ -119,7 +121,6 @@ void Table::Draw(QPainter& painter)
                         pocketRadius, 0.75 * pocketRadius);
 
     painter.setPen(QPen(QColor(255,255,255)));
-    float lineX = (float)65 / (float)254 * size.getX();
     painter.drawLine(position.getX() + lineX, position.getY(), position.getX() + lineX, position.getY() + size.getY());
 
     painter.setPen(QPen(QColor(100,100,100)));
@@ -134,17 +135,29 @@ void Table::Draw(QPainter& painter)
 
 bool Table::positionIsLegal(Vector2 p,Referee &referee)
 {
-    QRect R(position.getX() + referee.getBallRadius(), position.getY() + referee.getBallRadius(),
-            300 - 2 * referee.getBallRadius(),size.getY() - 2 * referee.getBallRadius());
-    if(R.contains(p.getX(), p.getY(),true))
-        return true;
+    Vector3 V(p.getX(),p.getY(),0);
+    if( (p.getX() > checkp[9].getX() + referee.getBallRadius()) && (p.getX() < position.getX() + lineX) &&
+            (p.getY() > checkp[0].getY() + referee.getBallRadius()) &&
+            (p.getY() < checkp[5].getY() - referee.getBallRadius()))
+        {
+            int i;
+            for(i = 0; i < referee.getBallsList().size(); i++)
+            {
+                if(referee.getBallsList()[i].getPosition().DistanceTo(V) < 2 * referee.getBallRadius())
+                    break;
+            }
+            if(i != referee.getBallsList().size())
+                return false;
+            else
+                return true;
+    }
     return false;
 }
 
 bool Table::checkPockets(Ball& ball)
 {
     // if the ball is in the pocket return true;
-    if((ball.getPosition().DistanceTo(position) <= pocketRadius )||
+    if((ball.getPosition().DistanceTo(p0) <= pocketRadius )||
             (ball.getPosition().DistanceTo(p1) <= pocketRadius )||
             (ball.getPosition().DistanceTo(p2) <= pocketRadius )||
             (ball.getPosition().DistanceTo(p3) <= pocketRadius )||
