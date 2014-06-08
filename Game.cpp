@@ -290,20 +290,20 @@ void Game::displayStartFrame(QPainter& painter)
     font.setPointSize(20);
     font.setWeight(20);
     painter.setFont(font);
-    painter.drawText(QRectF(900, 500, 300, 30), "Eight Ball");
-    painter.drawText(QRectF(900, 550, 300, 30), "Nine Ball");
-    painter.drawText(QRectF(900, 600, 300, 30), "Snooker");
+    painter.drawText(QRectF(900, 490, 300, 30), "Eight Ball");
+    painter.drawText(QRectF(900, 540, 300, 30), "Nine Ball");
+    painter.drawText(QRectF(900, 590, 300, 30), "Snooker");
 
     switch (gameRule)
     {
         case EIGHT_BALL:
-            painter.drawText(QRectF(860, 500, 300, 30), "√");
+            painter.drawText(QRectF(860, 490, 300, 30), "√");
             break;
         case NINE_BALL:
-            painter.drawText(QRectF(860, 550, 300, 30), "√");
+            painter.drawText(QRectF(860, 540, 300, 30), "√");
             break;
         case SNOOKER:
-            painter.drawText(QRectF(860, 600, 300, 30), "√");
+            painter.drawText(QRectF(860, 590, 300, 30), "√");
             break;
     }
 
@@ -472,19 +472,22 @@ void Game::checkStartFrameClick()
     }
 
     // choose rule
-    if (QRect(900, 500, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+    if (QRect(900, 490, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameRule = EIGHT_BALL;
+        table.clear();
         init();
     }
-    if (QRect(900, 550, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+    if (QRect(900, 540, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameRule = NINE_BALL;
+        table.clear();
         init();
     }
-    if (QRect(900, 600, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+    if (QRect(900, 590, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameRule = SNOOKER;
+        table.clear();
         init();
     }
 }

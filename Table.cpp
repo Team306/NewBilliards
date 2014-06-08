@@ -109,10 +109,13 @@ void Table::Draw(QPainter& painter)
     // draw here
     QColor brown(91, 29, 28);
     painter.setBrush(QBrush(brown));
-    painter.setPen(QPen(QColor(0, 0, 255)));
+    painter.setPen(QPen(brown));
+
+    painter.drawRect(QRectF(0, 600, 1280, 120));
+
     painter.drawRect(QRectF(picPosition.getX(), picPosition.getY(), picSize.getX(), picSize.getY()));
 
-    painter.setPen(QPen(QColor(0, 0, 255)));
+    painter.setPen(QPen(QColor(0, 0, 0)));
     painter.setBrush(QBrush(QColor(68, 149, 60)));
     painter.drawRect(QRectF(position.getX(), position.getY(), size.getX(), size.getY()));
 
@@ -141,8 +144,8 @@ void Table::Draw(QPainter& painter)
     painter.drawPolygon(T5);
     painter.drawPolygon(T6);
     //test
-    painter.setPen(QPen(QColor(0,0,0)));
-    painter.drawLine(checkp[0].getX(),checkp[0].getY(),checkp[1].getX(),checkp[1].getY());
+    // painter.setPen(QPen(QColor(0,0,0)));
+    // painter.drawLine(checkp[0].getX(),checkp[0].getY(),checkp[1].getX(),checkp[1].getY());
     //painter.drawRect(R8);
 }
 
@@ -290,4 +293,17 @@ bool Table::checkPockets(Ball& ball)
             (ball.getPosition().DistanceTo(p5) <= 0.75 * pocketRadius ))
         return true;
     return false;
+}
+
+void Table::clear()
+{
+    checkp.clear();
+    pocketp.clear();
+
+    T1.clear();
+    T2.clear();
+    T3.clear();
+    T4.clear();
+    T5.clear();
+    T6.clear();
 }
