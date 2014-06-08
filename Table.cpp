@@ -96,10 +96,13 @@ void Table::Draw(QPainter& painter)
     // draw here
     QColor brown(91, 29, 28);
     painter.setBrush(QBrush(brown));
-    painter.setPen(QPen(QColor(0, 0, 255)));
+    painter.setPen(QPen(brown));
+
+    painter.drawRect(QRectF(0, 600, 1280, 120));
+
     painter.drawRect(QRectF(picPosition.getX(), picPosition.getY(), picSize.getX(), picSize.getY()));
 
-    painter.setPen(QPen(QColor(0, 0, 255)));
+    painter.setPen(QPen(QColor(0, 0, 0)));
     painter.setBrush(QBrush(QColor(68, 149, 60)));
     painter.drawRect(QRectF(position.getX(), position.getY(), size.getX(), size.getY()));
 
@@ -161,5 +164,5 @@ void Table::clear()
     T3.clear();
     T4.clear();
     T5.clear();
-    T6.cleat();
+    T6.clear();
 }
