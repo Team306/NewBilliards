@@ -80,12 +80,12 @@ void Player::setPlayerflag(int player){
 
 
 void Player::init(){
-    eightball_type = NOTDEF;
-    game_result = NOTDEC;
     hit_flag = 0;
     cueball_in = 0;
     score = 0;
     toHit_balltype = RED;
+    eightball_type = NOTDEF;
+    game_result = NOTDEC;
     on_pocket_list.clear();
     first_hit = "";
 }

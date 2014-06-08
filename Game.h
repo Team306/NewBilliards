@@ -33,6 +33,12 @@ enum GAME_MODE
 	NETWORK_MODE, 
 };
 
+enum NETWORK_RULE
+{
+    SERVER,
+    CLIENT,
+};
+
 class Game
 {
 private:
@@ -44,12 +50,14 @@ private:
     Player player1;
     Player player2;
     Player *current_player;
-    GameSever game_sever;
-    GameClient game_client;
+    GameSever *game_sever;
+    QTcpSocket *server_client;
+    GameClient *game_client;
 
 	GAME_STATE gameState;
 	GAME_MODE gameMode;
     GAME_RULE gameRule;
+    NETWORK_RULE network_rule;
 
 	// debug variables
 	int elapsedTime;
@@ -78,6 +86,16 @@ public:
 
 	void checkStartFrameClick();
 	void checkConnectChooseFrame();
+
+    GameSever* getGameSever() const;
+    GameClient* getGameClient() const;
+    GAME_RULE getGameRule() const;
+
+    PLAYER_FLAG getPlayerFlag() const;
+    GAME_MODE getGameMode() const;
+    NETWORK_RULE getNetworkRule() const;
+    void GameBegin();
+    void ClientInit(int _gameRule);
 };
 
 

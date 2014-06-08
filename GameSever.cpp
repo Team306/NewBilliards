@@ -4,6 +4,7 @@
 
 GameSever::GameSever(){
     //listen(QHostAddress::Any,19999);
+    client = new QTcpSocket;
 }
 
 GameSever::~GameSever(){
@@ -24,4 +25,8 @@ void GameSever::sendMessage(QByteArray message){
 
 QByteArray GameSever::getMessage(){
     return client->readAll();
+}
+
+QTcpSocket* GameSever::getClient() const{
+    return client;
 }

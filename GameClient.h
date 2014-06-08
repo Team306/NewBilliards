@@ -4,17 +4,19 @@
 #define GAMECLIENT_H
 #include <QTcpSocket>
 #include <QByteArray>
+#include <QStringList>
 
 class GameClient: public QTcpSocket{
 public:
     GameClient();
     ~GameClient();
-    void gameConnect();
+    void GameConnect();
     void sendMessage(QByteArray);
     QByteArray getMessage();
 
 private:
     QString IP_Address;
+    bool found_flag;
 };
 
 #endif // GAMECLIENT_H
