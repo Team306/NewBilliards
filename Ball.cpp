@@ -107,11 +107,11 @@ void Ball::ApplyImpulse(const Vector3& impulse,const Vector3& collideposition)
 {
     this->speed += (impulse/M);
     //??
-    if(impulse[2]!=0.0 && fabs(impulse[2])>1)
+    /*if(impulse[2]!=0.0 && fabs(impulse[2])>1)
     {
         this->speed.setX(this->speed[0]/impulse[2]);
         this->speed.setY(this->speed[1]/impulse[2]);
-    }
+    }*/
     this->speed.setZ(0.0f);
     this->anglespeed+= CrossProduct(collideposition-this->position,impulse)/this->Im;
     if(this->speed.Length()>0 || this->anglespeed.Length()>0)

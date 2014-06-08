@@ -14,7 +14,7 @@
 // fps
 const int msPerFrame = 16;
 // update times in each frame
-const int updateCount = 20;
+const int updateCount = 10;
 
 GLWindow::GLWindow(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)

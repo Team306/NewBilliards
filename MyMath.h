@@ -24,12 +24,15 @@ public:
     // override operators
     Vector2 operator+(Vector2 &) const;
     Vector2 operator-(Vector2 &) const;
-    Vector2 operator*(float) const;
+    Vector2 operator*(float f) const;
+    Vector2 operator/(float f) const;
     float dotProduct(Vector2 &) const;
     // Vector2 crossProduct(Vector2 &);
 
-    Vector2 operator+=(Vector2 &);
-    Vector2 operator-=(Vector2 &);
+    Vector2& operator+=(Vector2 &);
+    Vector2& operator-=(Vector2 &);
+    Vector2& operator*=(float f);
+    Vector2& operator/=(float f);
 
     float Length() const; // length
     float distanceBetween(Vector2 &) const;
