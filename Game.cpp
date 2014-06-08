@@ -68,7 +68,7 @@ void Game::Update()
 		case BALL_IS_RUNNING:
 			if (!ballsManager.isRunning())
 			{
-                std::cout<<current_player->getCueball_in()<<std::endl;
+                //std::cout<<current_player->getCueball_in()<<std::endl;
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_FREE_BALL){
                     gameState = FREE_BALL;
                     if(current_player->getPlayerflag() == LOCAL){
@@ -115,6 +115,9 @@ void Game::Update()
             break;
         case START_FRAME:
         	break;
+        case NETWORK_CONNECT:
+
+            break;
 	}
 }
 
@@ -158,9 +161,8 @@ void Game::Draw(QPainter& painter)
     painter.setFont(font);
     painter.drawText(QRectF(420, 640, 250, 25), "mouse press elapsed time");
     painter.drawText(QRectF(580, 640, 50, 25), QString::number(elapsedTime));
-    painter.drawText(QRectF(400, 640, 100, 100),QString::number(current_player->getPlayerflag()));
-    painter.drawText(QRectF(400, 600, 50, 25),QString::number(current_player->getBalltype()));
-    painter.drawText(QRectF(500, 600, 50, 25),QString::number(current_player->getHitflag()));
+    painter.drawText(QRectF(400, 640, 100, 100),QString::number(current_player->getBalltype()));
+    //painter.drawText(QRectF(400, 600, 50, 25),QString::number(current_player->getBalltype()));
     //std::cout<<getPlayerflag()<<std::endl;
 
 }
@@ -223,8 +225,10 @@ void Game::mousePress(int elapsed)
                 gameRule = SNOOKER;
                 init();
             }
-
         	break;
+
+        case NETWORK_CONNECT:
+            break;
 	}
 }
 

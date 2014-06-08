@@ -1,3 +1,4 @@
+// Copyright (C) 2014 Team306
 #ifndef BALL_H
 #define BALL_H
 
