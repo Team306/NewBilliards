@@ -4,6 +4,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QByteArray>
+#include <QStringList>
 class GameSever: public QTcpServer{
 public:
     GameSever();
@@ -12,6 +13,7 @@ public:
     void GameListen();
     void sendMessage(QByteArray);
     QByteArray getMessage();
+    QTcpSocket* getClient() const;
 
 private:
     QTcpSocket *client;

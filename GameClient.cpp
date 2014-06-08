@@ -3,15 +3,16 @@
 #include "GameClient.h"
 
 GameClient::GameClient(){
-    IP_Address = "10.147.123.28";
+    IP_Address = "255.255.255.255";
+    found_flag =false;
 }
 
 GameClient::~GameClient(){
 
 }
 
-void GameClient::gameConnect(){
-    connectToHost(IP_Address,19999);
+void GameClient::GameConnect(){
+  connectToHost(IP_Address,19999);
 }
 
 void GameClient::sendMessage(QByteArray message){

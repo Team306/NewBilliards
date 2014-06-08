@@ -30,12 +30,18 @@ protected:
 
 private slots:
 	void MainLoop();
+    void newConnect();
+    void serverRead();
+    void clientRead();
 
 private:
 	Game game;
 
 	QTimer timer;
 	QTime mousePressTime;
+
+    QByteArray ReadData;
+    QByteArray SendData;
 };
 
 

@@ -8,13 +8,16 @@
 Game::Game()
 {
 	// initialize in init method
+    //gameState = FREE_BALL;
+    game_sever = new GameSever;
+    game_client = new GameClient;
+    player1.setPlayerflag(LOCAL);
+    player2.setPlayerflag(GUEST);
 	gameState = START_FRAME;
     gameRule = EIGHT_BALL;
 	elapsedTime = 0;
-    player1.init();
-    player2.init();
-    player1.setPlayerflag(LOCAL);
-    player2.setPlayerflag(GUEST);
+    //player1.init();
+    //player2.init();
     current_player = &player1;
 }
 
@@ -25,7 +28,13 @@ Game::~Game()
 void Game::init()
 {
 	// init here
-
+    gameState = START_FRAME;
+    current_player = &player1;
+    player1.setPlayerflag(LOCAL);
+    player2.setPlayerflag(GUEST);
+    elapsedTime = 0;
+    player1.init();
+    player2.init();
     referee.init(gameRule);
     table.init(referee);
 	ballsManager.init(referee);
@@ -40,14 +49,14 @@ void Game::Update()
 
     if(player1.getBalltype() == NOTDEF || player2.getBalltype() == NOTDEF){
         if(current_player->getBalltype() == SMALL){
-            if(current_player->getPlayerflag() == LOCAL){
+            if(current_player == &player1){
                 player2.setBalltype(BIG);
             }
             else player1.setBalltype(BIG);
         }
         else{
             if(current_player->getBalltype() == BIG){
-                if(current_player->getPlayerflag() == LOCAL){
+                if(current_player == &player1){
                     player2.setBalltype(SMALL);
                 }
                 else player1.setBalltype(SMALL);
@@ -71,7 +80,7 @@ void Game::Update()
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_FREE_BALL){
                     referee.setTargetname(ballsManager.getBallsList());
                     gameState = FREE_BALL;
-                    if(current_player->getPlayerflag() == LOCAL){
+                    if(current_player == &player1){
                         current_player->Exchange();
                         current_player = &player2;
                         break;
@@ -86,7 +95,7 @@ void Game::Update()
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_EXCHANGE){
                     referee.setTargetname(ballsManager.getBallsList());
                     gameState = WAIT_FOR_STROKE;
-                    if(current_player->getPlayerflag() == LOCAL){
+                    if(current_player == &player1){
                         current_player->Exchange();
                         current_player = &player2;
                         break;
@@ -167,8 +176,9 @@ void Game::Draw(QPainter& painter)
     painter.setFont(font);
     painter.drawText(QRectF(420, 640, 250, 25), "mouse press elapsed time");
     painter.drawText(QRectF(580, 640, 50, 25), QString::number(elapsedTime));
-    painter.drawText(QRectF(400, 640, 100, 100),QString::number(current_player->getBalltype()));
-    //painter.drawText(QRectF(400, 600, 50, 25),QString::number(current_player->getBalltype()));
+    painter.drawText(QRectF(400, 640, 100, 100),QString::number(current_player->getPlayerflag()));
+    painter.drawText(QRectF(400, 600, 50, 25),QString::number(mousePosition.getX()));
+    painter.drawText(QRectF(440, 600, 50, 25),QString::number(mousePosition.getY()));
     //std::cout<<getPlayerflag()<<std::endl;
 
 }
@@ -212,6 +222,7 @@ void Game::mousePress(int elapsed)
             break;
         case END_FRAME:
             gameState = START_FRAME;
+            init();
             break;
         case CHANGE_HIT_POINT:
             if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
@@ -232,16 +243,55 @@ GAME_STATE Game::getGameState() const
 	return gameState;
 }
 
+
+GAME_RULE Game::getGameRule() const
+{
+    return gameRule;
+}
+
 bool Game::cuePositionIsLegal()
 {
     std::vector<Ball> ballsList = ballsManager.getBallsList();
     for (unsigned i = 0; i < ballsList.size(); ++i)
     {
         Vector3 cueBallPosition = ballsManager.getCueBall().getPosition();
-        if (cueBallPosition.DistanceTo(ballsList[i].getPosition()) < ballsManager.getCueBall().getRadius())
+        if (cueBallPosition.DistanceTo(ballsList[i].getPosition()) < 2 * ballsManager.getCueBall().getRadius())
         {
             return false;
         }
     }
     return true;
+}
+
+GameSever* Game::getGameSever() const{
+    return game_sever;
+}
+
+GameClient* Game::getGameClient() const{
+    return game_client;
+}
+
+PLAYER_FLAG Game::getPlayerFlag() const{
+    return current_player->getPlayerflag();
+}
+
+GAME_MODE Game::getGameMode() const{
+    return gameMode;
+}
+
+NETWORK_RULE Game::getNetworkRule() const{
+    return network_rule;
+}
+
+void Game::GameBegin() {
+    gameState = WAIT_FOR_STROKE;
+}
+
+void Game::ClientInit(int _gameRule){
+    gameRule = (GAME_RULE)_gameRule;
+    referee.init(gameRule);
+    table.init(referee);
+    ballsManager.init(referee);
+    cue.init(referee);
+    gameState = WAIT_FOR_STROKE;
 }

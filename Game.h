@@ -34,6 +34,12 @@ enum GAME_MODE
 	NETWORK_MODE, 
 };
 
+enum NETWORK_RULE
+{
+    SERVER,
+    CLIENT,
+};
+
 class Game
 {
 private:
@@ -45,12 +51,13 @@ private:
     Player player1;
     Player player2;
     Player *current_player;
-    GameSever game_sever;
-    GameClient game_client;
+    GameSever *game_sever;
+    GameClient *game_client;
 
 	GAME_STATE gameState;
 	GAME_MODE gameMode;
     GAME_RULE gameRule;
+    NETWORK_RULE network_rule;
 
     Vector2 hitPosition;
     int hitAngle;	// from 0 to 90, maybe can set a max value below 90
@@ -84,9 +91,19 @@ public:
 
 	void checkStartFrameClick();
 	void checkConnectChooseFrame();
+
+    GameSever* getGameSever() const;
+    GameClient* getGameClient() const;
+    GAME_RULE getGameRule() const;
+
+    PLAYER_FLAG getPlayerFlag() const;
+    GAME_MODE getGameMode() const;
+    NETWORK_RULE getNetworkRule() const;
+    void GameBegin();
+    void ClientInit(int _gameRule);
 	void changeHitPoint();
 
-	bool cuePositionIsLegal();
+    bool cuePositionIsLegal();
 };
 
 

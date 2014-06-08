@@ -28,7 +28,7 @@ struct Collision
 
 const float E_BallToBall = 0.9f;
 const float E_WallToBall = 0.8f;
-const float F_BallToBall = 0.1f;
+const float F_BallToBall = 0.2f;
 const float F_WallToBall = 0.5f;
 
 class CollideEngine
@@ -39,8 +39,9 @@ public:
     bool DectBallToBallCollision(const Ball& ballA,const Ball& ballB);
     void ProcessBallToBallCollision(Ball& ballA,Ball& ballB);
     void TableCollision(const Table& table,Ball& ball);
-    void WallToBallCollision(const Table& table,Ball& ball);
-    void AngleWallToBallCollision(const Table& table,Ball& ball);
+    bool WallToBallCollision(const Table& table,Ball& ball);
+    bool CornerWallToBallCollision(const Table& table,Ball& ball);
+    void CornerRadWallToBallCollision(const Table& table,Ball& ball);
     void ProcessWallToBallCollision(Ball& ball,const Vector3& col_N,float extra);
 };
 

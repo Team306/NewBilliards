@@ -140,17 +140,8 @@ bool Table::positionIsLegal(Vector2 p,Referee &referee)
             (p.getY() > checkp[0].getY() + referee.getBallRadius()) &&
             (p.getY() < checkp[5].getY() - referee.getBallRadius()))
         {
-            int i;
-            for(i = 0; i < referee.getBallsList().size(); i++)
-            {
-                if(referee.getBallsList()[i].getPosition().DistanceTo(V) < 2 * referee.getBallRadius())
-                    break;
-            }
-            if(i != referee.getBallsList().size())
-                return false;
-            else
                 return true;
-    }
+        }
     return false;
 }
 

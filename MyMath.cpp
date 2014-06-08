@@ -33,8 +33,8 @@ void Vector2::setXY(float x, float y)
 Vector2 Vector2::operator+(Vector2& v) const
 {
     Vector2 result;
-    result.x = this->x + v.x;
-    result.y = this->y + v.y;
+    result.x = this->x + v.getX();
+    result.y = this->y + v.getY();
     return result;
 }
 
@@ -45,34 +45,55 @@ Vector2 Vector2::operator-(Vector2& v) const
     return result;
 }
 
-Vector2 Vector2::operator*(float scale) const
+Vector2 Vector2::operator*(float f) const
 {
     Vector2 result = *this;
-    result.x *= scale;
-    result.y *= scale;
+    result.x *= f;
+    result.y *= f;
     return result;
 }
 
 float Vector2::dotProduct(Vector2& v) const
 {
-    float result = this->x * v.x + this->y * v.y;
+    float result = this->x * v.getX() + this->y * v.getY();
     return result;
 }
 
-Vector2 Vector2::operator+=(Vector2& v)
+Vector2& Vector2::operator+=(Vector2& v)
 {
     Vector2 result = *this + v;
-    this->x = result.x;
-    this->y = result.y;
+    this->x = result.getX();
+    this->y = result.getY();
     return result;
 }
 
-Vector2 Vector2::operator-=(Vector2& v)
+Vector2& Vector2::operator-=(Vector2& v)
 {
     Vector2 result = *this - v;
-    this->x = result.x;
-    this->y = result.y;
+    this->x = result.getX();
+    this->y = result.getY();
     return result;
+}
+
+Vector2& Vector2::operator*=(float f)
+{
+    this->x*=f;
+    this->y*=f;
+    return *this;
+}
+
+Vector2 Vector2::operator/(float f) const
+{
+    assert(f!=0.0f);
+    return Vector2(this->x/f,this->y/f);
+}
+
+Vector2& Vector2::operator/=(float f)
+{
+    assert(f!=0.0f);
+    this->x/=f;
+    this->y/=f;
+    return *this;
 }
 
 float Vector2::Length() const
