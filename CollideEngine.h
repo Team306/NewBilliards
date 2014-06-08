@@ -38,7 +38,9 @@ public:
     ~CollideEngine();
     bool DectBallToBallCollision(const Ball& ballA,const Ball& ballB);
     void ProcessBallToBallCollision(Ball& ballA,Ball& ballB);
+    void TableCollision(const Table& table,Ball& ball);
     void WallToBallCollision(const Table& table,Ball& ball);
+    void AngleWallToBallCollision(const Table& table,Ball& ball);
     void ProcessWallToBallCollision(Ball& ball,const Vector3& col_N,float extra);
 };
 

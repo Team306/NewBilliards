@@ -24,45 +24,30 @@ void BallsManager::reset(Referee& referee)
 
 void BallsManager::Update(Table& table, Player *currentplayer)
 {
-	// Update each ball
-    /*Vector2 acc = cueBall.getSpeed().getNormalize()*0.3;
-    Vector2 temp = cueBall.getSpeed()-acc;
-    if(temp.getX()*cueBall.getSpeed().getX()<=0){
-        cueBall.setSpeed(Vector2());
-    }
-    else{
-        cueBall.setSpeed(temp);
-    }*/
+    //move balls
     cueBall.Move();
 	for (std::vector<Ball>::iterator iter = ballsList.begin(); iter != ballsList.end(); ++iter)
 	{
         iter->Move();
 	}
 
-    // detect collision
-    this->collideengine.WallToBallCollision(table,cueBall);
+    //detect cueball's table collision
+    this->collideengine.TableCollision(table,cueBall);
 
     for (unsigned i = 0; i < ballsList.size(); ++i)
     {
-    	// first detect cue ball
+        // first detect cueball collision
         if (this->collideengine.DectBallToBallCollision(cueBall,ballsList[i]))
 		{
             if(currentplayer->getHitflag()==0){
                 currentplayer->setHitflag(1);
                 currentplayer->setFirsthit(ballsList[i].getName());
             }
-
-            // change speed or sth else
-			
-			// test
-
             collideengine.ProcessBallToBallCollision(cueBall,ballsList[i]);
-
-            // cueBall.setSpeed(Vector2());
 		}
 
-		// and then detect the balls with table
-        this->collideengine.WallToBallCollision(table,ballsList[i]);
+        //then detect table collision
+        this->collideengine.TableCollision(table,ballsList[i]);
 
 		// finally detect other ball
     	for (unsigned j = i + 1; j < ballsList.size(); ++j)
@@ -71,7 +56,6 @@ void BallsManager::Update(Table& table, Player *currentplayer)
     		{
     			// change speed or sth else
                 this->collideengine.ProcessBallToBallCollision(ballsList[i],ballsList[j]);
-
     		}
     	}
     }

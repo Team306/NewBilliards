@@ -1,6 +1,105 @@
 #include "MyMath.h"
+//Vector2
+//============================================================================
+Vector2::Vector2(float x, float y)
+    : x(x), y(y)
+{
+//	this->x = x;
+//	this->y = y;
+}
+
+Vector2::~Vector2()
+{
+}
+
+// get and set methods
+float Vector2::getX() const
+{
+    return x;
+}
+
+float Vector2::getY() const
+{
+    return y;
+}
+
+void Vector2::setXY(float x, float y)
+{
+    this->x = x;
+    this->y = y;
+}
+
+// override operators
+Vector2 Vector2::operator+(Vector2& v) const
+{
+    Vector2 result;
+    result.x = this->x + v.x;
+    result.y = this->y + v.y;
+    return result;
+}
+
+Vector2 Vector2::operator-(Vector2& v) const
+{
+    Vector2 opposite(-v.getX(), -v.getY());
+    Vector2 result = *this + opposite;
+    return result;
+}
+
+Vector2 Vector2::operator*(float scale) const
+{
+    Vector2 result = *this;
+    result.x *= scale;
+    result.y *= scale;
+    return result;
+}
+
+float Vector2::dotProduct(Vector2& v) const
+{
+    float result = this->x * v.x + this->y * v.y;
+    return result;
+}
+
+Vector2 Vector2::operator+=(Vector2& v)
+{
+    Vector2 result = *this + v;
+    this->x = result.x;
+    this->y = result.y;
+    return result;
+}
+
+Vector2 Vector2::operator-=(Vector2& v)
+{
+    Vector2 result = *this - v;
+    this->x = result.x;
+    this->y = result.y;
+    return result;
+}
+
+float Vector2::Length() const
+{
+    return sqrt(x * x + y * y);
+}
+
+float Vector2::distanceBetween(Vector2& v) const
+{
+    Vector2 distance = (*this) - v;
+    return distance.Length();
+}
+
+Vector2 Vector2::getNormalize() const
+{
+    Vector2 result(x / Length(), y / Length());
+    return result;
+}
+
+Vector2 Vector2::getVertical() const
+{
+    Vector2 result(-y, x);
+    return result;
+}
 
 //Vector3
+//================================================================================
 Vector3::Vector3(float x,float y,float z)
 {
     this->x=x;
@@ -175,102 +274,73 @@ Vector3 GetNormalize(const Vector3& v)
 }
 
 
-
-
-//Vector2
-Vector2::Vector2(float x, float y)
-    : x(x), y(y)
+//Line
+//===============================================================================
+Line::Line(float k, float b)
 {
-//	this->x = x;
-//	this->y = y;
+    this->k=k;
+    this->b=b;
 }
 
-Vector2::~Vector2()
+Line::Line(const Vector2& pa,const Vector2& pb)
 {
+    assert(pa.getX()!=pb.getX());
+
+    //(k,b)
+    this->k=(pa.getY()-pb.getY())/(pa.getX()-pb.getX());
+    this->b=pa.getY()-k*pa.getX();
 }
 
-// get and set methods
-float Vector2::getX() const
+Line::~Line(){}
+
+float Line::getK() const
 {
-    return x;
+    return this->k;
 }
 
-float Vector2::getY() const
+float Line::getB() const
 {
-    return y;
+    return this->b;
 }
 
-void Vector2::setXY(float x, float y)
+void Line::Move(float dx, float dy)
 {
-    this->x = x;
-    this->y = y;
+     this->b = this->b+ dy - this->k * dx;
 }
 
-// override operators
-Vector2 Vector2::operator+(Vector2& v) const
+void Line::Rotate(const Vector2& a, float angle)
 {
-    Vector2 result;
-    result.x = this->x + v.x;
-    result.y = this->y + v.y;
-    return result;
+     this->k = tan(atan(k) + angle);
+     this->b = a.getY() - a.getX();
 }
 
-Vector2 Vector2::operator-(Vector2& v) const
+bool Line::Contains(const Vector2& a)
 {
-    Vector2 opposite(-v.getX(), -v.getY());
-    Vector2 result = *this + opposite;
-    return result;
+     return (a.getY() == this->k * a.getX() + this->b);
 }
 
-Vector2 Vector2::operator*(float scale) const
+bool Line::operator ==(const Line& y)
 {
-    Vector2 result = *this;
-    result.x *= scale;
-    result.y *= scale;
-    return result;
+     return (this->k == y.getK()) && (this->b == y.getB());
 }
 
-float Vector2::dotProduct(Vector2& v) const
+bool Line::operator !=(const Line& y)
 {
-    float result = this->x * v.x + this->y * v.y;
-    return result;
+     return (this->k != y.getK()) || (this->b != y.getB());
 }
 
-Vector2 Vector2::operator+=(Vector2& v)
+Line GetLine(const Vector2& pa,const Vector2& pb)
 {
-    Vector2 result = *this + v;
-    this->x = result.x;
-    this->y = result.y;
-    return result;
+    assert(pa.getX()!=pb.getX());
+
+    //(k,b)
+    float k=(pa.getY()-pb.getY())/(pa.getX()-pb.getX());
+    float b=pa.getY()-k*pa.getX();
+    return Line(k,b);
 }
 
-Vector2 Vector2::operator-=(Vector2& v)
+float PointToLineDistance(const Vector2& point,const Line& line)
 {
-    Vector2 result = *this - v;
-    this->x = result.x;
-    this->y = result.y;
-    return result;
-}
-
-float Vector2::Length() const
-{
-    return sqrt(x * x + y * y);
-}
-
-float Vector2::distanceBetween(Vector2& v) const
-{
-    Vector2 distance = (*this) - v;
-    return distance.Length();
-}
-
-Vector2 Vector2::getNormalize() const
-{
-    Vector2 result(x / Length(), y / Length());
-    return result;
-}
-
-Vector2 Vector2::getVertical() const
-{
-    Vector2 result(-y, x);
-    return result;
+    return fabs(line.getK()*point.getX()-point.getY()+line.getB()) \
+            /sqrt(line.getK()*line.getK()+1);
 }
