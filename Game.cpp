@@ -66,7 +66,7 @@ void Game::Update()
 		case BALL_IS_RUNNING:
 			if (!ballsManager.isRunning())
 			{
-                std::cout<<current_player->getCueball_in()<<std::endl;
+                // std::cout<<current_player->getCueball_in()<<std::endl;
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_FREE_BALL){
                     gameState = FREE_BALL;
                     if(current_player->getPlayerflag() == LOCAL){
@@ -130,6 +130,7 @@ void Game::Draw(QPainter& painter)
     	case WAIT_FOR_STROKE:
     		cue.Draw(painter, ballsManager.getCueBall());
             displayPlayer(painter);
+            displayChangeLabel(painter);
     		break;
         case FREE_BALL:
             displayPlayer(painter);
@@ -149,6 +150,9 @@ void Game::Draw(QPainter& painter)
             break;
         case START_AND_CONNECT_CHOOSE:
             displayConnectChooseFrame(painter);
+            break;
+        case CHANGE_HIT_POINT:
+            displayHitPoint(painter);
             break;
         default:
             break;
@@ -182,6 +186,12 @@ void Game::mousePress(int elapsed)
 			gameState = WAIT_FOR_STROKE;
 			break;
 		case WAIT_FOR_STROKE:
+            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+            {
+                gameState = CHANGE_HIT_POINT;
+                break;
+            }
+
             cue.Stroke(elapsed, ballsManager.getCueBall());
             gameState = BALL_IS_RUNNING;
 			break;
@@ -196,6 +206,14 @@ void Game::mousePress(int elapsed)
             break;
         case END_FRAME:
             gameState = START_FRAME;
+            break;
+        case CHANGE_HIT_POINT:
+            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+            {
+                gameState = WAIT_FOR_STROKE;
+                break;
+            }
+            // check other input
             break;
         default:
             break;
@@ -333,14 +351,14 @@ void Game::displayPlayer(QPainter& painter)
         painter.setFont(fontBig);
         painter.drawText(QRectF(240, 640, 1000, 250), "Player 1");
         painter.setFont(fontSmall);
-        painter.drawText(QRectF(880, 670, 1000, 250), "Player 2");    
+        painter.drawText(QRectF(860, 660, 1000, 250), "Player 2");    
     }
     else
     {
         painter.setFont(fontSmall);
-        painter.drawText(QRectF(300, 670, 1000, 250), "Player 1");
+        painter.drawText(QRectF(300, 660, 1000, 250), "Player 1");
         painter.setFont(fontBig);
-        painter.drawText(QRectF(820, 640, 1000, 250), "Player 2");            
+        painter.drawText(QRectF(800, 640, 1000, 250), "Player 2");            
     }
 }
 
@@ -394,6 +412,42 @@ void Game::displayConnectChooseFrame(QPainter& painter)
         painter.setFont(font);
         painter.drawText(QRectF(720, 500, 200, 50), "Connect");
     }
+}
+
+void Game::displayHitPoint(QPainter& painter)
+{
+    // Hit Point
+    QColor gray(20, 20, 20, 150);
+    painter.setPen(gray);
+    painter.setBrush(QBrush(gray));
+    painter.drawRect(QRectF(0, 0, 1280, 720));
+
+    displayChangeLabel(painter);
+
+    // sth like draw a sphere
+    float r = 120;
+    Vector2 p(1000, 500);
+
+    QRadialGradient gradient(QPointF(r, r), r, QPointF(r * 0.5, r * 0.5));
+    gradient.setColorAt(0, QColor(255, 255, 255, 255));
+    gradient.setColorAt(0.05, QColor(255, 255, 255));
+    gradient.setColorAt(1, QColor(195, 195, 195));
+
+    painter.save();
+    painter.translate(p.getX() - r, p.getY() - r);
+    painter.setBrush(QBrush(gradient));
+    painter.setPen(QColor(195, 195, 195));
+    painter.drawEllipse(0, 0, r * 2, r * 2);
+    painter.restore();
+}
+
+void Game::displayChangeLabel(QPainter& painter)
+{
+    QFont font("Consolas", 16, 16, false);
+    painter.setFont(font);
+    QColor miku_blue(00, 174, 255);
+    painter.setPen(miku_blue);
+    painter.drawText(QRectF(1050, 680, 200, 30), "Change Hit Point");
 }
 
 void Game::checkStartFrameClick()

@@ -22,6 +22,7 @@ enum GAME_STATE
 	END_FRAME, 
 	WAIT_FOR_CONNECT, 
 	START_AND_CONNECT_CHOOSE, 
+	CHANGE_HIT_POINT, 
 };
 
 enum GAME_MODE 
@@ -71,6 +72,8 @@ public:
 	void displayPlayer(QPainter &);
 	void displayWaitingFrame(QPainter &);
 	void displayConnectChooseFrame(QPainter &);
+	void displayHitPoint(QPainter &);
+	void displayChangeLabel(QPainter &);
 
 	void checkStartFrameClick();
 	void checkConnectChooseFrame();
