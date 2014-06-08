@@ -52,6 +52,9 @@ private:
 	GAME_MODE gameMode;
     GAME_RULE gameRule;
 
+    Vector2 hitPosition;
+    int hitAngle;	// from 0 to 90, maybe can set a max value below 90
+
 	// debug variables
 	int elapsedTime;
 
@@ -81,6 +84,9 @@ public:
 
 	void checkStartFrameClick();
 	void checkConnectChooseFrame();
+	void changeHitPoint();
+
+	void cuePositionIsLegal();
 };
 
 
