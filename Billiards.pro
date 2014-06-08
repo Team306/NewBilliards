@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += opengl
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,7 +24,9 @@ SOURCES += main.cpp\
     Cue.cpp \
     Player.cpp \
     CollideEngine.cpp \
-    MyMath.cpp
+    MyMath.cpp \
+    GameSever.cpp \
+    GameClient.cpp
 
 HEADERS  += \
     Ball.h \
@@ -35,4 +38,6 @@ HEADERS  += \
     Referee.h \
     Player.h \
     CollideEngine.h \
-    MyMath.h
+    MyMath.h \
+    GameSever.h \
+    GameClient.h

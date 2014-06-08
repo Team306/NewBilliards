@@ -8,6 +8,8 @@
 #include "BallsManager.h"
 #include "Table.h"
 #include "Cue.h"
+#include "GameSever.h"
+#include "GameClient.h"
 
 // control all logic in this class
 // such as initialize a new game
@@ -39,10 +41,12 @@ private:
 	Table table;
 	Referee referee;
 	Cue cue;
-	Vector2 mousePosition;
+    Vector2 mousePosition;
     Player player1;
     Player player2;
     Player *current_player;
+    GameSever game_sever;
+    GameClient game_client;
 
 	GAME_STATE gameState;
 	GAME_MODE gameMode;
