@@ -101,6 +101,9 @@ void GLWindow::MainLoop()
         case BALL_IS_RUNNING:
             setCursor(Qt::BlankCursor);
             break;
+        default:
+            setCursor(Qt::ArrowCursor);
+            break;
     }
 	// call repaint
     update();
