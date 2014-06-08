@@ -235,4 +235,5 @@ GAME_STATE Game::getGameState() const
 bool Game::cuePositionIsLegal()
 {
     // 
+    return true;
 }
