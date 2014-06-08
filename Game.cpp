@@ -234,6 +234,14 @@ GAME_STATE Game::getGameState() const
 
 bool Game::cuePositionIsLegal()
 {
-    // 
+    std::vector<Ball> ballsList = ballsManager.getBallsList();
+    for (unsigned i = 0; i < ballsList.size(); ++i)
+    {
+        Vector3 cueBallPosition = ballsManager.getCueBall().getPosition();
+        if (cueBallPosition.DistanceTo(ballsList[i].getPosition()) < ballsManager.getCueBall().getRadius())
+        {
+            return false;
+        }
+    }
     return true;
 }

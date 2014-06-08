@@ -228,8 +228,7 @@ void Game::displayHitPoint(QPainter& painter)
     painter.restore();
 
     // display angle rectangle
-    
-    painter.drawText(QRectF(580, 640, 50, 25), QString::number(hitAngle));
+    // painter.drawText(QRectF(580, 640, 50, 25), QString::number(hitAngle));
 
 }
 

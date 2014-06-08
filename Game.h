@@ -86,7 +86,7 @@ public:
 	void checkConnectChooseFrame();
 	void changeHitPoint();
 
-	void cuePositionIsLegal();
+	bool cuePositionIsLegal();
 };
 
 
