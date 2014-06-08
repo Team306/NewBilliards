@@ -51,36 +51,23 @@ void Table::init(Referee& referee)
     pocketp.push_back(Vector2(position.getX() + size.getX(), position.getY() + pocketRadius + 8));
     pocketp.push_back(Vector2(position.getX() + size.getX(), position.getY() + size.getY() - pocketRadius - 8));
 
-    //R1 to R6 ischeckp.push_back(); used to detect crash
-    T1<<QPoint(pocketp[0].getX(),pocketp[0].getY())<<
-                 QPoint(pocketp[1].getX(),pocketp[1].getY())<<
-                 QPoint(checkp[1].getX(),checkp[1].getY())<<
-                 QPoint(checkp[0].getX(),checkp[0].getY());//topleft
+    T1<<QPoint(pocketp[0].getX(),pocketp[0].getY())<<QPoint(pocketp[1].getX(),pocketp[1].getY())
+            <<QPoint(checkp[1].getX(),checkp[1].getY())<<QPoint(checkp[0].getX(),checkp[0].getY());
 
-    T2<<QPoint(pocketp[2].getX(),pocketp[2].getY())<<
-                 QPoint(pocketp[3].getX(),pocketp[3].getY())<<
-                 QPoint(checkp[3].getX(),checkp[3].getY())<<
-                 QPoint(checkp[2].getX(),checkp[2].getY());//topright
+    T2<<QPoint(pocketp[2].getX(),pocketp[2].getY())<<QPoint(pocketp[3].getX(),pocketp[3].getY())
+            <<QPoint(checkp[3].getX(),checkp[3].getY())<<QPoint(checkp[2].getX(),checkp[2].getY());
 
-    T3<<QPoint(pocketp[4].getX(),pocketp[4].getY())<<
-                 QPoint(pocketp[5].getX(),pocketp[5].getY())<<
-                 QPoint(checkp[5].getX(),checkp[5].getY())<<
-                 QPoint(checkp[4].getX(),checkp[4].getY());//bottomleft
+    T3<<QPoint(pocketp[4].getX(),pocketp[4].getY())<<QPoint(pocketp[5].getX(),pocketp[5].getY())
+            <<QPoint(checkp[5].getX(),checkp[5].getY())<<QPoint(checkp[4].getX(),checkp[4].getY());
 
-    T4<<QPoint(pocketp[6].getX(),pocketp[6].getY())<<
-                 QPoint(pocketp[7].getX(),pocketp[7].getY())<<
-                 QPoint(checkp[7].getX(),checkp[7].getY())<<
-                 QPoint(checkp[6].getX(),checkp[6].getY());//bottomright
+    T4<<QPoint(pocketp[6].getX(),pocketp[6].getY())<<QPoint(pocketp[7].getX(),pocketp[7].getY())
+            <<QPoint(checkp[7].getX(),checkp[7].getY())<<QPoint(checkp[6].getX(),checkp[6].getY());
 
-    T5<<QPoint(pocketp[8].getX(),pocketp[8].getY())<<
-                 QPoint(pocketp[9].getX(),pocketp[9].getY())<<
-                 QPoint(checkp[9].getX(),checkp[9].getY())<<
-                 QPoint(checkp[8].getX(),checkp[8].getY());//left
+    T5<<QPoint(pocketp[8].getX(),pocketp[8].getY())<<QPoint(pocketp[9].getX(),pocketp[9].getY())
+            <<QPoint(checkp[9].getX(),checkp[9].getY())<<QPoint(checkp[8].getX(),checkp[8].getY());
 
-    T6<<QPoint(pocketp[10].getX(),pocketp[10].getY())<<
-                 QPoint(pocketp[11].getX(),pocketp[11].getY())<<
-                 QPoint(checkp[11].getX(),checkp[11].getY())<<
-                 QPoint(checkp[10].getX(),checkp[10].getY());//right
+    T6<<QPoint(pocketp[10].getX(),pocketp[10].getY())<<QPoint(pocketp[11].getX(),pocketp[11].getY())
+            <<QPoint(checkp[11].getX(),checkp[11].getY())<<QPoint(checkp[10].getX(),checkp[10].getY());
 }
 
 Vector2 Table::getSize() const
@@ -133,141 +120,13 @@ void Table::Draw(QPainter& painter)
     painter.drawLine(position.getX() + lineX, position.getY(), position.getX() + lineX, position.getY() + size.getY());
 
     painter.setPen(QPen(QColor(100,100,100)));
-    painter.setBrush(QBrush(QColor(100,100,100)));
+    painter.setBrush(QBrush(QColor(80,149,80)));
     painter.drawPolygon(T1);
     painter.drawPolygon(T2);
     painter.drawPolygon(T3);
     painter.drawPolygon(T4);
     painter.drawPolygon(T5);
     painter.drawPolygon(T6);
-    //test
-    painter.setPen(QPen(QColor(0,0,0)));
-    painter.drawLine(checkp[0].getX(),checkp[0].getY(),checkp[1].getX(),checkp[1].getY());
-    //painter.drawRect(R8);
-}
-
-// collision detection
-bool Table::collidesWith(Ball& b)
-{
-    // detect collision here
-    // speed is for test
-    // topleft
-    /*
-    if(b.getPosition().getX() > checkp[0].getX() && b.getPosition().getX() < checkp[1].getX() &&
-            b.getPosition().getY() <= checkp[0].getY() + b.getRadius())
-    {
-        if(b.getSpeed().getY() < 0)
-            b.setSpeed(Vector2(b.getSpeed().getX(),0 - b.getSpeed().getY()));
-        return true;
-    }
-    //topright
-    if(b.getPosition().getX() > checkp[2].getX() && b.getPosition().getX() < checkp[3].getX() &&
-            b.getPosition().getY() <= checkp[2].getY() + b.getRadius())
-    {
-        if(b.getSpeed().getY() < 0)
-            b.setSpeed(Vector2(b.getSpeed().getX(),0 - b.getSpeed().getY()));
-        return true;
-    }
-    //bottomleft
-    if(b.getPosition().getX() > checkp[4].getX() && b.getPosition().getX() < checkp[5].getX() &&
-            b.getPosition().getY() >= checkp[4].getY() - b.getRadius())
-    {
-        if(b.getSpeed().getY() > 0)
-            b.setSpeed(Vector2(b.getSpeed().getX(),0 - b.getSpeed().getY()));
-        return true;
-    }
-    //bottomright
-    if(b.getPosition().getX() > checkp[6].getX() && b.getPosition().getX() < checkp[7].getX() &&
-            b.getPosition().getY() >= checkp[6].getY() - b.getRadius())
-    {
-        if(b.getSpeed().getY() > 0)
-            b.setSpeed(Vector2(b.getSpeed().getX(),0 - b.getSpeed().getY()));
-        return true;
-    }
-    if(b.getPosition().getY() > checkp[8].getY() && b.getPosition().getY() < checkp[9].getY() &&
-            b.getPosition().getX() <= checkp[8].getX() + b.getRadius())
-    {
-        if(b.getSpeed().getX() < 0)
-            b.setSpeed(Vector2(0 - b.getSpeed().getX(), b.getSpeed().getY()));
-        return true;
-    }
-    if(b.getPosition().getY() > checkp[10].getY() && b.getPosition().getY() < checkp[11].getY() &&
-            b.getPosition().getX() >= checkp[10].getX() - b.getRadius())
-    {
-        if(b.getSpeed().getX() > 0)
-            b.setSpeed(Vector2(0 - b.getSpeed().getX(), b.getSpeed().getY()));
-        return true;
-    }
-
-    if(b.getPosition().DistanceTo(checkp[0]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(checkp[1]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
-        return true;
-    }
-
-    if(b.getPosition().DistanceTo(checkp[2]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(checkp[3]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(0 - b.getSpeed().getY(),b.getSpeed().getX()));
-        return true;
-    }
-
-    if(b.getPosition().DistanceTo(checkp[4]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(checkp[5]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
-        return true;
-    }
-
-    if(b.getPosition().DistanceTo(checkp[6]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(checkp[7]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
-        return true;
-    }
-
-    if(b.getPosition().DistanceTo(checkp[8]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(0 - b.getSpeed().getY(),b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(checkp[9]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-
-    if(b.getPosition().DistanceTo(checkp[10]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(checkp[10]) <= b.getRadius())
-    {
-        b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
-        return true;
-    }
-
-    */
-    return false;
-
 }
 
 bool Table::positionIsLegal(Vector2 p,Referee &referee)
@@ -290,4 +149,17 @@ bool Table::checkPockets(Ball& ball)
             (ball.getPosition().DistanceTo(p5) <= 0.75 * pocketRadius ))
         return true;
     return false;
+}
+
+void Table::clear()
+{
+    checkp.clear();
+    pocketp.clear();
+
+    T1.clear();
+    T2.clear();
+    T3.clear();
+    T4.clear();
+    T5.clear();
+    T6.cleat();
 }

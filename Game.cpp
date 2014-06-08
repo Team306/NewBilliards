@@ -68,6 +68,7 @@ void Game::Update()
 			{
                 // std::cout<<current_player->getCueball_in()<<std::endl;
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_FREE_BALL){
+                    referee.setTargetname(ballsManager.getBallsList());
                     gameState = FREE_BALL;
                     if(current_player->getPlayerflag() == LOCAL){
                         current_player->Exchange();
@@ -82,6 +83,7 @@ void Game::Update()
                 }
 
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_EXCHANGE){
+                    referee.setTargetname(ballsManager.getBallsList());
                     gameState = WAIT_FOR_STROKE;
                     if(current_player->getPlayerflag() == LOCAL){
                         current_player->Exchange();
@@ -96,6 +98,7 @@ void Game::Update()
                 }
 
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_GOON){
+                    referee.setTargetname(ballsManager.getBallsList());
                     current_player->Goon();
                     gameState = WAIT_FOR_STROKE;
                     break;
