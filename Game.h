@@ -24,6 +24,7 @@ enum GAME_STATE
 	END_FRAME, 
 	WAIT_FOR_CONNECT, 
 	START_AND_CONNECT_CHOOSE, 
+	CHANGE_HIT_POINT, 
 };
 
 enum GAME_MODE 
@@ -51,13 +52,15 @@ private:
     Player player2;
     Player *current_player;
     GameSever *game_sever;
-    QTcpSocket *server_client;
     GameClient *game_client;
 
 	GAME_STATE gameState;
 	GAME_MODE gameMode;
     GAME_RULE gameRule;
     NETWORK_RULE network_rule;
+
+    Vector2 hitPosition;
+    int hitAngle;	// from 0 to 90, maybe can set a max value below 90
 
 	// debug variables
 	int elapsedTime;
@@ -83,6 +86,8 @@ public:
 	void displayPlayer(QPainter &);
 	void displayWaitingFrame(QPainter &);
 	void displayConnectChooseFrame(QPainter &);
+	void displayHitPoint(QPainter &);
+	void displayChangeLabel(QPainter &);
 
 	void checkStartFrameClick();
 	void checkConnectChooseFrame();
@@ -96,6 +101,9 @@ public:
     NETWORK_RULE getNetworkRule() const;
     void GameBegin();
     void ClientInit(int _gameRule);
+	void changeHitPoint();
+
+    bool cuePositionIsLegal();
 };
 
 

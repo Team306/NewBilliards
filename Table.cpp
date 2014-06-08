@@ -12,241 +12,170 @@ Table::~Table()
 
 void Table::init(Referee& referee)
 {
-	// init method
+    // init method
     picPosition.setXY(0, 0);
     position.setXY(40, 40);
     picSize.setXY(1280, 680);
     size.setXY(1200, 600);
-    pocketRadius = 40;
+    pocketRadius = 35;
+    lineX = (float)65 / (float)254 * size.getX();
 
-    p1.setXY(position.getX() + size.getX(), position.getY());
-    p2.setXY(position.getX(), position.getY() + size.getY());
-    p3.setXY(position.getX() + size.getX(), position.getY() + size.getY());
+    p0.setXY(position.getX() + 8, position.getY() + 8);
+    p1.setXY(position.getX() + size.getX() - 8, position.getY() + 8);
+    p2.setXY(position.getX() + 8, position.getY() + size.getY() - 8);
+    p3.setXY(position.getX() + size.getX() - 8, position.getY() + size.getY() - 8);
+    p4.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + pocketRadius);
+    p5.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + picSize.getY() - pocketRadius);
 
-    //R1 to R6 is used to detect crash
-    R1.setCoords(position.getX() + pocketRadius, position.getY(), position.getX() + size.getX() / 2 - pocketRadius,
-                 position.getY() + referee.getBallRadius());//topleft
+    checkp.push_back(Vector2(position.getX() + pocketRadius + 28, position.getY() + 15));//topleft_left
+    checkp.push_back(Vector2(position.getX() + size.getX() / 2 - pocketRadius - 8, position.getY() + 15));//topleft_right
+    checkp.push_back(Vector2(position.getX() + size.getX() / 2 + pocketRadius + 8, position.getY() + 15));//topright_left
+    checkp.push_back(Vector2(position.getX() + size.getX() - pocketRadius - 28,position.getY() + 15));//topright_right
+    checkp.push_back(Vector2(position.getX() + pocketRadius + 28, position.getY() + size.getY() - 15));//bottomleft_left
+    checkp.push_back(Vector2(position.getX() + size.getX() / 2 - pocketRadius - 8, position.getY() + size.getY() - 15));//bottomleft_right
+    checkp.push_back(Vector2(position.getX() + size.getX() / 2 + pocketRadius + 8, position.getY() + size.getY() - 15));//bottomright_left
+    checkp.push_back(Vector2(position.getX() + size.getX() - pocketRadius - 28, position.getY() + size.getY() - 15));//bottomright_right
+    checkp.push_back(Vector2(position.getX() + 15, position.getY() + pocketRadius + 28));//left_top
+    checkp.push_back(Vector2(position.getX() + 15, position.getY() + size.getY() - pocketRadius - 28));//left_bottom
+    checkp.push_back(Vector2(position.getX() + size.getX() - 15, position.getY() + pocketRadius + 28));//right_top
+    checkp.push_back(Vector2(position.getX() + size.getX() - 15, position.getY() + size.getY() - pocketRadius - 28));//right_bottom
 
-    R2.setCoords(position.getX() + size.getX() / 2 + pocketRadius, position.getY(),
-                 position.getX() + size.getX() - pocketRadius,position.getY() + referee.getBallRadius());//topright
+    pocketp.push_back(Vector2(position.getX() + pocketRadius + 8, position.getY()));//same position with checkp
+    pocketp.push_back(Vector2(position.getX() + size.getX() / 2 - pocketRadius, position.getY()));
+    pocketp.push_back(Vector2(position.getX() + size.getX() / 2 + pocketRadius, position.getY()));
+    pocketp.push_back(Vector2(position.getX() + size.getX() - pocketRadius - 8,position.getY()));
+    pocketp.push_back(Vector2(position.getX() + pocketRadius + 8, position.getY() + size.getY()));
+    pocketp.push_back(Vector2(position.getX() + size.getX() / 2 - pocketRadius, position.getY() + size.getY()));
+    pocketp.push_back(Vector2(position.getX() + size.getX() / 2 + pocketRadius, position.getY() + size.getY()));
+    pocketp.push_back(Vector2(position.getX() + size.getX() - pocketRadius - 8, position.getY() + size.getY()));
+    pocketp.push_back(Vector2(position.getX(), position.getY() + pocketRadius + 8));
+    pocketp.push_back(Vector2(position.getX(), position.getY() + size.getY() - pocketRadius - 8));
+    pocketp.push_back(Vector2(position.getX() + size.getX(), position.getY() + pocketRadius + 8));
+    pocketp.push_back(Vector2(position.getX() + size.getX(), position.getY() + size.getY() - pocketRadius - 8));
 
-    R3.setCoords(position.getX() + pocketRadius, position.getY() + size.getY() - referee.getBallRadius(),
-                 position.getX() + size.getX() / 2 - pocketRadius, position.getY() + size.getY());//bottomleft
+    T1<<QPoint(pocketp[0].getX(),pocketp[0].getY())<<QPoint(pocketp[1].getX(),pocketp[1].getY())
+            <<QPoint(checkp[1].getX(),checkp[1].getY())<<QPoint(checkp[0].getX(),checkp[0].getY());
 
-    R4.setCoords(position.getX() + size.getX() / 2  + pocketRadius, position.getY() + size.getY() - referee.getBallRadius(),
-                 position.getX() + size.getX() - pocketRadius,position.getY() + size.getY());//bottomright
+    T2<<QPoint(pocketp[2].getX(),pocketp[2].getY())<<QPoint(pocketp[3].getX(),pocketp[3].getY())
+            <<QPoint(checkp[3].getX(),checkp[3].getY())<<QPoint(checkp[2].getX(),checkp[2].getY());
 
-    R5.setCoords(position.getX(), position.getY() + pocketRadius, position.getX() + referee.getBallRadius(),
-                 position.getY() + size.getY() - pocketRadius);//left
+    T3<<QPoint(pocketp[4].getX(),pocketp[4].getY())<<QPoint(pocketp[5].getX(),pocketp[5].getY())
+            <<QPoint(checkp[5].getX(),checkp[5].getY())<<QPoint(checkp[4].getX(),checkp[4].getY());
 
-    R6.setCoords(position.getX() + size.getX() - referee.getBallRadius(), position.getY() + pocketRadius,
-                 position.getX() + size.getX(),position.getY() + size.getY() - pocketRadius);//right
-    //R7 to R8 middle pocket
-    R7.setCoords(position.getX() + size.getX() / 2 - 30,position.getY() - referee.getBallRadius(),
-                 position.getX() + size.getX() / 2 + 30,position.getY());
+    T4<<QPoint(pocketp[6].getX(),pocketp[6].getY())<<QPoint(pocketp[7].getX(),pocketp[7].getY())
+            <<QPoint(checkp[7].getX(),checkp[7].getY())<<QPoint(checkp[6].getX(),checkp[6].getY());
 
-    R8.setCoords(position.getX() + size.getX() / 2 - 30,position.getY() + size.getY(),
-                 position.getX() + size.getX() / 2 + 30,position.getY() + size.getY() + referee.getBallRadius());
+    T5<<QPoint(pocketp[8].getX(),pocketp[8].getY())<<QPoint(pocketp[9].getX(),pocketp[9].getY())
+            <<QPoint(checkp[9].getX(),checkp[9].getY())<<QPoint(checkp[8].getX(),checkp[8].getY());
+
+    T6<<QPoint(pocketp[10].getX(),pocketp[10].getY())<<QPoint(pocketp[11].getX(),pocketp[11].getY())
+            <<QPoint(checkp[11].getX(),checkp[11].getY())<<QPoint(checkp[10].getX(),checkp[10].getY());
 }
 
 Vector2 Table::getSize() const
 {
-	return size;
+    return size;
+}
+
+vector<Vector2> Table::getCheckp() const
+{
+    return this->checkp;
+}
+
+vector<Vector2> Table::getPocketp() const
+{
+    return this->pocketp;
 }
 
 // update and draw
 void Table::Update()
 {
-	// update here
+    // update here
 }
 
 void Table::Draw(QPainter& painter)
 {
-	// draw here
+    // draw here
     QColor brown(91, 29, 28);
     painter.setBrush(QBrush(brown));
     painter.setPen(QPen(brown));
-	painter.drawRect(QRectF(picPosition.getX(), picPosition.getY(), picSize.getX(), picSize.getY()));
 
-    painter.drawRect(QRectF(0, 600, 1280, 120));    
+    painter.drawRect(QRectF(0, 600, 1280, 120));
 
-    painter.setPen(QPen(QColor(0, 0, 0)));
-    painter.setBrush(QBrush(QColor(0,0,0)));
-    painter.drawEllipse(QPoint(position.getX(), position.getY()),40,40);
-    painter.drawEllipse(QPoint(position.getX()+size.getX(), position.getY()),40,40);
-    painter.drawEllipse(QPoint(position.getX(), position.getY()+size.getY()),40,40);
-    painter.drawEllipse(QPoint(position.getX()+size.getX(), position.getY()+size.getY()),40,40);
-    painter.drawEllipse(QPoint(picPosition.getX()+picSize.getX()/2, picPosition.getY()+40),40,40);
-    painter.drawEllipse(QPoint(picPosition.getX()+picSize.getX()/2, picPosition.getY()+size.getY()+40),40,40);
+    painter.drawRect(QRectF(picPosition.getX(), picPosition.getY(), picSize.getX(), picSize.getY()));
 
     painter.setPen(QPen(QColor(0, 0, 0)));
     painter.setBrush(QBrush(QColor(68, 149, 60)));
-    painter.drawRoundRect(QRectF(position.getX(), position.getY(), size.getX(), size.getY()),7,14);
+    painter.drawRect(QRectF(position.getX(), position.getY(), size.getX(), size.getY()));
+
+    painter.setPen(QPen(QColor(0, 0, 0)));
+    painter.setBrush(QBrush(QColor(0,0,0)));
+    painter.drawEllipse(QPoint(position.getX() + 8, position.getY() + 8),pocketRadius, pocketRadius);
+    painter.drawEllipse(QPoint(position.getX() + size.getX() - 8, position.getY() + 8), pocketRadius , pocketRadius);
+    painter.drawEllipse(QPoint(position.getX() + 8, position.getY()+size.getY() - 8), pocketRadius,pocketRadius);
+    painter.drawEllipse(QPoint(position.getX() + size.getX() - 8, position.getY() + size.getY() - 8),
+                        pocketRadius,pocketRadius);
+    painter.drawEllipse(QPoint(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + pocketRadius),
+                        pocketRadius, 0.75 * pocketRadius);
+    painter.drawEllipse(QPoint(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + picSize.getY() - pocketRadius),
+                        pocketRadius, 0.75 * pocketRadius);
 
     painter.setPen(QPen(QColor(255,255,255)));
-    float lineX = (float)65 / (float)254 * size.getX();
     painter.drawLine(position.getX() + lineX, position.getY(), position.getX() + lineX, position.getY() + size.getY());
-    //test
-    painter.setBrush(QBrush(QColor(100,100,100)));
-    /*painter.drawRect(R1);
-    painter.drawRect(R2);
-    painter.drawRect(R3);
-    painter.drawRect(R4);
-    painter.drawRect(R5);
-    painter.drawRect(R6);
-    painter.drawRect(R7);
-    painter.drawRect(R8);*/
-}
 
-// collision detection
-bool Table::collidesWith(Ball& b)
-{
-	// detect collision here
-    // speed is for test
-    if(R1.contains(b.getPosition().getX(),b.getPosition().getY(),false))//topleft
-    {
-        if(b.getSpeed().getY() < 0)
-            b.setSpeed(Vector2(b.getSpeed().getX(),0 - b.getSpeed().getY()));
-        return true;
-    }
-    if(R2.contains(b.getPosition().getX(),b.getPosition().getY(),false))//topright
-    {
-        if(b.getSpeed().getY() < 0)
-            b.setSpeed(Vector2(b.getSpeed().getX(),0 - b.getSpeed().getY()));
-        return true;
-    }
-    if(R3.contains(b.getPosition().getX(),b.getPosition().getY(),false))//bottomleft
-    {
-        if(b.getSpeed().getY() > 0)
-            b.setSpeed(Vector2(b.getSpeed().getX(),0 - b.getSpeed().getY()));
-        return true;
-    }
-    if(R4.contains(b.getPosition().getX(),b.getPosition().getY(),false))//topright
-    {
-        if(b.getSpeed().getY() > 0)
-            b.setSpeed(Vector2(b.getSpeed().getX(),0 - b.getSpeed().getY()));
-        return true;
-    }
-    if(R5.contains(b.getPosition().getX(),b.getPosition().getY(),false))//left
-    {
-        if(b.getSpeed().getX() < 0)
-            b.setSpeed(Vector2(0 - b.getSpeed().getX(), b.getSpeed().getY()));
-        return true;
-    }
-    if(R6.contains(b.getPosition().getX(),b.getPosition().getY(),false))//right
-    {
-        if(b.getSpeed().getX() > 0)
-            b.setSpeed(Vector2(0 - b.getSpeed().getX(), b.getSpeed().getY()));
-        return true;
-    }
-
-    //topleft_pocket,2 points
-    Vector2 detectP1(position.getX() + pocketRadius, position.getY());//top
-    Vector2 detectP2(position.getX(), position.getY() + pocketRadius);//left
-    if(b.getPosition().DistanceTo(detectP1) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(detectP2) <= b.getRadius())
-    {
-        b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
-        return true;
-    }
-
-    //topcenter_pocket, 2 points
-    Vector2 detectP3(position.getX() + size.getX() / 2 - pocketRadius, position.getY());//left
-    Vector2 detectP4(position.getX() + size.getX() / 2 + pocketRadius, position.getY());//right
-    if(b.getPosition().DistanceTo(detectP3) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(detectP4) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(0 - b.getSpeed().getY(),b.getSpeed().getX()));
-        return true;
-    }
-
-    //topright_pocket, 2 points
-    Vector2 detectP5(position.getX() +size.getX() - pocketRadius, position.getY());//top
-    Vector2 detectP6(position.getX() +size.getX(), position.getY() + pocketRadius);//left
-    if(b.getPosition().DistanceTo(detectP5) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(detectP6) <= b.getRadius())
-    {
-        b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
-        return true;
-    }
-
-    //bottomleft_pocket, 2 points
-    Vector2 detectP7(position.getX() + pocketRadius, position.getY() + size.getY());//bottom
-    Vector2 detectP8(position.getX(), position.getY() + size.getY() - pocketRadius);//left
-    if(b.getPosition().DistanceTo(detectP7) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(detectP8) <= b.getRadius())
-    {
-        b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
-        return true;
-    }
-
-    //bottomcenter_pocket, 2 points
-    Vector2 detectP9(position.getX() + size.getX() / 2 + pocketRadius, position.getY() + size.getY());//right
-    Vector2 detectP10(position.getX() + size.getX() / 2 - pocketRadius, position.getY() + size.getY());//left
-    if(b.getPosition().DistanceTo(detectP9) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(0 - b.getSpeed().getY(),b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(detectP10) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-
-    //bottomright_pocket, 2 points
-    Vector2 detectP11(position.getX() +size.getX(), position.getY() + size.getY() - pocketRadius);//right
-    Vector2 detectP12(position.getX() +size.getX() - pocketRadius, position.getY() + size.getY());//bottom
-    if(b.getPosition().DistanceTo(detectP11) <= b.getRadius())
-    {
-        b.setSpeed(Vector2(b.getSpeed().getY(), 0 - b.getSpeed().getX()));
-        return true;
-    }
-    if(b.getPosition().DistanceTo(detectP12) <= b.getRadius())
-    {
-        b.setSpeed(Vector2( 0 - b.getSpeed().getY(), b.getSpeed().getX()));
-        return true;
-    }
-
-    return false;
+    painter.setPen(QPen(QColor(100,100,100)));
+    painter.setBrush(QBrush(QColor(80,149,80)));
+    painter.drawPolygon(T1);
+    painter.drawPolygon(T2);
+    painter.drawPolygon(T3);
+    painter.drawPolygon(T4);
+    painter.drawPolygon(T5);
+    painter.drawPolygon(T6);
 }
 
 bool Table::positionIsLegal(Vector2 p,Referee &referee)
 {
-    QRect R(position.getX() + referee.getBallRadius(), position.getY() + referee.getBallRadius(),
-            300 - 2 * referee.getBallRadius(),size.getY() - 2 * referee.getBallRadius());
-    if(R.contains(p.getX(), p.getY(),true))
-        return true;
+    Vector3 V(p.getX(),p.getY(),0);
+    if( (p.getX() > checkp[9].getX() + referee.getBallRadius()) && (p.getX() < position.getX() + lineX) &&
+            (p.getY() > checkp[0].getY() + referee.getBallRadius()) &&
+            (p.getY() < checkp[5].getY() - referee.getBallRadius()))
+        {
+            int i;
+            for(i = 0; i < referee.getBallsList().size(); i++)
+            {
+                if(referee.getBallsList()[i].getPosition().DistanceTo(V) < 2 * referee.getBallRadius())
+                    break;
+            }
+            if(i != referee.getBallsList().size())
+                return false;
+            else
+                return true;
+    }
     return false;
 }
 
 bool Table::checkPockets(Ball& ball)
 {
     // if the ball is in the pocket return true;
-    if(R7.contains(ball.getPosition().getX(), ball.getPosition().getY(), false)||
-            R8.contains(ball.getPosition().getX(), ball.getPosition().getY(), false))
-        return true;
-
-    if((ball.getPosition().DistanceTo(position) <= 0.5 * pocketRadius )||
-            (ball.getPosition().DistanceTo(p1) <= 0.5 * pocketRadius )||
-            (ball.getPosition().DistanceTo(p2) <= 0.5 * pocketRadius )||
-            (ball.getPosition().DistanceTo(p3) <= 0.5 * pocketRadius ))
+    if((ball.getPosition().DistanceTo(p0) <= pocketRadius )||
+            (ball.getPosition().DistanceTo(p1) <= pocketRadius )||
+            (ball.getPosition().DistanceTo(p2) <= pocketRadius )||
+            (ball.getPosition().DistanceTo(p3) <= pocketRadius )||
+            (ball.getPosition().DistanceTo(p4) <= 0.75 * pocketRadius )||
+            (ball.getPosition().DistanceTo(p5) <= 0.75 * pocketRadius ))
         return true;
     return false;
+}
+
+void Table::clear()
+{
+    checkp.clear();
+    pocketp.clear();
+
+    T1.clear();
+    T2.clear();
+    T3.clear();
+    T4.clear();
+    T5.clear();
+    T6.clear();
 }

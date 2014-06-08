@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     CollideEngine.cpp \
     MyMath.cpp \
     GameSever.cpp \
-    GameClient.cpp
+    GameClient.cpp \
+    Menu.cpp
 
 HEADERS  += \
     Ball.h \

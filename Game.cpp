@@ -3,14 +3,14 @@
 #include "Game.h"
 #include <iostream>
 
+// another part about menu in Menu.cpp
+
 Game::Game()
 {
 	// initialize in init method
-	// gameState = FREE_BALL;
+    //gameState = FREE_BALL;
     game_sever = new GameSever;
     game_client = new GameClient;
-    server_client = new QTcpSocket;
-    server_client = game_sever->getClient();
     player1.setPlayerflag(LOCAL);
     player2.setPlayerflag(GUEST);
 	gameState = START_FRAME;
@@ -76,8 +76,9 @@ void Game::Update()
 		case BALL_IS_RUNNING:
 			if (!ballsManager.isRunning())
 			{
-                //std::cout<<current_player->getCueball_in()<<std::endl;
+                // std::cout<<current_player->getCueball_in()<<std::endl;
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_FREE_BALL){
+                    referee.setTargetname(ballsManager.getBallsList());
                     gameState = FREE_BALL;
                     if(current_player == &player1){
                         current_player->Exchange();
@@ -92,6 +93,7 @@ void Game::Update()
                 }
 
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_EXCHANGE){
+                    referee.setTargetname(ballsManager.getBallsList());
                     gameState = WAIT_FOR_STROKE;
                     if(current_player == &player1){
                         current_player->Exchange();
@@ -106,6 +108,7 @@ void Game::Update()
                 }
 
                 if(referee.judge(current_player,ballsManager.getBallsList()) == TO_GOON){
+                    referee.setTargetname(ballsManager.getBallsList());
                     current_player->Goon();
                     gameState = WAIT_FOR_STROKE;
                     break;
@@ -140,6 +143,7 @@ void Game::Draw(QPainter& painter)
     	case WAIT_FOR_STROKE:
     		cue.Draw(painter, ballsManager.getCueBall());
             displayPlayer(painter);
+            displayChangeLabel(painter);
     		break;
         case FREE_BALL:
             displayPlayer(painter);
@@ -159,6 +163,9 @@ void Game::Draw(QPainter& painter)
             break;
         case START_AND_CONNECT_CHOOSE:
             displayConnectChooseFrame(painter);
+            break;
+        case CHANGE_HIT_POINT:
+            displayHitPoint(painter);
             break;
         default:
             break;
@@ -189,9 +196,18 @@ void Game::mousePress(int elapsed)
 	switch (gameState)
 	{
 		case FREE_BALL:
-			gameState = WAIT_FOR_STROKE;
+            if (cuePositionIsLegal())
+            {
+                gameState = WAIT_FOR_STROKE;
+            }
 			break;
 		case WAIT_FOR_STROKE:
+            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+            {
+                gameState = CHANGE_HIT_POINT;
+                break;
+            }
+
             cue.Stroke(elapsed, ballsManager.getCueBall());
             gameState = BALL_IS_RUNNING;
 			break;
@@ -199,7 +215,6 @@ void Game::mousePress(int elapsed)
             break;    
         case START_FRAME:
         	// decide game mode
-
             checkStartFrameClick();
         	break;
         case START_AND_CONNECT_CHOOSE:
@@ -208,6 +223,15 @@ void Game::mousePress(int elapsed)
         case END_FRAME:
             gameState = START_FRAME;
             init();
+            break;
+        case CHANGE_HIT_POINT:
+            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+            {
+                gameState = WAIT_FOR_STROKE;
+                break;
+            }
+            // check other input
+            changeHitPoint();
             break;
         default:
             break;
@@ -219,255 +243,16 @@ GAME_STATE Game::getGameState() const
 	return gameState;
 }
 
+
 GAME_RULE Game::getGameRule() const
 {
     return gameRule;
 }
 
-void Game::displayStartFrame(QPainter& painter)
+bool Game::cuePositionIsLegal()
 {
-    QColor gray(100, 100, 100, 200);
-    painter.setPen(gray);
-
-    QFont font("Consolas", 100, 100, false);
-    painter.setFont(font);
-            
-    painter.drawText(QRectF(108, 88, 1000, 250), "Billiards");
-
-    QColor miku_blue(00, 174, 255);
-    painter.setPen(miku_blue);
-
-    painter.drawText(QRectF(100, 80, 1000, 250), "Billiards");
-
-    // print the 3 mode choose
-    if (QRect(420, 300, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        font.setPointSize(50);
-        font.setWeight(50);
-        painter.setFont(font);
-        painter.drawText(QRectF(360, 280, 500, 100), "Practice Mode");
-    }
-    else
-    {
-        font.setPointSize(30);
-        font.setWeight(30);            
-        painter.setFont(font);
-        painter.drawText(QRectF(420, 300, 350, 50), "Practice Mode");
-    }
-            
-    if (QRect(420, 400, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        font.setPointSize(50);
-        font.setWeight(50);
-        painter.setFont(font);
-        painter.drawText(QRectF(360, 380, 500, 100), "Versus Mode");
-    }
-    else
-    {
-        font.setPointSize(30);
-        font.setWeight(30);            
-        painter.setFont(font);
-        painter.drawText(QRectF(420, 400, 350, 50), "Versus Mode");
-    }
-            
-    if (QRect(420, 500, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        font.setPointSize(50);
-        font.setWeight(50);
-        painter.setFont(font);
-        painter.drawText(QRectF(360, 480, 500, 100), "Network Mode");
-    }
-    else
-    {
-        font.setPointSize(30);
-        font.setWeight(30);            
-        painter.setFont(font);
-        painter.drawText(QRectF(420, 500, 350, 50), "Network Mode");
-    }
-
-    // print 3 rule
-    font.setPointSize(20);
-    font.setWeight(20);
-    painter.setFont(font);
-    painter.drawText(QRectF(900, 500, 300, 30), "Eight Ball");
-    painter.drawText(QRectF(900, 550, 300, 30), "Nine Ball");
-    painter.drawText(QRectF(900, 600, 300, 30), "Snooker");
-
-    switch (gameRule)
-    {
-        case EIGHT_BALL:
-            painter.drawText(QRectF(860, 500, 300, 30), "√");
-            break;
-        case NINE_BALL:
-            painter.drawText(QRectF(860, 550, 300, 30), "√");
-            break;
-        case SNOOKER:
-            painter.drawText(QRectF(860, 600, 300, 30), "√");
-            break;
-    }
-
-    // print the copyright text
-    font.setPointSize(12);
-    painter.setFont(font);
-    painter.drawText(QRectF(100, 600, 250, 25), "Copyright (C) 2014 Team306");
-}
-
-void Game::displayEndFrame(QPainter& painter)
-{
-    // display end frame here
-    QColor gray(20, 20, 20, 150);
-    painter.setPen(gray);
-    painter.setBrush(QBrush(gray));
-    painter.drawRect(QRectF(0, 0, 1280, 720));
-
-    QFont font("Consolas", 30, 30, false);
-    painter.setFont(font);
-    QColor miku_blue(00, 174, 255);
-    painter.setPen(miku_blue);
-
-    if (player1.getGameresult() == SUCCESS)
-    {
-        painter.drawText(QRectF(480, 320, 1000, 250), "Player 1 Wins!");
-    }
-    else
-    {
-        painter.drawText(QRectF(480, 320, 1000, 250), "Player 2 Wins!");
-    }
-}
-
-void Game::displayPlayer(QPainter& painter)
-{
-    // display player here
-    QColor miku_blue(00, 174, 255);
-    painter.setPen(miku_blue);
-
-    QFont fontBig("Consolas", 40, 40, false);
-    QFont fontSmall("Consolas", 20, 20, false);
-    painter.setFont(fontSmall);
-
-    if (current_player == &player1)
-    {
-        painter.setFont(fontBig);
-        painter.drawText(QRectF(240, 640, 1000, 250), "Player 1");
-        painter.setFont(fontSmall);
-        painter.drawText(QRectF(880, 670, 1000, 250), "Player 2");    
-    }
-    else
-    {
-        painter.setFont(fontSmall);
-        painter.drawText(QRectF(300, 670, 1000, 250), "Player 1");
-        painter.setFont(fontBig);
-        painter.drawText(QRectF(820, 640, 1000, 250), "Player 2");            
-    }
-}
-
-void Game::displayWaitingFrame(QPainter& painter)
-{
-    QColor gray(20, 20, 20, 150);
-    painter.setPen(gray);
-    painter.setBrush(QBrush(gray));
-    painter.drawRect(QRectF(0, 0, 1280, 720));
-
-    QFont font("Consolas", 30, 30, false);
-    painter.setFont(font);
-    QColor miku_blue(00, 174, 255);
-    painter.setPen(miku_blue);
-    painter.drawText(QRectF(360, 320, 1000, 250), "Waiting for connecting...");    
-}
-
-void Game::displayConnectChooseFrame(QPainter& painter)
-{
-    QColor gray(20, 20, 20, 150);
-    painter.setPen(gray);
-    painter.setBrush(QBrush(gray));
-    painter.drawRect(QRectF(0, 0, 1280, 720));
-
-    QColor miku_blue(00, 174, 255);
-    painter.setPen(miku_blue);
-
-    QFont font("Consolas", 30, 30, false);
-    if (QRect(400, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        font.setPointSize(50);
-        painter.setFont(font);
-        painter.drawText(QRectF(365, 480, 300, 80), "Start");
-    }
-    else
-    {
-        font.setPointSize(30);
-        painter.setFont(font);
-        painter.drawText(QRectF(400, 500, 200, 50), "Start");
-    }
-
-    if (QRect(720, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        font.setPointSize(50);
-        painter.setFont(font);
-        painter.drawText(QRectF(670, 480, 300, 80), "Connect");
-    }
-    else
-    {
-        font.setPointSize(30);
-        painter.setFont(font);
-        painter.drawText(QRectF(720, 500, 200, 50), "Connect");
-    }
-}
-
-void Game::checkStartFrameClick()
-{
-    if (QRect(420, 300, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        gameState = FREE_BALL;
-        gameMode = PRACTICE_MODE;
-        ballsManager.getCueBall().setPosition(Vector2(240, 360));
-    }
-    if (QRect(420, 400, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        gameState = FREE_BALL;
-        gameMode = VERSUS_MODE;
-        ballsManager.getCueBall().setPosition(Vector2(240, 360));
-    }
-    if (QRect(420, 500, 350, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        gameState = START_AND_CONNECT_CHOOSE;
-        gameMode = NETWORK_MODE;
-        ballsManager.getCueBall().setPosition(Vector2(240, 360));
-    }
-
-    // choose rule
-    if (QRect(900, 500, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        gameRule = EIGHT_BALL;
-        init();
-    }
-    if (QRect(900, 550, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        gameRule = NINE_BALL;
-        init();
-    }
-    if (QRect(900, 600, 300, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        gameRule = SNOOKER;
-        init();
-    }
-}
-
-void Game::checkConnectChooseFrame()
-{
-    if (QRect(400, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        gameState = WAIT_FOR_CONNECT;
-        game_sever->GameListen();
-        network_rule = SERVER;
-    }
-    if (QRect(720, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
-    {
-        gameState = WAIT_FOR_CONNECT;
-        game_client->GameConnect();
-        network_rule = CLIENT;
-        player1.setPlayerflag(GUEST);
-        player2.setPlayerflag(LOCAL);
-    }
+    // 
+    return true;
 }
 
 GameSever* Game::getGameSever() const{
