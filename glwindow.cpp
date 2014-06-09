@@ -101,8 +101,7 @@ void GLWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameMode() == END_FRAME){
         game.setMousePosition(Vector2(event->x(), event->y()));
-        if(game.getGameMode() == NETWORK_MODE && (game.getGameState() == WAIT_FOR_STROKE || game.getGameState() == FREE_BALL
-                                                  ||game.getGameState() == BALL_IS_RUNNING)){
+        if(game.getGameMode() == NETWORK_MODE && (game.getGameState() == WAIT_FOR_STROKE || game.getGameState() == FREE_BALL)){
             SendData.clear();
             SendData.append(QString("P#"));
             SendData.append(QString::number(event->x()));
