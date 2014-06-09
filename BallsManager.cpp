@@ -79,7 +79,7 @@ void BallsManager::Update(Table& table, Player *currentplayer)
     	{
     		// if ball is into the pocket, delete the ball
             currentplayer->setOnpocketlist(ballsList[i].getName());
-            if(currentplayer->getBalltype() == NOTDEF){
+            if(currentplayer->getBalltype() == NOTDEF && currentplayer->getFirsthit() != "eight"){
                 if(ballsList[i].getName() == "one" || ballsList[i].getName() == "two" || ballsList[i].getName() == "three"
                         || ballsList[i].getName() == "four"||ballsList[i].getName() == "five" ||ballsList[i].getName() == "six" ||ballsList[i].getName() == "seven"){
                     currentplayer->setBalltype(SMALL);

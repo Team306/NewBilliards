@@ -3,7 +3,7 @@
 #include "GameClient.h"
 
 GameClient::GameClient(){
-    IP_Address = "175.186.146.122";
+    IP_Address = "10.147.123.27";
     found_flag =false;
 }
 
@@ -12,7 +12,7 @@ GameClient::~GameClient(){
 }
 
 void GameClient::GameConnect(){
-  connectToHost(IP_Address,19999);
+  connectToHost("10.147.123.28",19999);
 }
 
 void GameClient::sendMessage(QByteArray message){
