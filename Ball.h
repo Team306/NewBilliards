@@ -12,11 +12,9 @@
 
 enum BALL_STATE { STILL, RUNNING, ON_THE_POCKET };
 
-//const float Fslip_GroundToBall = 0.0003f;//hua dong
+
 const float Fslip_GroundToBall = 0.0005f;//hua dong
-//const float Froll_GroundToBall = 0.000022f;//gun dong
 const float Froll_GroundToBall = 0.00009f;//gun dong
-//const float Frotate_GroundToBall=0.000014f;//ce xuan
 const float Frotate_GroundToBall=0.00001f;//ce xuan
 
 const float Fslip_Threshold=(1.0f+1.0f/0.4f)*Fslip_GroundToBall;

@@ -60,14 +60,14 @@ void GLWindow::initializeGL()
 
 void GLWindow::mousePressEvent(QMouseEvent *event)
 {
-    if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameMode() == END_FRAME){
+    if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME){
         mousePressTime.start();
     }
 }
 
 void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-    if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameMode() == END_FRAME){
+    if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME){
         int elapsedTime = mousePressTime.elapsed();
     // call game method
         game.setMousePosition(Vector2(event->x(), event->y()));
@@ -99,7 +99,7 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void GLWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameMode() == END_FRAME){
+    if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME){
         game.setMousePosition(Vector2(event->x(), event->y()));
         if(game.getGameMode() == NETWORK_MODE && (game.getGameState() == WAIT_FOR_STROKE || game.getGameState() == FREE_BALL)){
             SendData.clear();

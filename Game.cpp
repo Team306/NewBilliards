@@ -29,6 +29,8 @@ void Game::init()
 {
 	// init here
     gameState = START_FRAME;
+    game_client->DisConnect();
+    game_sever->StopListen();
     current_player = &player1;
     player1.setPlayerflag(LOCAL);
     player2.setPlayerflag(GUEST);

@@ -11,6 +11,7 @@ public:
     GameClient();
     ~GameClient();
     void GameConnect();
+    void DisConnect();
     void sendMessage(QByteArray);
     QByteArray getMessage();
 
