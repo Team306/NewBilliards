@@ -26,8 +26,10 @@ struct Collision
 
 };
 
-const float E_BallToBall = 0.9f;
-const float E_WallToBall = 0.8f;
+//const float E_BallToBall = 0.9f;//sun shi
+//const float E_WallToBall = 0.8f;//sun shi
+const float E_BallToBall = 0.8f;//sun shi
+const float E_WallToBall = 0.7f;//sun shi
 const float F_BallToBall = 0.1f;
 const float F_WallToBall = 0.5f;
 

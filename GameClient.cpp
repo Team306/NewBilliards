@@ -3,7 +3,7 @@
 #include "GameClient.h"
 
 GameClient::GameClient(){
-    IP_Address = "255.255.255.255";
+    IP_Address = "175.186.146.122";
     found_flag =false;
 }
 
