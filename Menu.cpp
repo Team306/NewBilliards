@@ -288,12 +288,16 @@ void Game::checkConnectChooseFrame()
     if (QRect(400, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameState = WAIT_FOR_CONNECT;
-        // set flag
+        game_sever->GameListen();
+        network_rule = SERVER;
     }
     if (QRect(720, 500, 200, 50).contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameState = WAIT_FOR_CONNECT;
-        // set flag
+        game_client->GameConnect();
+        network_rule = CLIENT;
+        player1.setPlayerflag(GUEST);
+        player2.setPlayerflag(LOCAL);
     }
 }
 
