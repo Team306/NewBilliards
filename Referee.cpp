@@ -4,7 +4,7 @@
 #include "Referee.h"
 
 #ifndef EIGHT_BALL_CONFIG_FILENAME
-#define EIGHT_BALL_CONFIG_FILENAME "config.txt"
+#define EIGHT_BALL_CONFIG_FILENAME "test8_config.txt"
 #define NINE_BALL_CONFIG_FILENAME "config1.txt"
 #define SNOOKER_CONFIG_FILENAME "config2.txt"
 #endif
@@ -171,6 +171,10 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
         for(int i=0; i<onPocketlist.size(); i++){
             if(onPocketlist[i] == "eight"){
                 //std::cout<<"8"<<std::endl;
+                if(_currentplayer->getBalltype() == NOTDEF){
+                    _currentplayer->setGameresult(FAIL);
+                }
+
                 for(int j=0; j<_ballslist.size(); j++){
                     if(judgeSelfball(_currentplayer, _ballslist[j].getName())){
                          _currentplayer->setGameresult(FAIL);

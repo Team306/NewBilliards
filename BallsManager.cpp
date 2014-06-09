@@ -70,6 +70,7 @@ void BallsManager::Update(Table& table, Player *currentplayer)
         cueBall.setBallState(STILL);
         cueBall.setPosition(Vector2(-100,-100));
         currentplayer->setCueball_in(1);
+        currentplayer->setOnpocketlist(cueBall.getName());
         cueBall.setPosition(Vector2(-100, -100));
         cueBall.setBallState(STILL);
     }
