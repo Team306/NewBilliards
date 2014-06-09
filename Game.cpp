@@ -286,7 +286,7 @@ NETWORK_RULE Game::getNetworkRule() const{
 }
 
 void Game::GameBegin() {
-    gameState = WAIT_FOR_STROKE;
+    gameState = FREE_BALL;
 }
 
 void Game::ClientInit(int _gameRule){
@@ -295,5 +295,5 @@ void Game::ClientInit(int _gameRule){
     table.init(referee);
     ballsManager.init(referee);
     cue.init(referee);
-    gameState = WAIT_FOR_STROKE;
+    gameState = FREE_BALL;
 }
