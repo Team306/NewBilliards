@@ -43,74 +43,74 @@ void Referee::init(int gameRule)
     game_rule = (GAME_RULE)gameRule;
 }
 
-std::vector<Ball> Referee::getBallsList() const
-{
-    // use lua when config
-    // init lua virtual machine
-    lua_State *s = luaL_newstate();
-    luaL_openlibs(s);
-    luaL_dofile(s, "config.lua");
-    // get ball number
-    lua_getglobal(s, "getConfigData");
-    lua_pushnumber(s, game_rule + 1);
-    lua_pushstring(s, "ballsNumber");
-    lua_call(s, 2, 1);
-    int number = (int)lua_tonumber(s, -1);
-    lua_pop(s, 1);
+// std::vector<Ball> Referee::getBallsList() const
+// {
+//     // use lua when config
+//     // init lua virtual machine
+//     lua_State *s = luaL_newstate();
+//     luaL_openlibs(s);
+//     luaL_dofile(s, "config.lua");
+//     // get ball number
+//     lua_getglobal(s, "getConfigData");
+//     lua_pushnumber(s, game_rule + 1);
+//     lua_pushstring(s, "ballsNumber");
+//     lua_call(s, 2, 1);
+//     int number = (int)lua_tonumber(s, -1);
+//     lua_pop(s, 1);
 
-    // get ball list
-    std::vector<Ball> ballsList;
-    for (int i = 0; i < number; ++i)
-    {
-        lua_getglobal(s, "getConfigData");
-        lua_pushnumber(s, game_rule + 1);
-        lua_pushstring(s, "ballsList");
-        lua_pushnumber(s, i + 1);
-        lua_call(s, 3, 6);
-        float x = (float)lua_tonumber(s, -6);
-        float y = (float)lua_tonumber(s, -5);
-        int R = (int)lua_tonumber(s, -4);
-        int G = (int)lua_tonumber(s, -3);
-        int B = (int)lua_tonumber(s, -2);
-        std::string name = lua_tostring(s, -1);
-        lua_pop(s, 6);
-        // generate ball
-        Ball ball = Ball(Vector2(x, y), ballRadius);
-        ball.setColor(QColor(R, G, B));
-        ball.setName(name);
-        ballsList.push_back(ball);
-    }
-    // close lua virtual machine
-    lua_close(s);
+//     // get ball list
+//     std::vector<Ball> ballsList;
+//     for (int i = 0; i < number; ++i)
+//     {
+//         lua_getglobal(s, "getConfigData");
+//         lua_pushnumber(s, game_rule + 1);
+//         lua_pushstring(s, "ballsList");
+//         lua_pushnumber(s, i + 1);
+//         lua_call(s, 3, 6);
+//         float x = (float)lua_tonumber(s, -6);
+//         float y = (float)lua_tonumber(s, -5);
+//         int R = (int)lua_tonumber(s, -4);
+//         int G = (int)lua_tonumber(s, -3);
+//         int B = (int)lua_tonumber(s, -2);
+//         std::string name = lua_tostring(s, -1);
+//         lua_pop(s, 6);
+//         // generate ball
+//         Ball ball = Ball(Vector2(x, y), ballRadius);
+//         ball.setColor(QColor(R, G, B));
+//         ball.setName(name);
+//         ballsList.push_back(ball);
+//     }
+//     // close lua virtual machine
+//     lua_close(s);
 
-	return ballsList;
-}
+// 	return ballsList;
+// }
 
-Ball Referee::getCueBall() const
-{
-    // use lua when config
-    // init lua virtual machine
-    lua_State *s = luaL_newstate();
-    luaL_openlibs(s);
-    luaL_dofile(s, "config.lua");
-    lua_getglobal(s, "getConfigData");
-    lua_pushnumber(s, game_rule + 1);
-    lua_pushstring(s, "cueBall");
-    lua_call(s, 2, 5);
-    float x = (float)lua_tonumber(s, -5);
-    float y = (float)lua_tonumber(s, -4);
-    int R = (int)lua_tonumber(s, -3);
-    int G = (int)lua_tonumber(s, -2);
-    int B = (int)lua_tonumber(s, -1);
-    lua_pop(s, 5);
-    // close lua virtual machine
-    lua_close(s);
-    // generate ball
-    Ball cueBall(Vector2(x, y), ballRadius);
-    cueBall.setColor(QColor(R, G, B));
-    cueBall.setName("cueBall");
-    return cueBall;
-}
+// Ball Referee::getCueBall() const
+// {
+//     // use lua when config
+//     // init lua virtual machine
+//     lua_State *s = luaL_newstate();
+//     luaL_openlibs(s);
+//     luaL_dofile(s, "config.lua");
+//     lua_getglobal(s, "getConfigData");
+//     lua_pushnumber(s, game_rule + 1);
+//     lua_pushstring(s, "cueBall");
+//     lua_call(s, 2, 5);
+//     float x = (float)lua_tonumber(s, -5);
+//     float y = (float)lua_tonumber(s, -4);
+//     int R = (int)lua_tonumber(s, -3);
+//     int G = (int)lua_tonumber(s, -2);
+//     int B = (int)lua_tonumber(s, -1);
+//     lua_pop(s, 5);
+//     // close lua virtual machine
+//     lua_close(s);
+//     // generate ball
+//     Ball cueBall(Vector2(x, y), ballRadius);
+//     cueBall.setColor(QColor(R, G, B));
+//     cueBall.setName("cueBall");
+//     return cueBall;
+// }
 
 float Referee::getBallRadius() const
 {
@@ -284,4 +284,9 @@ void Referee::setTargetname(std::vector<Ball> _ballslist)
         if(foundflag == 1)
             break;
     }
+}
+
+int Referee::getRule() const
+{
+    return game_rule;
 }

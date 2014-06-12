@@ -2,6 +2,13 @@
 
 #include "BallsManager.h"
 
+// allow using lua script
+extern "C"{
+    #include <lua.h>
+    #include <lualib.h>
+    #include <lauxlib.h>
+}
+
 BallsManager::BallsManager()
 {
 }
@@ -13,8 +20,70 @@ BallsManager::~BallsManager()
 void BallsManager::init(Referee& referee)
 {
 	// call referee for balls' info
-	ballsList = referee.getBallsList();
-	cueBall = referee.getCueBall();
+	// ballsList = referee.getBallsList();
+	// cueBall = referee.getCueBall();
+    
+    // the above code is deprecated    
+
+    // init lua virtual machine
+    lua_State *s = luaL_newstate();
+    luaL_openlibs(s);
+    luaL_dofile(s, "config.lua");
+    // get ball number
+    lua_getglobal(s, "getConfigData");
+    lua_pushnumber(s, referee.getRule() + 1);
+    lua_pushstring(s, "ballsNumber");
+    lua_call(s, 2, 1);
+    int number = (int)lua_tonumber(s, -1);
+    lua_pop(s, 1);
+
+    // init ball list
+    if (ballsList.size() > 0)
+    {
+        ballsList.clear();
+    }
+
+    for (int i = 0; i < number; ++i)
+    {
+        lua_getglobal(s, "getConfigData");
+        lua_pushnumber(s, referee.getRule() + 1);
+        lua_pushstring(s, "ballsList");
+        lua_pushnumber(s, i + 1);
+        lua_call(s, 3, 6);
+        float x = (float)lua_tonumber(s, -6);
+        float y = (float)lua_tonumber(s, -5);
+        int R = (int)lua_tonumber(s, -4);
+        int G = (int)lua_tonumber(s, -3);
+        int B = (int)lua_tonumber(s, -2);
+        std::string name = lua_tostring(s, -1);
+        lua_pop(s, 6);
+        // generate ball
+        Ball ball = Ball(Vector2(x, y), referee.getBallRadius());
+        ball.setColor(QColor(R, G, B));
+        ball.setName(name);
+        ballsList.push_back(ball);
+    }
+
+    // init cue ball
+    lua_getglobal(s, "getConfigData");
+    lua_pushnumber(s, referee.getRule() + 1);
+    lua_pushstring(s, "cueBall");
+    lua_call(s, 2, 5);
+    float x = (float)lua_tonumber(s, -5);
+    float y = (float)lua_tonumber(s, -4);
+    int R = (int)lua_tonumber(s, -3);
+    int G = (int)lua_tonumber(s, -2);
+    int B = (int)lua_tonumber(s, -1);
+    lua_pop(s, 5);
+
+    // generate cue ball
+    Ball newCueBall(Vector2(x, y), referee.getBallRadius());
+    newCueBall.setColor(QColor(R, G, B));
+    newCueBall.setName("cueBall");
+    cueBall = newCueBall;
+
+    // close lua virtual machine
+    lua_close(s);
 }
 
 void BallsManager::reset(Referee& referee)

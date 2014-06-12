@@ -31,13 +31,14 @@ public:
 	// init method
     void init(int gameRule);
 
-	std::vector<Ball> getBallsList() const;
-	Ball getCueBall() const;
+	// std::vector<Ball> getBallsList() const;
+	// Ball getCueBall() const;
 	float getBallRadius() const;
     JUDGE_RESULT judge(Player*,std::vector<Ball>);
     int getScoreToadd() const;
     void clearjudgeResult();
     void setTargetname(std::vector<Ball>);
+    int getRule() const;
  };
 
 
