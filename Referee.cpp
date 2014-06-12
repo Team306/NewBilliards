@@ -3,11 +3,12 @@
 #include <fstream>
 #include "Referee.h"
 
-#ifndef EIGHT_BALL_CONFIG_FILENAME
-#define EIGHT_BALL_CONFIG_FILENAME "config.txt"
-#define NINE_BALL_CONFIG_FILENAME "config1.txt"
-#define SNOOKER_CONFIG_FILENAME "config2.txt"
-#endif
+// allow using lua script
+extern "C"{
+    #include <lua.h>
+    #include <lualib.h>
+    #include <lauxlib.h>
+}
 
 Referee::Referee()
 {
@@ -19,142 +20,96 @@ Referee::~Referee()
 {
 }
 
-
 void Referee::init(int gameRule)
 {
+    // use lua when config
+    // init lua virtual machine
+    lua_State *s = luaL_newstate();
+    luaL_openlibs(s);
+    luaL_dofile(s, "config.lua");
+    // get radius
+    lua_getglobal(s, "getConfigData");
+    lua_pushnumber(s, gameRule + 1);
+    lua_pushstring(s, "ballRadius");
+    lua_call(s, 2, 1);
+    ballRadius = (float)lua_tonumber(s, -1);
+    lua_pop(s, 1);
+    // close lua virtual machine
+    lua_close(s);
+
 	// read config file
     judge_result = NOTJUDGE;
     Targetname = "one";
     game_rule = (GAME_RULE)gameRule;
-    std::ifstream fin;
-    switch(game_rule){
-        case EIGHT_BALL:
-            fin.open(EIGHT_BALL_CONFIG_FILENAME);
-            break;
-
-        case NINE_BALL:
-            fin.open(NINE_BALL_CONFIG_FILENAME);
-            break;
-
-        case SNOOKER:
-            fin.open(SNOOKER_CONFIG_FILENAME);
-            break;
-
-        default:
-            fin.open("config.txt");
-            break;
-     }
-    std::string str;
-    while (fin >> str)
-    {
-        if (str == "ballRadius")
-        {
-            break;
-        }
-    }
-    fin >> ballRadius;
-    fin.close();
 }
-
-//void Referee::chooseRule(std::string ruleName)
-//{
-	// change state machine
-//}
 
 std::vector<Ball> Referee::getBallsList() const
 {
-	// use rule here
-	// read the file get config info
-	std::ifstream fin;
-    switch(game_rule){
-        case EIGHT_BALL:
-            fin.open(EIGHT_BALL_CONFIG_FILENAME);
-            break;
+    // use lua when config
+    // init lua virtual machine
+    lua_State *s = luaL_newstate();
+    luaL_openlibs(s);
+    luaL_dofile(s, "config.lua");
+    // get ball number
+    lua_getglobal(s, "getConfigData");
+    lua_pushnumber(s, game_rule + 1);
+    lua_pushstring(s, "ballsNumber");
+    lua_call(s, 2, 1);
+    int number = (int)lua_tonumber(s, -1);
+    lua_pop(s, 1);
 
-        case NINE_BALL:
-            fin.open(NINE_BALL_CONFIG_FILENAME);
-            break;
+    // get ball list
+    std::vector<Ball> ballsList;
+    for (int i = 0; i < number; ++i)
+    {
+        lua_getglobal(s, "getConfigData");
+        lua_pushnumber(s, game_rule + 1);
+        lua_pushstring(s, "ballsList");
+        lua_pushnumber(s, i + 1);
+        lua_call(s, 3, 6);
+        float x = (float)lua_tonumber(s, -6);
+        float y = (float)lua_tonumber(s, -5);
+        int R = (int)lua_tonumber(s, -4);
+        int G = (int)lua_tonumber(s, -3);
+        int B = (int)lua_tonumber(s, -2);
+        std::string name = lua_tostring(s, -1);
+        lua_pop(s, 6);
+        // generate ball
+        Ball ball = Ball(Vector2(x, y), ballRadius);
+        ball.setColor(QColor(R, G, B));
+        ball.setName(name);
+        ballsList.push_back(ball);
+    }
+    // close lua virtual machine
+    lua_close(s);
 
-        case SNOOKER:
-            fin.open(SNOOKER_CONFIG_FILENAME);
-            break;
-
-        default:
-            fin.open("config.txt");
-            break;
-     }
-	std::string str;
-	while (fin >> str)
-	{
-		if (str == "ballsList")
-		{
-			break;
-		}
-	}
-	int number;
-	fin >> number;
-	std::vector<Ball> ballsList;
-	for (int i = 0; i < number; ++i)
-	{
-		float x, y;
-		int R, G, B;
-		std::string name;
-		fin >> x;
-		fin >> y;
-		fin >> R;
-		fin >> G;
-		fin >> B;
-		fin >> name;
-		Ball ball = Ball(Vector2(x, y), ballRadius);
-		ball.setColor(QColor(R, G, B));
-		ball.setName(name);
-		ballsList.push_back(ball);
-	}
-	fin.close();
 	return ballsList;
 }
 
 Ball Referee::getCueBall() const
 {
-	// read config file
-	std::ifstream fin;
-    switch(game_rule){
-        case EIGHT_BALL:
-            fin.open(EIGHT_BALL_CONFIG_FILENAME);
-            break;
-
-        case NINE_BALL:
-            fin.open(NINE_BALL_CONFIG_FILENAME);
-            break;
-
-        case SNOOKER:
-            fin.open(SNOOKER_CONFIG_FILENAME);
-            break;
-
-        default:
-            fin.open("config.txt");
-            break;
-     }
-	std::string str;
-	while (fin >> str)
-	{
-		if (str == "cueBall")
-		{
-			break;
-		}
-	}
-	float x, y;
-	int R, G, B;
-	fin >> x;
-	fin >> y;
-	fin >> R;
-	fin >> G;
-	fin >> B;
-	fin.close();
-	Ball cueBall(Vector2(x, y), ballRadius);
-	cueBall.setColor(QColor(R, G, B));
-	cueBall.setName("cueBall");
-	return cueBall;
+    // use lua when config
+    // init lua virtual machine
+    lua_State *s = luaL_newstate();
+    luaL_openlibs(s);
+    luaL_dofile(s, "config.lua");
+    lua_getglobal(s, "getConfigData");
+    lua_pushnumber(s, game_rule + 1);
+    lua_pushstring(s, "cueBall");
+    lua_call(s, 2, 5);
+    float x = (float)lua_tonumber(s, -5);
+    float y = (float)lua_tonumber(s, -4);
+    int R = (int)lua_tonumber(s, -3);
+    int G = (int)lua_tonumber(s, -2);
+    int B = (int)lua_tonumber(s, -1);
+    lua_pop(s, 5);
+    // close lua virtual machine
+    lua_close(s);
+    // generate ball
+    Ball cueBall(Vector2(x, y), ballRadius);
+    cueBall.setColor(QColor(R, G, B));
+    cueBall.setName("cueBall");
+    return cueBall;
 }
 
 float Referee::getBallRadius() const

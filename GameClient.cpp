@@ -12,7 +12,7 @@ GameClient::~GameClient(){
 }
 
 void GameClient::GameConnect(){
-  connectToHost("10.147.123.28",19999);
+  connectToHost("10.147.123.27",19999);
 }
 
 void GameClient::sendMessage(QByteArray message){

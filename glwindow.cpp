@@ -165,7 +165,10 @@ void GLWindow::paintGL()
     makeCurrent();
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //
+//    QPainter painter(this);
+//    painter.setRenderHint(QPainter::Antialiasing);
+//    game.Draw(painter);
+//    painter.end();
 }
 
 

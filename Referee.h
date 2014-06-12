@@ -17,7 +17,6 @@ enum JUDGE_RESULT {NOTJUDGE, TO_FREE_BALL, TO_EXCHANGE, TO_GOON, TO_END};
 class Referee
 {
 private:
-	// in referee is a state machine, log the game state
 	float ballRadius;
     GAME_RULE game_rule;
     JUDGE_RESULT judge_result;
@@ -30,10 +29,8 @@ public:
 	~Referee();
 
 	// init method
-
     void init(int gameRule);
 
-	// get rule
 	std::vector<Ball> getBallsList() const;
 	Ball getCueBall() const;
 	float getBallRadius() const;
