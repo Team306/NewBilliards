@@ -15,6 +15,10 @@ void GameSever::GameListen(){
     listen(QHostAddress::Any,19999);
 }
 
+void GameSever::StopListen(){
+    close();
+}
+
 void GameSever::setClient(){
     client = nextPendingConnection();
 }

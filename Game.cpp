@@ -29,6 +29,8 @@ void Game::init()
 {
 	// init here
     gameState = START_FRAME;
+    game_client->DisConnect();
+    game_sever->StopListen();
     current_player = &player1;
     player1.setPlayerflag(LOCAL);
     player2.setPlayerflag(GUEST);
@@ -284,7 +286,7 @@ NETWORK_RULE Game::getNetworkRule() const{
 }
 
 void Game::GameBegin() {
-    gameState = WAIT_FOR_STROKE;
+    gameState = FREE_BALL;
 }
 
 void Game::ClientInit(int _gameRule){
@@ -293,5 +295,5 @@ void Game::ClientInit(int _gameRule){
     table.init(referee);
     ballsManager.init(referee);
     cue.init(referee);
-    gameState = WAIT_FOR_STROKE;
+    gameState = FREE_BALL;
 }

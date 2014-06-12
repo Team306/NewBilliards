@@ -11,6 +11,7 @@ public:
     ~GameSever();
     void setClient();
     void GameListen();
+    void StopListen();
     void sendMessage(QByteArray);
     QByteArray getMessage();
     QTcpSocket* getClient() const;

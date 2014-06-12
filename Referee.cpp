@@ -126,6 +126,10 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
         for(int i=0; i<onPocketlist.size(); i++){
             if(onPocketlist[i] == "eight"){
                 //std::cout<<"8"<<std::endl;
+                if(_currentplayer->getBalltype() == NOTDEF){
+                    _currentplayer->setGameresult(FAIL);
+                }
+
                 for(int j=0; j<_ballslist.size(); j++){
                     if(judgeSelfball(_currentplayer, _ballslist[j].getName())){
                          _currentplayer->setGameresult(FAIL);
