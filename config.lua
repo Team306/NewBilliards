@@ -44,7 +44,7 @@ configTable = {
 		["ballsNumber"] = 9,
 		ballsList = {
 			-- each line is X Y and R G B and ballname
-			{ 880, 340, 243, 199, 1, "one" },
+			{ 820, 300, 243, 199, 1, "one" },
 			{ 989.5, 361.5, 52, 46, 227, "two" },
 			{ 953, 383, 220, 7, 7, "three" },
 			{ 916.5, 318.5, 156, 67, 179, "four" },
