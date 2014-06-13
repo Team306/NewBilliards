@@ -144,30 +144,27 @@ void Game::Draw(QPainter& painter)
     {
     	case WAIT_FOR_STROKE:
     		cue.Draw(painter, ballsManager.getCueBall());
-            displayPlayer(painter);
-            displayChangeLabel(painter);
+            menu.displayPlayer(painter, current_player == &player1);
+            menu.displayHitPoint(painter, hitPosition);
     		break;
         case FREE_BALL:
-            displayPlayer(painter);
+            menu.displayPlayer(painter, current_player == &player1);
             break;
         case BALL_IS_RUNNING:
-            displayPlayer(painter);
+            menu.displayPlayer(painter, current_player == &player1);
             break;
         case END_FRAME:
-            displayEndFrame(painter);
+            menu.displayEndFrame(painter, player1);
             break;
         case START_FRAME:
             // print the start frame
-            displayStartFrame(painter);
+            menu.displayStartFrame(painter, mousePosition, gameRule);
         	break;
         case WAIT_FOR_CONNECT:
-            displayWaitingFrame(painter);
+            menu.displayWaitingFrame(painter);
             break;
-        case START_AND_CONNECT_CHOOSE:
-            displayConnectChooseFrame(painter);
-            break;
-        case CHANGE_HIT_POINT:
-            displayHitPoint(painter);
+        case CONNECT_FRAME:
+            menu.displayConnectFrame(painter, mousePosition);
             break;
         default:
             break;
@@ -204,12 +201,11 @@ void Game::mousePress(int elapsed)
             }
 			break;
 		case WAIT_FOR_STROKE:
-            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+            if (checkHitPointClick(menu.getHitCenterPosition(), menu.getHitRadius()))
             {
-                gameState = CHANGE_HIT_POINT;
                 break;
             }
-
+            // if do not change hit point continue
             cue.Stroke(elapsed, ballsManager.getCueBall());
             gameState = BALL_IS_RUNNING;
 			break;
@@ -217,23 +213,14 @@ void Game::mousePress(int elapsed)
             break;    
         case START_FRAME:
         	// decide game mode
-            checkStartFrameClick();
+            checkStartFrameClick(menu);
         	break;
-        case START_AND_CONNECT_CHOOSE:
-            checkConnectChooseFrame();
+        case CONNECT_FRAME:
+            checkConnectFrameClick(menu);
             break;
         case END_FRAME:
             gameState = START_FRAME;
             init();
-            break;
-        case CHANGE_HIT_POINT:
-            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
-            {
-                gameState = WAIT_FOR_STROKE;
-                break;
-            }
-            // check other input
-            changeHitPoint();
             break;
         default:
             break;
@@ -296,4 +283,75 @@ void Game::ClientInit(int _gameRule){
     ballsManager.init(referee);
     cue.init(referee);
     gameState = FREE_BALL;
+}
+
+void Game::checkStartFrameClick(const Menu& menu)
+{
+    if (menu.getPracticeChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = FREE_BALL;
+        gameMode = PRACTICE_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(300, 300));
+    }
+    if (menu.getVersusChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = FREE_BALL;
+        gameMode = VERSUS_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(300, 300));
+    }
+    if (menu.getNetworkChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = CONNECT_FRAME;
+        gameMode = NETWORK_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(300, 300));
+    }
+
+    // choose rule
+    if (menu.getEightBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = EIGHT_BALL;
+        table.clear();
+        init();
+    }
+    if (menu.getNineBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = NINE_BALL;
+        table.clear();
+        init();
+    }
+    if (menu.getSnookerChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = SNOOKER;
+        table.clear();
+        init();
+    }
+}
+
+void Game::checkConnectFrameClick(const Menu& menu)
+{
+    if (menu.getStartChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = WAIT_FOR_CONNECT;
+        game_sever->GameListen();
+        network_rule = SERVER;
+    }
+    if (menu.getConnectChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = WAIT_FOR_CONNECT;
+        game_client->GameConnect();
+        network_rule = CLIENT;
+        player1.setPlayerflag(GUEST);
+        player2.setPlayerflag(LOCAL);
+    }
+}
+
+bool Game::checkHitPointClick(Vector2 center, float radius)
+{
+    Vector2 newHitPosition = mousePosition - center;
+    if (newHitPosition.Length() < radius)
+    {
+        hitPosition = newHitPosition;
+        return true;
+    }
+    return false;
 }

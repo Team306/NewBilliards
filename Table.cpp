@@ -15,9 +15,9 @@ void Table::init(Referee& referee)
     // init method
     picPosition.setXY(0, 0);
     position.setXY(40, 40);
-    picSize.setXY(1280, 680);
-    size.setXY(1200, 600);
-    pocketRadius = 35;
+    picSize.setXY(1120, 700);
+    size.setXY(1040, 520);
+    pocketRadius = 30;
     lineX = (float)65 / (float)254 * size.getX();
 
     p0.setXY(position.getX() + 8, position.getY() + 8);
