@@ -47,7 +47,7 @@ void Game::Update()
 {
 	// update
 	cue.Update(gameState, mousePosition);
-    ballsManager.Update(table, current_player);
+    ballsManager.Update(table, current_player, gameRule);
 
     if(player1.getBalltype() == NOTDEF || player2.getBalltype() == NOTDEF){
         if(current_player->getBalltype() == SMALL){
@@ -79,7 +79,7 @@ void Game::Update()
 			if (!ballsManager.isRunning())
 			{
                 // std::cout<<current_player->getCueball_in()<<std::endl;
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_FREE_BALL){
+                if(referee.judge(current_player, &ballsManager) == TO_FREE_BALL){
                     referee.setTargetname(ballsManager.getBallsList());
                     gameState = FREE_BALL;
                     if(current_player == &player1){
@@ -94,7 +94,7 @@ void Game::Update()
                     }
                 }
 
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_EXCHANGE){
+                if(referee.judge(current_player, &ballsManager) == TO_EXCHANGE){
                     referee.setTargetname(ballsManager.getBallsList());
                     gameState = WAIT_FOR_STROKE;
                     if(current_player == &player1){
@@ -109,19 +109,17 @@ void Game::Update()
                     }
                 }
 
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_GOON){
+                if(referee.judge(current_player, &ballsManager) == TO_GOON){
                     referee.setTargetname(ballsManager.getBallsList());
                     current_player->Goon();
                     gameState = WAIT_FOR_STROKE;
                     break;
                 }
 
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_END){
+                if(referee.judge(current_player, &ballsManager) == TO_END){
                     gameState = END_FRAME;
                     break;
                 }
-
-				// call the referee
 			}
 			break;
         case WAIT_FOR_STROKE:

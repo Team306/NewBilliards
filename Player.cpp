@@ -1,3 +1,5 @@
+// Copyright (C) 2014 Team306
+
 #include "Player.h"
 
 Player::Player(){

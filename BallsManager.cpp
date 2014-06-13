@@ -19,12 +19,6 @@ BallsManager::~BallsManager()
 
 void BallsManager::init(Referee& referee)
 {
-	// call referee for balls' info
-	// ballsList = referee.getBallsList();
-	// cueBall = referee.getCueBall();
-    
-    // the above code is deprecated    
-
     // init lua virtual machine
     lua_State *s = luaL_newstate();
     luaL_openlibs(s);
@@ -86,12 +80,7 @@ void BallsManager::init(Referee& referee)
     lua_close(s);
 }
 
-void BallsManager::reset(Referee& referee)
-{
-	// reset and init maybe the same
-}
-
-void BallsManager::Update(Table& table, Player *currentplayer)
+void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
 {
     //move balls
     cueBall.Move();
@@ -163,10 +152,17 @@ void BallsManager::Update(Table& table, Player *currentplayer)
                     }
                 }
             }
+
+            // if in nine ball and the ball is nine, do not pop the ball
+            if (gameRule == NINE_BALL && ballsList[i].getName() == "nine")
+            {
+                ballsList[i].setSpeed(Vector3(0, 0, 0));
+                ballsList[i].setPosition(Vector3(-200, -200, 0));
+                continue;
+            }
+
     		ballsList[i] = ballsList[ballsList.size() - 1];
     		ballsList.pop_back();
-    		// call the referee
-
     	}
     }
 
@@ -210,4 +206,16 @@ bool BallsManager::isRunning() const
 
 std::vector<Ball> BallsManager::getBallsList() const{
     return ballsList;
+}
+
+Ball& BallsManager::getBall(std::string name)
+{
+    for (int i = 0; i < ballsList.size(); ++i)
+    {
+        if (ballsList[i].getName() == name)
+        {
+            return ballsList[i];
+        }
+    }
+    return cueBall;
 }

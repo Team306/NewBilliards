@@ -1,7 +1,8 @@
 // Copyright (C) 2014 Team306
 
-#include <fstream>
+// #include <fstream>
 #include "Referee.h"
+#include "BallsManager.h"
 
 // allow using lua script
 extern "C"{
@@ -9,6 +10,9 @@ extern "C"{
     #include <lualib.h>
     #include <lauxlib.h>
 }
+
+// debug 
+#include <iostream>
 
 Referee::Referee()
 {
@@ -43,81 +47,13 @@ void Referee::init(int gameRule)
     game_rule = (GAME_RULE)gameRule;
 }
 
-// std::vector<Ball> Referee::getBallsList() const
-// {
-//     // use lua when config
-//     // init lua virtual machine
-//     lua_State *s = luaL_newstate();
-//     luaL_openlibs(s);
-//     luaL_dofile(s, "config.lua");
-//     // get ball number
-//     lua_getglobal(s, "getConfigData");
-//     lua_pushnumber(s, game_rule + 1);
-//     lua_pushstring(s, "ballsNumber");
-//     lua_call(s, 2, 1);
-//     int number = (int)lua_tonumber(s, -1);
-//     lua_pop(s, 1);
-
-//     // get ball list
-//     std::vector<Ball> ballsList;
-//     for (int i = 0; i < number; ++i)
-//     {
-//         lua_getglobal(s, "getConfigData");
-//         lua_pushnumber(s, game_rule + 1);
-//         lua_pushstring(s, "ballsList");
-//         lua_pushnumber(s, i + 1);
-//         lua_call(s, 3, 6);
-//         float x = (float)lua_tonumber(s, -6);
-//         float y = (float)lua_tonumber(s, -5);
-//         int R = (int)lua_tonumber(s, -4);
-//         int G = (int)lua_tonumber(s, -3);
-//         int B = (int)lua_tonumber(s, -2);
-//         std::string name = lua_tostring(s, -1);
-//         lua_pop(s, 6);
-//         // generate ball
-//         Ball ball = Ball(Vector2(x, y), ballRadius);
-//         ball.setColor(QColor(R, G, B));
-//         ball.setName(name);
-//         ballsList.push_back(ball);
-//     }
-//     // close lua virtual machine
-//     lua_close(s);
-
-// 	return ballsList;
-// }
-
-// Ball Referee::getCueBall() const
-// {
-//     // use lua when config
-//     // init lua virtual machine
-//     lua_State *s = luaL_newstate();
-//     luaL_openlibs(s);
-//     luaL_dofile(s, "config.lua");
-//     lua_getglobal(s, "getConfigData");
-//     lua_pushnumber(s, game_rule + 1);
-//     lua_pushstring(s, "cueBall");
-//     lua_call(s, 2, 5);
-//     float x = (float)lua_tonumber(s, -5);
-//     float y = (float)lua_tonumber(s, -4);
-//     int R = (int)lua_tonumber(s, -3);
-//     int G = (int)lua_tonumber(s, -2);
-//     int B = (int)lua_tonumber(s, -1);
-//     lua_pop(s, 5);
-//     // close lua virtual machine
-//     lua_close(s);
-//     // generate ball
-//     Ball cueBall(Vector2(x, y), ballRadius);
-//     cueBall.setColor(QColor(R, G, B));
-//     cueBall.setName("cueBall");
-//     return cueBall;
-// }
-
 float Referee::getBallRadius() const
 {
 	return ballRadius;
 }
 
-JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist){
+JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
+    std::vector<Ball> _ballslist = ballsManager->getBallsList();
     std::vector<std::string> onPocketlist = _currentplayer->getOnpocketlist();
     int eightball_selfball=0;
     switch(game_rule){
@@ -160,33 +96,33 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
         }
 
 
-            if(_currentplayer->getCueball_in()){       //cueball in
-                return TO_FREE_BALL;
-            }
+        if(_currentplayer->getCueball_in()){       //cueball in
+            return TO_FREE_BALL;
+        }
 
-            if(eightball_selfball ==0){       //no selfball
-                return TO_EXCHANGE;
-            }
+        if(eightball_selfball ==0){       //no selfball
+            return TO_EXCHANGE;
+        }
 
-            //first hit other's ball
-            if(judgeSelfball(_currentplayer,_currentplayer->getFirsthit())==false){
-                return TO_EXCHANGE;
-            }
+        //first hit other's ball
+        if(judgeSelfball(_currentplayer,_currentplayer->getFirsthit())==false){
+            return TO_EXCHANGE;
+        }
 
-            if(_currentplayer->getBalltype() == SMALL && _currentplayer->getFirsthit() != "one" && _currentplayer->getFirsthit() != "two"
-                    && _currentplayer->getFirsthit() != "three" && _currentplayer->getFirsthit() != "four" && _currentplayer->getFirsthit() != "five"
-                    &&_currentplayer->getFirsthit() != "six" &&_currentplayer->getFirsthit() != "seven"){
-                return TO_EXCHANGE;
-            }
+        if(_currentplayer->getBalltype() == SMALL && _currentplayer->getFirsthit() != "one" && _currentplayer->getFirsthit() != "two"
+                && _currentplayer->getFirsthit() != "three" && _currentplayer->getFirsthit() != "four" && _currentplayer->getFirsthit() != "five"
+                &&_currentplayer->getFirsthit() != "six" &&_currentplayer->getFirsthit() != "seven"){
+            return TO_EXCHANGE;
+        }
 
-            //hit no ball
-            if(_currentplayer->getHitflag()==0){
-                return TO_EXCHANGE;
-            }
-            return TO_GOON;
-            break;
+        //hit no ball
+        if(_currentplayer->getHitflag()==0){
+            return TO_EXCHANGE;
+        }
+        return TO_GOON;
+        break;
 
-       case NINE_BALL:
+        case NINE_BALL:
         for(int i = 0; i < onPocketlist.size(); i++)
         {
 
@@ -196,14 +132,30 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
                 {
                     if(onPocketlist[k] == "cueBall")
                     {
-                        _currentplayer->setGameresult(FAIL);
-                        break;
+                        // _currentplayer->setGameresult(FAIL);
+                        // break;
+                        Ball& ball = ballsManager->getBall("nine");
+                        if (ball.getName() == "nine")
+                        {
+                            Vector3 spotPosition(820, 300);
+                            setBallAtSpots(ball, spotPosition, _ballslist);
+                            return TO_FREE_BALL;
+                        }
                     }
                 }
                 if(_currentplayer->getGameresult() == NOTDEC)
                 {
                     if(_currentplayer->getFirsthit() != Targetname)
-                        _currentplayer->setGameresult(FAIL);
+                    {
+                        // _currentplayer->setGameresult(FAIL);
+                        Ball& ball = ballsManager->getBall("nine");
+                        if (ball.getName() == "nine")
+                        {
+                            Vector3 spotPosition(820, 300);
+                            setBallAtSpots(ball, spotPosition, _ballslist);
+                            return TO_EXCHANGE;
+                        }
+                    }
                     else
                         _currentplayer->setGameresult(SUCCESS);
 
@@ -289,4 +241,48 @@ void Referee::setTargetname(std::vector<Ball> _ballslist)
 int Referee::getRule() const
 {
     return game_rule;
+}
+
+// the method has a bug that if until the left cushion a number of balls in the line
+// and there is no space to put the "nine", and finally will put it outside the table
+void Referee::setBallAtSpots(Ball& ball, Vector3 spotPosition, std::vector<Ball> ballsList)
+{
+    for (unsigned i = 0; i < ballsList.size(); ++i)
+    {
+        if (ballsList[i].getName() == "nine")
+        {
+            continue;
+        }
+
+        float distance = (spotPosition - ballsList[i].getPosition()).Length();
+        if (distance < ballRadius * 2)
+        {
+            // calc new position
+            Vector3 ballPosition = ballsList[i].getPosition();
+            Vector3 temp = ballPosition - spotPosition;
+            Vector2 pointTo = Vector2(temp.getX(), temp.getY());
+
+            float height = ballPosition.getY() - spotPosition.getY();
+            float hypotenuse = 2 * ballRadius;
+            float weight = sqrt(hypotenuse * hypotenuse + height * height);
+
+            float deltaX = ballPosition.getX() - spotPosition.getX();
+            float delta = weight + deltaX;
+
+            Vector3 newSpotPosition(spotPosition.getX() + delta, spotPosition.getY());
+
+            // recursive call
+            setBallAtSpots(ball, newSpotPosition, ballsList);
+
+            return;
+        }
+    }
+
+    // if not ball intersect with spotPosition
+    // set ball position
+    ball.setPosition(spotPosition);
+
+    // debug info 
+    // std::cout << "set ball at spot " << spotPosition.getX() << ", " << spotPosition.getY() << std::endl;
+    return;
 }
