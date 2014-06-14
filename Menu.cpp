@@ -56,7 +56,7 @@ Menu::Menu()
 
     // hit point
     hitPointRadius = 60;
-    hitPointCenterPosition = Vector2(940, 635);
+    hitPointCenterPosition = Vector2(975, 635);
     redPointRadius = 7;
     
     // hit angle
