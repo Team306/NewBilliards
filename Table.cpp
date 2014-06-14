@@ -15,17 +15,17 @@ void Table::init(Referee& referee)
     // init method
     picPosition.setXY(0, 0);
     position.setXY(40, 40);
-    picSize.setXY(1280, 680);
-    size.setXY(1200, 600);
-    pocketRadius = 35;
+    picSize.setXY(1120, 700);
+    size.setXY(1040, 520);
+    pocketRadius = 30;
     lineX = (float)65 / (float)254 * size.getX();
 
     p0.setXY(position.getX() + 8, position.getY() + 8);
     p1.setXY(position.getX() + size.getX() - 8, position.getY() + 8);
     p2.setXY(position.getX() + 8, position.getY() + size.getY() - 8);
     p3.setXY(position.getX() + size.getX() - 8, position.getY() + size.getY() - 8);
-    p4.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + pocketRadius);
-    p5.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + picSize.getY() - pocketRadius);
+    p4.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + pocketRadius + 8);
+    p5.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + size.getY() - pocketRadius + position.getY() * 2 - 8);
 
     checkp.push_back(Vector2(position.getX() + pocketRadius + 28, position.getY() + 15));//topleft_left
     checkp.push_back(Vector2(position.getX() + size.getX() / 2 - pocketRadius - 8, position.getY() + 15));//topleft_right
@@ -115,9 +115,9 @@ void Table::Draw(QPainter& painter)
     painter.drawEllipse(QPoint(position.getX() + 8, position.getY()+size.getY() - 8), pocketRadius,pocketRadius);
     painter.drawEllipse(QPoint(position.getX() + size.getX() - 8, position.getY() + size.getY() - 8),
                         pocketRadius,pocketRadius);
-    painter.drawEllipse(QPoint(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + pocketRadius),
+    painter.drawEllipse(QPoint(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + pocketRadius + 8),
                         pocketRadius, 0.75 * pocketRadius);
-    painter.drawEllipse(QPoint(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + picSize.getY() - pocketRadius),
+    painter.drawEllipse(QPoint(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + size.getY() - pocketRadius + position.getY() * 2 - 8),
                         pocketRadius, 0.75 * pocketRadius);
 
     painter.setPen(QPen(QColor(255,255,255)));

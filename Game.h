@@ -10,6 +10,7 @@
 #include "Cue.h"
 #include "GameSever.h"
 #include "GameClient.h"
+#include "Menu.h"
 
 // control all logic in this class
 // such as initialize a new game
@@ -23,8 +24,8 @@ enum GAME_STATE
 	START_FRAME, 
 	END_FRAME, 
 	WAIT_FOR_CONNECT, 
-	START_AND_CONNECT_CHOOSE, 
-	CHANGE_HIT_POINT, 
+	CONNECT_FRAME, 
+	// CHANGE_HIT_POINT, 
 };
 
 enum GAME_MODE 
@@ -60,8 +61,11 @@ private:
     GAME_RULE gameRule;
     NETWORK_RULE network_rule;
 
+    // use in display menu
+    Menu menu;
+
     Vector2 hitPosition;
-    int hitAngle;	// from 0 to 90, maybe can set a max value below 90
+    int hitAngle;	// from 0 to 85, maybe can set a max value below 90
 
 	// debug variables
 	int elapsedTime;
@@ -82,16 +86,9 @@ public:
 
 	GAME_STATE getGameState() const;
 
-	void displayStartFrame(QPainter &);
-	void displayEndFrame(QPainter &);
-	void displayPlayer(QPainter &);
-	void displayWaitingFrame(QPainter &);
-	void displayConnectChooseFrame(QPainter &);
-	void displayHitPoint(QPainter &);
-	void displayChangeLabel(QPainter &);
-
-	void checkStartFrameClick();
-	void checkConnectChooseFrame();
+	void checkStartFrameClick(const Menu &);
+	void checkConnectFrameClick(const Menu &);
+	bool checkHitPointClick(Vector2, int, int);
 
     GameSever* getGameSever() const;
     GameClient* getGameClient() const;

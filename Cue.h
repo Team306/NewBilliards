@@ -27,7 +27,8 @@ public:
     void Update(int gameState, Vector2 mousePosition);
 	void Draw(QPainter &, Ball& cueBall);	
 
-    void Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition);
+    void Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle);
+
 };
 
 

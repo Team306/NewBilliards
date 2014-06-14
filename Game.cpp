@@ -20,6 +20,7 @@ Game::Game()
     //player1.init();
     //player2.init();
     current_player = &player1;
+    hitAngle = 0;
 }
 
 Game::~Game()
@@ -50,7 +51,7 @@ void Game::Update()
 {
 	// update
 	cue.Update(gameState, mousePosition);
-    ballsManager.Update(table, current_player);
+    ballsManager.Update(table, current_player, gameRule);
 
     if(player1.getBalltype() == NOTDEF || player2.getBalltype() == NOTDEF){
         if(current_player->getBalltype() == SMALL){
@@ -82,7 +83,7 @@ void Game::Update()
 			if (!ballsManager.isRunning())
 			{
                 // std::cout<<current_player->getCueball_in()<<std::endl;
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_FREE_BALL){
+                if(referee.judge(current_player, &ballsManager) == TO_FREE_BALL){
                     referee.setTargetname(ballsManager.getBallsList());
                     gameState = FREE_BALL;
                     if(current_player == &player1){
@@ -97,7 +98,7 @@ void Game::Update()
                     }
                 }
 
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_EXCHANGE){
+                if(referee.judge(current_player, &ballsManager) == TO_EXCHANGE){
                     referee.setTargetname(ballsManager.getBallsList());
                     gameState = WAIT_FOR_STROKE;
                     if(current_player == &player1){
@@ -112,19 +113,17 @@ void Game::Update()
                     }
                 }
 
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_GOON){
+                if(referee.judge(current_player, &ballsManager) == TO_GOON){
                     referee.setTargetname(ballsManager.getBallsList());
                     current_player->Goon();
                     gameState = WAIT_FOR_STROKE;
                     break;
                 }
 
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_END){
+                if(referee.judge(current_player, &ballsManager) == TO_END){
                     gameState = END_FRAME;
                     break;
                 }
-
-				// call the referee
 			}
 			break;
         case WAIT_FOR_STROKE:
@@ -147,30 +146,27 @@ void Game::Draw(QPainter& painter)
     {
     	case WAIT_FOR_STROKE:
     		cue.Draw(painter, ballsManager.getCueBall());
-            displayPlayer(painter);
-            displayChangeLabel(painter);
+            menu.displayPlayer(painter, current_player == &player1);
+            menu.displayHitPoint(painter, hitPosition, hitAngle);
     		break;
         case FREE_BALL:
-            displayPlayer(painter);
+            menu.displayPlayer(painter, current_player == &player1);
             break;
         case BALL_IS_RUNNING:
-            displayPlayer(painter);
+            menu.displayPlayer(painter, current_player == &player1);
             break;
         case END_FRAME:
-            displayEndFrame(painter);
+            menu.displayEndFrame(painter, player1);
             break;
         case START_FRAME:
             // print the start frame
-            displayStartFrame(painter);
+            menu.displayStartFrame(painter, mousePosition, gameRule);
         	break;
         case WAIT_FOR_CONNECT:
-            displayWaitingFrame(painter);
+            menu.displayWaitingFrame(painter);
             break;
-        case START_AND_CONNECT_CHOOSE:
-            displayConnectChooseFrame(painter);
-            break;
-        case CHANGE_HIT_POINT:
-            displayHitPoint(painter);
+        case CONNECT_FRAME:
+            menu.displayConnectFrame(painter, mousePosition);
             break;
         default:
             break;
@@ -208,36 +204,26 @@ void Game::mousePress(int elapsed)
             }
 			break;
 		case WAIT_FOR_STROKE:
-            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+            if (checkHitPointClick(menu.getHitCenterPosition(), menu.getHitRadius(), menu.getAngleRadius()))
             {
-                gameState = CHANGE_HIT_POINT;
                 break;
             }
-
-            cue.Stroke(elapsed, ballsManager.getCueBall(), mousePosition);
+            // if do not change hit point continue
+            cue.Stroke(elapsed, ballsManager.getCueBall(),mousePosition, hitPosition, hitAngle);
             gameState = BALL_IS_RUNNING;
 			break;
         case BALL_IS_RUNNING:
             break;    
         case START_FRAME:
         	// decide game mode
-            checkStartFrameClick();
+            checkStartFrameClick(menu);
         	break;
-        case START_AND_CONNECT_CHOOSE:
-            checkConnectChooseFrame();
+        case CONNECT_FRAME:
+            checkConnectFrameClick(menu);
             break;
         case END_FRAME:
             gameState = START_FRAME;
             init();
-            break;
-        case CHANGE_HIT_POINT:
-            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
-            {
-                gameState = WAIT_FOR_STROKE;
-                break;
-            }
-            // check other input
-            changeHitPoint();
             break;
         default:
             break;
@@ -302,10 +288,99 @@ void Game::ClientInit(int _gameRule){
     gameState = FREE_BALL;
 }
 
+
 void Game::setClientConnected(bool connect_flag){
     client_connected = connect_flag;
 }
 
 bool Game::getClientConnected() const {
     return client_connected;
+}
+
+void Game::checkStartFrameClick(const Menu& menu)
+{
+    if (menu.getPracticeChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = FREE_BALL;
+        gameMode = PRACTICE_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(300, 300));
+    }
+    if (menu.getVersusChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = FREE_BALL;
+        gameMode = VERSUS_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(300, 300));
+    }
+    if (menu.getNetworkChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = CONNECT_FRAME;
+        gameMode = NETWORK_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(300, 300));
+    }
+
+    // choose rule
+    if (menu.getEightBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = EIGHT_BALL;
+        table.clear();
+        init();
+    }
+    if (menu.getNineBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = NINE_BALL;
+        table.clear();
+        init();
+    }
+    if (menu.getSnookerChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = SNOOKER;
+        table.clear();
+        init();
+    }
+}
+
+void Game::checkConnectFrameClick(const Menu& menu)
+{
+    if (menu.getStartChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = WAIT_FOR_CONNECT;
+        game_sever->GameListen();
+        network_rule = SERVER;
+    }
+    if (menu.getConnectChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = WAIT_FOR_CONNECT;
+        game_client->GameConnect();
+        network_rule = CLIENT;
+        player1.setPlayerflag(GUEST);
+        player2.setPlayerflag(LOCAL);
+    }
+}
+
+bool Game::checkHitPointClick(Vector2 center, int hitRadius, int angleRadius)
+{
+    const float PI = 3.141593;
+
+    // check hit point
+    Vector2 newHitPosition = mousePosition - center;
+    if (newHitPosition.Length() < hitRadius)
+    {
+        hitPosition = newHitPosition;
+        return true;
+    }
+
+    // check hit angle
+    if (newHitPosition.Length() > hitRadius && newHitPosition.Length() < angleRadius)
+    {
+        // if in the angle, change the hit angle and return true, else return false;
+        float x = newHitPosition.getX();
+        float y = -newHitPosition.getY();
+        float angle = atan(y / x) / PI * 180;
+        if (angle >= 0 && angle <= 85)
+        {
+            hitAngle = (int)angle;
+            return true;
+        }
+    }
+    return false;
 }

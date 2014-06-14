@@ -41,4 +41,8 @@ HEADERS  += \
     CollideEngine.h \
     MyMath.h \
     GameSever.h \
-    GameClient.h
+    GameClient.h \
+    Menu.h
+
+INCLUDEPATH += $$PWD/Lua5.2/include
+LIBS += -L$$PWD/Lua5.2 -llua52

@@ -1,13 +1,18 @@
 // Copyright (C) 2014 Team306
 
-#include <fstream>
+// #include <fstream>
 #include "Referee.h"
+#include "BallsManager.h"
 
-#ifndef EIGHT_BALL_CONFIG_FILENAME
-#define EIGHT_BALL_CONFIG_FILENAME "config.txt"
-#define NINE_BALL_CONFIG_FILENAME "config1.txt"
-#define SNOOKER_CONFIG_FILENAME "config2.txt"
-#endif
+// allow using lua script
+extern "C"{
+    #include <lua.h>
+    #include <lualib.h>
+    #include <lauxlib.h>
+}
+
+// debug 
+#include <iostream>
 
 Referee::Referee()
 {
@@ -19,142 +24,27 @@ Referee::~Referee()
 {
 }
 
-
 void Referee::init(int gameRule)
 {
+    // use lua when config
+    // init lua virtual machine
+    lua_State *s = luaL_newstate();
+    luaL_openlibs(s);
+    luaL_dofile(s, "config.lua");
+    // get radius
+    lua_getglobal(s, "getConfigData");
+    lua_pushnumber(s, gameRule + 1);
+    lua_pushstring(s, "ballRadius");
+    lua_call(s, 2, 1);
+    ballRadius = (float)lua_tonumber(s, -1);
+    lua_pop(s, 1);
+    // close lua virtual machine
+    lua_close(s);
+
 	// read config file
     judge_result = NOTJUDGE;
     Targetname = "one";
     game_rule = (GAME_RULE)gameRule;
-    std::ifstream fin;
-    switch(game_rule){
-        case EIGHT_BALL:
-            fin.open(EIGHT_BALL_CONFIG_FILENAME);
-            break;
-
-        case NINE_BALL:
-            fin.open(NINE_BALL_CONFIG_FILENAME);
-            break;
-
-        case SNOOKER:
-            fin.open(SNOOKER_CONFIG_FILENAME);
-            break;
-
-        default:
-            fin.open("config.txt");
-            break;
-     }
-    std::string str;
-    while (fin >> str)
-    {
-        if (str == "ballRadius")
-        {
-            break;
-        }
-    }
-    fin >> ballRadius;
-    fin.close();
-}
-
-//void Referee::chooseRule(std::string ruleName)
-//{
-	// change state machine
-//}
-
-std::vector<Ball> Referee::getBallsList() const
-{
-	// use rule here
-	// read the file get config info
-	std::ifstream fin;
-    switch(game_rule){
-        case EIGHT_BALL:
-            fin.open(EIGHT_BALL_CONFIG_FILENAME);
-            break;
-
-        case NINE_BALL:
-            fin.open(NINE_BALL_CONFIG_FILENAME);
-            break;
-
-        case SNOOKER:
-            fin.open(SNOOKER_CONFIG_FILENAME);
-            break;
-
-        default:
-            fin.open("config.txt");
-            break;
-     }
-	std::string str;
-	while (fin >> str)
-	{
-		if (str == "ballsList")
-		{
-			break;
-		}
-	}
-	int number;
-	fin >> number;
-	std::vector<Ball> ballsList;
-	for (int i = 0; i < number; ++i)
-	{
-		float x, y;
-		int R, G, B;
-		std::string name;
-		fin >> x;
-		fin >> y;
-		fin >> R;
-		fin >> G;
-		fin >> B;
-		fin >> name;
-		Ball ball = Ball(Vector2(x, y), ballRadius);
-		ball.setColor(QColor(R, G, B));
-		ball.setName(name);
-		ballsList.push_back(ball);
-	}
-	fin.close();
-	return ballsList;
-}
-
-Ball Referee::getCueBall() const
-{
-	// read config file
-	std::ifstream fin;
-    switch(game_rule){
-        case EIGHT_BALL:
-            fin.open(EIGHT_BALL_CONFIG_FILENAME);
-            break;
-
-        case NINE_BALL:
-            fin.open(NINE_BALL_CONFIG_FILENAME);
-            break;
-
-        case SNOOKER:
-            fin.open(SNOOKER_CONFIG_FILENAME);
-            break;
-
-        default:
-            fin.open("config.txt");
-            break;
-     }
-	std::string str;
-	while (fin >> str)
-	{
-		if (str == "cueBall")
-		{
-			break;
-		}
-	}
-	float x, y;
-	int R, G, B;
-	fin >> x;
-	fin >> y;
-	fin >> R;
-	fin >> G;
-	fin >> B;
-	fin.close();
-	Ball cueBall(Vector2(x, y), ballRadius);
-	cueBall.setColor(QColor(R, G, B));
-	cueBall.setName("cueBall");
-	return cueBall;
 }
 
 float Referee::getBallRadius() const
@@ -162,7 +52,8 @@ float Referee::getBallRadius() const
 	return ballRadius;
 }
 
-JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist){
+JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
+    std::vector<Ball> _ballslist = ballsManager->getBallsList();
     std::vector<std::string> onPocketlist = _currentplayer->getOnpocketlist();
     int eightball_selfball=0;
     switch(game_rule){
@@ -205,33 +96,33 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
         }
 
 
-            if(_currentplayer->getCueball_in()){       //cueball in
-                return TO_FREE_BALL;
-            }
+        if(_currentplayer->getCueball_in()){       //cueball in
+            return TO_FREE_BALL;
+        }
 
-            if(eightball_selfball ==0){       //no selfball
-                return TO_EXCHANGE;
-            }
+        if(eightball_selfball ==0){       //no selfball
+            return TO_EXCHANGE;
+        }
 
-            //first hit other's ball
-            if(judgeSelfball(_currentplayer,_currentplayer->getFirsthit())==false){
-                return TO_EXCHANGE;
-            }
+        //first hit other's ball
+        if(judgeSelfball(_currentplayer,_currentplayer->getFirsthit())==false){
+            return TO_EXCHANGE;
+        }
 
-            if(_currentplayer->getBalltype() == SMALL && _currentplayer->getFirsthit() != "one" && _currentplayer->getFirsthit() != "two"
-                    && _currentplayer->getFirsthit() != "three" && _currentplayer->getFirsthit() != "four" && _currentplayer->getFirsthit() != "five"
-                    &&_currentplayer->getFirsthit() != "six" &&_currentplayer->getFirsthit() != "seven"){
-                return TO_EXCHANGE;
-            }
+        if(_currentplayer->getBalltype() == SMALL && _currentplayer->getFirsthit() != "one" && _currentplayer->getFirsthit() != "two"
+                && _currentplayer->getFirsthit() != "three" && _currentplayer->getFirsthit() != "four" && _currentplayer->getFirsthit() != "five"
+                &&_currentplayer->getFirsthit() != "six" &&_currentplayer->getFirsthit() != "seven"){
+            return TO_EXCHANGE;
+        }
 
-            //hit no ball
-            if(_currentplayer->getHitflag()==0){
-                return TO_EXCHANGE;
-            }
-            return TO_GOON;
-            break;
+        //hit no ball
+        if(_currentplayer->getHitflag()==0){
+            return TO_EXCHANGE;
+        }
+        return TO_GOON;
+        break;
 
-       case NINE_BALL:
+        case NINE_BALL:
         for(int i = 0; i < onPocketlist.size(); i++)
         {
 
@@ -241,14 +132,30 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
                 {
                     if(onPocketlist[k] == "cueBall")
                     {
-                        _currentplayer->setGameresult(FAIL);
-                        break;
+                        // _currentplayer->setGameresult(FAIL);
+                        // break;
+                        Ball& ball = ballsManager->getBall("nine");
+                        if (ball.getName() == "nine")
+                        {
+                            Vector3 spotPosition(820, 300);
+                            setBallAtSpots(ball, spotPosition, _ballslist);
+                            return TO_FREE_BALL;
+                        }
                     }
                 }
                 if(_currentplayer->getGameresult() == NOTDEC)
                 {
                     if(_currentplayer->getFirsthit() != Targetname)
-                        _currentplayer->setGameresult(FAIL);
+                    {
+                        // _currentplayer->setGameresult(FAIL);
+                        Ball& ball = ballsManager->getBall("nine");
+                        if (ball.getName() == "nine")
+                        {
+                            Vector3 spotPosition(820, 300);
+                            setBallAtSpots(ball, spotPosition, _ballslist);
+                            return TO_EXCHANGE;
+                        }
+                    }
                     else
                         _currentplayer->setGameresult(SUCCESS);
 
@@ -329,4 +236,53 @@ void Referee::setTargetname(std::vector<Ball> _ballslist)
         if(foundflag == 1)
             break;
     }
+}
+
+int Referee::getRule() const
+{
+    return game_rule;
+}
+
+// the method has a bug that if until the left cushion a number of balls in the line
+// and there is no space to put the "nine", and finally will put it outside the table
+void Referee::setBallAtSpots(Ball& ball, Vector3 spotPosition, std::vector<Ball> ballsList)
+{
+    for (unsigned i = 0; i < ballsList.size(); ++i)
+    {
+        if (ballsList[i].getName() == "nine")
+        {
+            continue;
+        }
+
+        float distance = (spotPosition - ballsList[i].getPosition()).Length();
+        if (distance < ballRadius * 2)
+        {
+            // calc new position
+            Vector3 ballPosition = ballsList[i].getPosition();
+            Vector3 temp = ballPosition - spotPosition;
+            Vector2 pointTo = Vector2(temp.getX(), temp.getY());
+
+            float height = ballPosition.getY() - spotPosition.getY();
+            float hypotenuse = 2 * ballRadius;
+            float weight = sqrt(hypotenuse * hypotenuse + height * height);
+
+            float deltaX = ballPosition.getX() - spotPosition.getX();
+            float delta = weight + deltaX;
+
+            Vector3 newSpotPosition(spotPosition.getX() + delta, spotPosition.getY());
+
+            // recursive call
+            setBallAtSpots(ball, newSpotPosition, ballsList);
+
+            return;
+        }
+    }
+
+    // if not ball intersect with spotPosition
+    // set ball position
+    ball.setPosition(spotPosition);
+
+    // debug info 
+    // std::cout << "set ball at spot " << spotPosition.getX() << ", " << spotPosition.getY() << std::endl;
+    return;
 }

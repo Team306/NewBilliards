@@ -23,7 +23,7 @@ public slots:
 protected:
 	void initializeGL();
     void paintGL();
-	void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);

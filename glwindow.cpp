@@ -23,14 +23,14 @@ GLWindow::GLWindow(QWidget *parent)
     connect(&timer, SIGNAL(timeout()), this, SLOT(MainLoop()));
     timer.start(msPerFrame);
 
-    setFixedSize(1280, 720);
+    setFixedSize(1120, 700);
     setWindowTitle(tr("Billiards by Team306"));
 
     // put the window in center
     QDesktopWidget *desktop = QApplication::desktop();
     if (desktop->width() != 1366 && desktop->height() != 768)
     {
-        move((1920 - 1280) / 2, (1080 - 720) / 2);
+        move((1920 - 1120) / 2, (1080 - 700) / 2);
     }
     else
     {
@@ -183,7 +183,6 @@ void GLWindow::paintGL()
     makeCurrent();
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //
 }
 
 
