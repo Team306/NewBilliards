@@ -112,6 +112,8 @@ void Game::Update()
                     case TO_END:
                         gameState = END_FRAME;
                         break;
+                    default:
+                        break;
                 }
 			}
 			break;
