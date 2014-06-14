@@ -185,4 +185,9 @@ void Ball::Draw(QPainter& painter)
 
     // painter.setBrush(color);
     // painter.drawEllipse(QPoint(position.getX(), position.getY()), radius, radius);
+
+    // debug info
+    // QFont font;
+    // painter.setFont(font);
+    // painter.drawText(QRectF(position.getX() - radius, position.getY() - 5, 50, 50), name.c_str());
 }
