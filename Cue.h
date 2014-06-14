@@ -4,6 +4,7 @@
 #define CUE_H 
 
 
+#include <QImage>
 #include "MyMath.h"
 #include "Referee.h"
 
@@ -15,6 +16,11 @@ private:
 	// the position of the cue-ball 
 	float ballRadius;
 	float cueLength;
+
+	// power gauge
+    QImage *image[44];
+    bool powerGainEnableFlag;
+    int powerGainCount;
 
 public:
 	Cue();
@@ -29,6 +35,9 @@ public:
 
     void Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle);
 
+    // power gauge
+    void enablePowerGain();
+    void disablePowerGain();
 };
 
 

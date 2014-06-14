@@ -1,6 +1,7 @@
 # NewBilliards
-----------------
+
 using Qt5 platform
+
 using Lua 5.2.3
 
 release 0.1 Version 2014-06-07 0:30

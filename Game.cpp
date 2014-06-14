@@ -384,3 +384,8 @@ bool Game::checkHitPointClick(Vector2 center, int hitRadius, int angleRadius)
     }
     return false;
 }
+
+Cue& Game::getCue()
+{
+    return cue;
+}

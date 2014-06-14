@@ -64,6 +64,8 @@ void GLWindow::mousePressEvent(QMouseEvent *event)
 {
     if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME){
         mousePressTime.start();
+        Cue& cue = game.getCue();
+        cue.enablePowerGain();
     }
 }
 

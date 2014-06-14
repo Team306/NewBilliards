@@ -25,7 +25,6 @@ enum GAME_STATE
 	END_FRAME, 
 	WAIT_FOR_CONNECT, 
 	CONNECT_FRAME, 
-	// CHANGE_HIT_POINT, 
 };
 
 enum GAME_MODE 
@@ -105,6 +104,8 @@ public:
 	void changeHitPoint();
 
     bool cuePositionIsLegal();
+
+    Cue& getCue();
 };
 
 
