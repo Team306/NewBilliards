@@ -40,8 +40,8 @@ Menu::Menu()
     // player
     player1RectSmall = QRectF(250, 620, 1000, 250);
     player1RectBig = QRectF(200, 600, 1000, 250);
-    player2RectSmall = QRectF(720, 620, 1000, 250);
-    player2RectBig = QRectF(670, 600, 1000, 250);
+    player2RectSmall = QRectF(680, 620, 1000, 250);
+    player2RectBig = QRectF(630, 600, 1000, 250);
 
     // waiting frame
     waitingRect = QRectF(320, 260, 1000, 250);
@@ -55,9 +55,13 @@ Menu::Menu()
     connectRectBig = QRectF(630, 480, 300, 80);
 
     // hit point
-    hitPointRadius = 65;
-    hitPointCenterPosition = Vector2(1000, 630);
-    redPointRadius = 8;
+    hitPointRadius = 60;
+    hitPointCenterPosition = Vector2(940, 635);
+    redPointRadius = 7;
+    
+    // hit angle
+    circularWidth = 25;
+    offset = 5;
 }
 
 Menu::~Menu()
@@ -259,9 +263,48 @@ void Menu::displayConnectFrame(QPainter& painter, Vector2 mousePosition)
     }
 }
 
-void Menu::displayHitPoint(QPainter& painter, Vector2 hitPosition)
+void Menu::displayHitPoint(QPainter& painter, Vector2 hitPosition, int hitAngle)
 {
+    // int hitAngle = 10;
+    const float PI = 3.141593;
+
+    // first draw the hit angle
+    QColor brown(91, 29, 28);
+    QColor frontColor(56, 149, 8);
+    QColor frontLine(40, 128, 8);
+
+    // set gradient
+    QLinearGradient LinearGradient(hitPointCenterPosition.getX() + hitPointRadius + offset + circularWidth, hitPointCenterPosition.getY(), 
+        hitPointCenterPosition.getX(), hitPointCenterPosition.getY());
+    LinearGradient.setColorAt(0.0, frontLine);
+    LinearGradient.setColorAt(0.2, frontColor);
+    LinearGradient.setColorAt(1, QColor(255, 255, 255));
+
+    painter.setPen(QPen(frontLine, 3, Qt::SolidLine, Qt::FlatCap));
+    painter.setBrush(QBrush(LinearGradient));
+
+    // draw
+    painter.drawPie(QRectF(hitPointCenterPosition.getX() - hitPointRadius - circularWidth - offset, 
+        hitPointCenterPosition.getY() - hitPointRadius - circularWidth - offset, 
+        (hitPointRadius + circularWidth + offset) * 2, (hitPointRadius + circularWidth + offset) * 2), 0, 85 * 16);
+    painter.setPen(QPen(brown, 3, Qt::SolidLine, Qt::FlatCap));
+    painter.setBrush(brown);
+    painter.drawPie(QRectF(hitPointCenterPosition.getX() - hitPointRadius - offset, hitPointCenterPosition.getY() - hitPointRadius - offset, 
+        (hitPointRadius + offset) * 2, (hitPointRadius + offset) * 2), 0, 85 * 16);
+    painter.setPen(QPen(frontLine, 3, Qt::SolidLine, Qt::FlatCap));
+    painter.drawArc(QRectF(hitPointCenterPosition.getX() - hitPointRadius - offset, hitPointCenterPosition.getY() - hitPointRadius - offset, 
+        (hitPointRadius + offset) * 2, (hitPointRadius + offset) * 2), -1 * 16, 86 * 16);
+
+    // draw point line
+    QColor pointLineColor(145, 13, 12);
+    painter.setPen(QPen(pointLineColor, 2, Qt::SolidLine, Qt::FlatCap));
+    painter.drawLine(hitPointCenterPosition.getX() + (hitPointRadius + offset + 1) * cos(float(hitAngle) / 180 * PI), 
+        hitPointCenterPosition.getY() - (hitPointRadius + offset + 1) * sin(float(hitAngle) / 180 * PI), 
+        hitPointCenterPosition.getX() + (hitPointRadius + offset + circularWidth + 1) * cos(float(hitAngle) / 180 * PI), 
+        hitPointCenterPosition.getY() - (hitPointRadius + offset + circularWidth + 1) * sin(float(hitAngle) / 180 * PI));
+
     // Hit Point
+    // draw white ball
     QRadialGradient gradient(QPointF(hitPointRadius, hitPointRadius), hitPointRadius, QPointF(hitPointRadius * 0.5, hitPointRadius * 0.5));
     gradient.setColorAt(0, QColor(255, 255, 255, 255));
     gradient.setColorAt(0.05, QColor(255, 255, 255));
@@ -284,7 +327,10 @@ void Menu::displayHitPoint(QPainter& painter, Vector2 hitPosition)
     painter.restore();
 
     // display angle rectangle
-    // painter.drawText(QRectF(580, 640, 50, 25), QString::number(hitAngle));
+
+    // sector color R 56 G 149 B 8 
+    // point line color R 145 G 13 B 12
+    // background color R 72 G 8 B 8 
 }
 
 void Menu::displayPauseButton(QPainter& painter)
@@ -341,7 +387,12 @@ Vector2 Menu::getHitCenterPosition() const
     return hitPointCenterPosition;
 }
 
-float Menu::getHitRadius() const
+int Menu::getHitRadius() const
 {
     return hitPointRadius;
+}
+
+int Menu::getAngleRadius() const
+{
+    return hitPointRadius + offset + circularWidth + offset;
 }

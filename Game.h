@@ -64,7 +64,7 @@ private:
     Menu menu;
 
     Vector2 hitPosition;
-    int hitAngle;	// from 0 to 90, maybe can set a max value below 90
+    int hitAngle;	// from 0 to 85, maybe can set a max value below 90
 
 	// debug variables
 	int elapsedTime;
@@ -87,7 +87,7 @@ public:
 
 	void checkStartFrameClick(const Menu &);
 	void checkConnectFrameClick(const Menu &);
-	bool checkHitPointClick(Vector2, float);
+	bool checkHitPointClick(Vector2, int, int);
 
     GameSever* getGameSever() const;
     GameClient* getGameClient() const;

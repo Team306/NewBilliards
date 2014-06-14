@@ -63,9 +63,13 @@ private:
 	QRectF connectRectSmall;
 
 	// hit point
-	float hitPointRadius;
+	int hitPointRadius;
 	Vector2 hitPointCenterPosition;
-    float redPointRadius;
+    int redPointRadius;
+
+    // hit angle
+    int circularWidth;
+    int offset;
 
 public:
 	Menu();
@@ -76,7 +80,7 @@ public:
     void displayPlayer(QPainter& painter, bool);
 	void displayWaitingFrame(QPainter& painter);
 	void displayConnectFrame(QPainter& painter, Vector2 mousePosition);
-	void displayHitPoint(QPainter& painter, Vector2 hitPosition);
+	void displayHitPoint(QPainter& painter, Vector2 hitPosition, int hitAngle);
 	void displayPauseButton(QPainter& painter);
 
 	QRect getPracticeChosen() const;
@@ -89,7 +93,8 @@ public:
 	QRect getConnectChosen() const;	
 
 	Vector2 getHitCenterPosition() const;
-	float getHitRadius() const;
+	int getHitRadius() const;
+	int getAngleRadius() const;
 };
 
 

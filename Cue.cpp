@@ -63,7 +63,7 @@ void Cue::Draw(QPainter& painter, Ball& cueBall)
 
 }
 
-void Cue::Stroke(int elapsed, Ball& cueBall)
+void Cue::Stroke(int elapsed, Ball& cueBall, Vector2 hitPosition, int hitAngle)
 {
 	// use elapsed to calc the speed
     Vector2 cuePosition = Vector2(cueBall.getPosition().getX(),cueBall.getPosition().getY());

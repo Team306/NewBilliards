@@ -19,6 +19,7 @@ Game::Game()
     //player1.init();
     //player2.init();
     current_player = &player1;
+    hitAngle = 0;
 }
 
 Game::~Game()
@@ -143,7 +144,7 @@ void Game::Draw(QPainter& painter)
     	case WAIT_FOR_STROKE:
     		cue.Draw(painter, ballsManager.getCueBall());
             menu.displayPlayer(painter, current_player == &player1);
-            menu.displayHitPoint(painter, hitPosition);
+            menu.displayHitPoint(painter, hitPosition, hitAngle);
     		break;
         case FREE_BALL:
             menu.displayPlayer(painter, current_player == &player1);
@@ -199,12 +200,12 @@ void Game::mousePress(int elapsed)
             }
 			break;
 		case WAIT_FOR_STROKE:
-            if (checkHitPointClick(menu.getHitCenterPosition(), menu.getHitRadius()))
+            if (checkHitPointClick(menu.getHitCenterPosition(), menu.getHitRadius(), menu.getAngleRadius()))
             {
                 break;
             }
             // if do not change hit point continue
-            cue.Stroke(elapsed, ballsManager.getCueBall());
+            cue.Stroke(elapsed, ballsManager.getCueBall(), hitPosition, hitAngle);
             gameState = BALL_IS_RUNNING;
 			break;
         case BALL_IS_RUNNING:
@@ -343,13 +344,30 @@ void Game::checkConnectFrameClick(const Menu& menu)
     }
 }
 
-bool Game::checkHitPointClick(Vector2 center, float radius)
+bool Game::checkHitPointClick(Vector2 center, int hitRadius, int angleRadius)
 {
+    const float PI = 3.141593;
+
+    // check hit point
     Vector2 newHitPosition = mousePosition - center;
-    if (newHitPosition.Length() < radius)
+    if (newHitPosition.Length() < hitRadius)
     {
         hitPosition = newHitPosition;
         return true;
+    }
+
+    // check hit angle
+    if (newHitPosition.Length() > hitRadius && newHitPosition.Length() < angleRadius)
+    {
+        // if in the angle, change the hit angle and return true, else return false;
+        float x = newHitPosition.getX();
+        float y = -newHitPosition.getY();
+        float angle = atan(y / x) / PI * 180;
+        if (angle >= 0 && angle <= 85)
+        {
+            hitAngle = (int)angle;
+            return true;
+        }
     }
     return false;
 }
