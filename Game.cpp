@@ -186,7 +186,7 @@ void Game::Draw(QPainter& painter)
 
 void Game::Draw3D()
 {
-    table.Draw3D();
+    //table.Draw3D();
     ballsManager.Draw();
 }
 

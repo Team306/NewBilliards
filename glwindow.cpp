@@ -140,10 +140,10 @@ void GLWindow::paintEvent(QPaintEvent *event)
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
     glEnable(GL_FLAT);
-//    QPainter painter(this);
-//    painter.setRenderHint(QPainter::Antialiasing);
-//    game.Draw(painter);
-//    painter.end();
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    game.Draw(painter);
+    painter.end();
     glDisable(GL_FLAT);
 
     makeCurrent();
@@ -157,7 +157,7 @@ void GLWindow::paintEvent(QPaintEvent *event)
     glDisable(GL_CULL_FACE);
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
-    QPainter painter(this);
+
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.end();
