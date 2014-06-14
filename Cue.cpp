@@ -70,9 +70,9 @@ void Cue::Stroke(int elapsed, Ball& cueBall)
 	Vector2 speed = mousePosition - cuePosition;
     float scale = (float)elapsed / 100;
     // set max speed
-    if (scale > 5)
+    if (scale > 3)
 	{
-        scale = 5;
+        scale = 3;
 	}
 	// set min speed ? is needed?
 	if (scale < 0.2)
@@ -80,5 +80,6 @@ void Cue::Stroke(int elapsed, Ball& cueBall)
 		scale = 0.2;
 	}
 	speed = speed.getNormalize() * scale;
+    speed.setXY(speed.getX(),speed.getY());
 	cueBall.setSpeed(speed);
 }

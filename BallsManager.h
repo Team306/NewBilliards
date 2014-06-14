@@ -28,7 +28,7 @@ public:
 
 	// update and draw
     void Update(Table &, Player *);
-	void Draw(QPainter &);
+    void Draw();
 
 	// get and set
 	Ball& getCueBall();

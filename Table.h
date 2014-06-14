@@ -40,6 +40,7 @@ public:
     // update and draw
     void Update();
     void Draw(QPainter &);
+    void Draw3D();
 
     // collision detection
     bool positionIsLegal(Vector2 ,Referee &);

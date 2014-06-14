@@ -136,8 +136,8 @@ void Game::Update()
 void Game::Draw(QPainter& painter)
 {
 	// draw all thing 
-    table.Draw(painter);
-    ballsManager.Draw(painter);
+    //table.Draw3D();
+    //ballsManager.Draw();
 
     // only display the cue when gameState == wait for stroke
     switch (gameState)
@@ -182,8 +182,14 @@ void Game::Draw(QPainter& painter)
     painter.drawText(QRectF(400, 600, 50, 25),QString::number(mousePosition.getX()));
     painter.drawText(QRectF(440, 600, 50, 25),QString::number(mousePosition.getY()));
     //std::cout<<getPlayerflag()<<std::endl;
-
 }
+
+void Game::Draw3D()
+{
+    table.Draw3D();
+    ballsManager.Draw();
+}
+
 
 void Game::setMousePosition(Vector2 position)
 {

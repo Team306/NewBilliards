@@ -74,7 +74,7 @@ public:
 	// update and draw
 	void Update();
 	void Draw(QPainter &);
-
+    void Draw3D();
 	// deal with mouse event
 	void setMousePosition(Vector2);
 	void mousePress(int elapsed);
@@ -104,6 +104,7 @@ public:
 	void changeHitPoint();
 
     bool cuePositionIsLegal();
+    //friend GLWindow::paintGL();
 };
 
 

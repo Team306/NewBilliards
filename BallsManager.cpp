@@ -15,6 +15,11 @@ void BallsManager::init(Referee& referee)
 	// call referee for balls' info
 	ballsList = referee.getBallsList();
 	cueBall = referee.getCueBall();
+    cueBall.loadGLTextures();
+    for(int i=0;i<ballsList.size();i++)
+    {
+        ballsList[i].loadGLTextures();
+    }
 }
 
 void BallsManager::reset(Referee& referee)
@@ -66,7 +71,7 @@ void BallsManager::Update(Table& table, Player *currentplayer)
     	// call the referee, and next turn game change to free ball
         //cueBall.setSpeed(Vector2((0 - cueBall.getSpeed().getX()), (0 - cueBall.getSpeed().getY())));
         // cueBall.setSpeed(Vector2((0 - cueBall.getSpeed().getX()), (0 - cueBall.getSpeed().getY())));
-        cueBall.setSpeed(Vector3(0, 0,0));
+        cueBall.setSpeed(Vector3(0, 0, 0));
         cueBall.setBallState(STILL);
         cueBall.setPosition(Vector2(-100,-100));
         currentplayer->setCueball_in(1);
@@ -100,17 +105,18 @@ void BallsManager::Update(Table& table, Player *currentplayer)
 
     	}
     }
-
+    //if(cueBall.getAngleSpeed()[2]!=0)
+        //cout<<cueBall.getAngleSpeed()[2]<<endl;
 }
 
-void BallsManager::Draw(QPainter& painter)
+void BallsManager::Draw()
 {
 	for (std::vector<Ball>::iterator iter = ballsList.begin(); iter != ballsList.end(); ++iter)
 	{
 		// Draw each ball here;
-		iter->Draw(painter);
+        iter->Draw();
 	}
-    cueBall.Draw(painter);
+    cueBall.Draw();
 }
 
 Ball& BallsManager::getCueBall()

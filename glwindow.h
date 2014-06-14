@@ -3,8 +3,11 @@
 #ifndef GLWINDOW_H
 #define GLWINDOW_H 
 
-
 #include <QGLWidget>
+#include <GL/gl.h>
+#include <GL/glaux.h>
+#include <GL/glu.h>
+#include <QObject>
 #include <QTimer>
 #include <QTIme>
 #include <QPushButton>
@@ -22,8 +25,8 @@ public slots:
 
 protected:
 	void initializeGL();
-    void paintGL();
-	void paintEvent(QPaintEvent *event);
+    void resizeGL( int width, int height );
+    void paintEvent(QPaintEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
@@ -42,6 +45,8 @@ private:
 
     QByteArray ReadData;
     QByteArray SendData;
+
+
 };
 
 

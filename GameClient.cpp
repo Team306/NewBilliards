@@ -12,7 +12,7 @@ GameClient::~GameClient(){
 }
 
 void GameClient::GameConnect(){
-  connectToHost("10.147.123.29",19999);
+  connectToHost("175.186.125.0",19999);
 }
 
 void GameClient::DisConnect(){

@@ -26,10 +26,10 @@ struct Collision
 
 };
 
-const float E_BallToBall = 0.8f;
-const float E_WallToBall = 0.7f;
-const float F_BallToBall = 0.05f;
-const float F_WallToBall = 0.3f;
+const float E_BallToBall = 0.9f;
+const float E_WallToBall = 0.65f;
+const float F_BallToBall = 0.2f;
+const float F_WallToBall = 0.5f;
 
 class CollideEngine
 {
