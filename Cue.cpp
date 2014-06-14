@@ -128,8 +128,8 @@ void Cue::Draw(QPainter& painter, Ball& cueBall)
     if (powerGainEnableFlag)
     {
     	// draw
-        int beginIndex = 25;
-        int index = (powerGainCount / 20) % (44 - beginIndex) + beginIndex;
+        int beginIndex = 0;
+        int index = (powerGainCount / 10) % (44 - beginIndex) + beginIndex;
         QPixmap pixmap = QPixmap::fromImage(*image[index]);
     	int offset = 50;
     	painter.drawPixmap(cuePosition.getX(), cuePosition.getY() - offset, pixmap);
@@ -142,7 +142,8 @@ void Cue::Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition, Vector2 hitP
     Vector2 cuePosition = Vector2(cueBall.getPosition().getX(),cueBall.getPosition().getY());
     ///std::cout<<"cueball::"<<cuePosition.getX()<<","<<cuePosition.getY()<<std::endl;
 	Vector2 speed = mousePosition - cuePosition;
-    float scale = (float)elapsed / 100;
+    // float scale = (float)elapsed / 100;
+    float scale = (float)powerGainCount / 100;
     // set max speed
     if (scale > 5)
 	{
@@ -169,6 +170,10 @@ void Cue::enablePowerGain()
 
 void Cue::disablePowerGain()
 {
-	powerGainCount = 0;
 	powerGainEnableFlag = false;
+}
+
+int Cue::getPowerCount() const
+{
+    return powerGainCount;
 }

@@ -18,6 +18,7 @@ private:
 	std::vector<Ball> ballsList;
     Ball cueBall;
     CollideEngine collideengine;
+
 public:
 	BallsManager();
 	~BallsManager();

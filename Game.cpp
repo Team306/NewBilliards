@@ -416,3 +416,12 @@ Cue& Game::getCue()
 {
     return cue;
 }
+
+void Game::displayTargetBalls()
+{
+    // 3d display target balls here
+    std::vector<Ball> remainBallsList = ballsManager.getBallsList();
+    // get current player and judge self balls 
+    // and then set then to the right position and angle
+    // directly draw them in this methods
+}

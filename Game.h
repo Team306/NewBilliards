@@ -107,6 +107,7 @@ public:
     bool cuePositionIsLegal();
 
     Cue& getCue();
+    void displayTargetBalls();
 };
 
 
