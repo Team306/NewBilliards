@@ -59,14 +59,14 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
     switch(game_rule){
         case EIGHT_BALL:
         //eight on pocket
-        for(int i=0; i<onPocketlist.size(); i++){
+        for(unsigned i=0; i<onPocketlist.size(); i++){
             if(onPocketlist[i] == "eight"){
                 //std::cout<<"8"<<std::endl;
                 if(_currentplayer->getBalltype() == NOTDEF){
                     _currentplayer->setGameresult(FAIL);
                 }
 
-                for(int j=0; j<_ballslist.size(); j++){
+                for(unsigned j=0; j<_ballslist.size(); j++){
                     if(judgeSelfball(_currentplayer, _ballslist[j].getName())){
                          _currentplayer->setGameresult(FAIL);
                          break;
@@ -74,7 +74,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
                 }
 
                 if(_currentplayer->getGameresult() == NOTDEC){
-                    for(int k=0; k<onPocketlist.size(); k++){
+                    for(unsigned k=0; k<onPocketlist.size(); k++){
                         if(judgeSelfball(_currentplayer, onPocketlist[k])||onPocketlist[k]=="cueBall"){
                             _currentplayer->setGameresult(FAIL);
                             break;
@@ -123,12 +123,12 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
         break;
 
         case NINE_BALL:
-        for(int i = 0; i < onPocketlist.size(); i++)
+        for(unsigned i = 0; i < onPocketlist.size(); i++)
         {
 
             if(onPocketlist[i] == "nine")
             {
-                for(int k = 0; k < onPocketlist.size(); k++)
+                for(unsigned k = 0; k < onPocketlist.size(); k++)
                 {
                     if(onPocketlist[k] == "cueBall")
                     {
@@ -223,10 +223,10 @@ void Referee::setTargetname(std::vector<Ball> _ballslist)
     ballname.push_back("seven");
     ballname.push_back("eight");
     ballname.push_back("nine");
-    for(int i = 0; i < ballname.size(); i++)
+    for(unsigned i = 0; i < ballname.size(); i++)
     {
         int foundflag = 0;
-        for(int j = 0; j < _ballslist.size(); j++)
+        for(unsigned j = 0; j < _ballslist.size(); j++)
             if(_ballslist[j].getName() == ballname[i])
             {
                 Targetname = ballname[i];

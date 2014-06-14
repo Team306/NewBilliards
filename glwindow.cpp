@@ -66,6 +66,7 @@ void GLWindow::mousePressEvent(QMouseEvent *event)
 {
     if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME){
         mousePressTime.start();
+        game.getCue().enablePowerGain();
     }
 }
 
@@ -74,6 +75,9 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 
 
     if(game.getGameState() != BALL_IS_RUNNING &&(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME)){
+        // change to cue power gain
+        game.getCue().disablePowerGain();
+
         int elapsedTime = mousePressTime.elapsed();
     // call game method
         int mouse_x = event->x();

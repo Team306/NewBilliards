@@ -210,7 +210,7 @@ std::vector<Ball> BallsManager::getBallsList() const{
 
 Ball& BallsManager::getBall(std::string name)
 {
-    for (int i = 0; i < ballsList.size(); ++i)
+    for (unsigned i = 0; i < ballsList.size(); ++i)
     {
         if (ballsList[i].getName() == name)
         {

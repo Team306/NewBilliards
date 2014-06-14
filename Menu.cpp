@@ -62,6 +62,10 @@ Menu::Menu()
     // hit angle
     circularWidth = 25;
     offset = 5;
+
+    // pause label
+    backRect = QRectF(25, 650, 100, 30);
+    backRectChosen = QRect(25, 650, 100, 30);
 }
 
 Menu::~Menu()
@@ -333,13 +337,22 @@ void Menu::displayHitPoint(QPainter& painter, Vector2 hitPosition, int hitAngle)
     // background color R 72 G 8 B 8 
 }
 
-void Menu::displayPauseButton(QPainter& painter)
+void Menu::displayBack(QPainter& painter, Vector2 mousePosition)
 {
     QFont font("Consolas", 16, 16, false);
     painter.setFont(font);
     QColor miku_blue(00, 174, 255);
     painter.setPen(miku_blue);
-    painter.drawText(QRectF(1050, 680, 200, 30), "Pause");
+    if (backRectChosen.contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        font.setPointSize(20);
+        painter.setFont(font);
+        painter.drawText(backRect, "Back");
+    }
+    else
+    {
+        painter.drawText(backRect, "Back");        
+    }
 }
 
 QRect Menu::getPracticeChosen() const
@@ -385,6 +398,11 @@ QRect Menu::getConnectChosen() const
 Vector2 Menu::getHitCenterPosition() const
 {
     return hitPointCenterPosition;
+}
+
+QRect Menu::getBackChosen() const
+{
+    return backRectChosen;
 }
 
 int Menu::getHitRadius() const

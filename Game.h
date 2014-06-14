@@ -25,7 +25,6 @@ enum GAME_STATE
 	END_FRAME, 
 	WAIT_FOR_CONNECT, 
 	CONNECT_FRAME, 
-	// CHANGE_HIT_POINT, 
 };
 
 enum GAME_MODE 
@@ -89,6 +88,7 @@ public:
 	void checkStartFrameClick(const Menu &);
 	void checkConnectFrameClick(const Menu &);
 	bool checkHitPointClick(Vector2, int, int);
+	bool checkBack(const Menu &);
 
     GameSever* getGameSever() const;
     GameClient* getGameClient() const;
@@ -106,6 +106,9 @@ public:
 
     bool cuePositionIsLegal();
     void PlayerExchange();
+
+    Cue& getCue();
+    void displayTargetBalls();
 };
 
 
