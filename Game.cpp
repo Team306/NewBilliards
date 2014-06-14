@@ -80,49 +80,38 @@ void Game::Update()
             }
 			break;
 		case BALL_IS_RUNNING:
-			if (!ballsManager.isRunning())
+            if (!ballsManager.isRunning())
 			{
                 // std::cout<<current_player->getCueball_in()<<std::endl;
-                if(referee.judge(current_player, &ballsManager) == TO_FREE_BALL){
-                    referee.setTargetname(ballsManager.getBallsList());
-                    gameState = FREE_BALL;
-                    if(current_player == &player1){
-                        current_player->Exchange();
-                        current_player = &player2;
-                        break;
+                if(gameMode == PRACTICE_MODE){
+                    if(referee.judge(current_player, &ballsManager) == TO_FREE_BALL){
+                       gameState = FREE_BALL;
                     }
                     else{
-                        current_player->Exchange();
-                        current_player = &player1;
-                        break;
+                        gameState = WAIT_FOR_STROKE;
                     }
-                }
-
-                if(referee.judge(current_player, &ballsManager) == TO_EXCHANGE){
-                    referee.setTargetname(ballsManager.getBallsList());
-                    gameState = WAIT_FOR_STROKE;
-                    if(current_player == &player1){
-                        current_player->Exchange();
-                        current_player = &player2;
-                        break;
-                    }
-                    else{
-                        current_player->Exchange();
-                        current_player = &player1;
-                        break;
-                    }
-                }
-
-                if(referee.judge(current_player, &ballsManager) == TO_GOON){
-                    referee.setTargetname(ballsManager.getBallsList());
                     current_player->Goon();
-                    gameState = WAIT_FOR_STROKE;
                     break;
                 }
-
-                if(referee.judge(current_player, &ballsManager) == TO_END){
-                    gameState = END_FRAME;
-                    break;
+                switch(referee.judge(current_player, &ballsManager)){
+                    case TO_FREE_BALL:
+                        referee.setTargetname(ballsManager.getBallsList());
+                        gameState = FREE_BALL;
+                        PlayerExchange();
+                        break;
+                    case TO_EXCHANGE:
+                        referee.setTargetname(ballsManager.getBallsList());
+                        gameState = WAIT_FOR_STROKE;
+                        PlayerExchange();
+                        break;
+                    case TO_GOON:
+                        referee.setTargetname(ballsManager.getBallsList());
+                        current_player->Goon();
+                        gameState = WAIT_FOR_STROKE;
+                        break;
+                    case TO_END:
+                        gameState = END_FRAME;
+                        break;
                 }
 			}
 			break;
@@ -383,4 +372,17 @@ bool Game::checkHitPointClick(Vector2 center, int hitRadius, int angleRadius)
         }
     }
     return false;
+}
+
+void Game::PlayerExchange(){
+    if(current_player == &player1){
+        current_player->Exchange();
+        current_player = &player2;
+        return;
+    }
+    else{
+        current_player->Exchange();
+        current_player = &player1;
+        return;
+    }
 }

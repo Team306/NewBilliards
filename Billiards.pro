@@ -46,3 +46,10 @@ HEADERS  += \
 
 INCLUDEPATH += $$PWD/Lua5.2/include
 LIBS += -L$$PWD/Lua5.2 -llua52
+
+RESOURCES +=
+
+OTHER_FILES += \
+    myicon.rc
+
+RC_FILE += myicon.rc

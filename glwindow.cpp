@@ -26,6 +26,8 @@ GLWindow::GLWindow(QWidget *parent)
     setFixedSize(1120, 700);
     setWindowTitle(tr("Billiards by Team306"));
 
+    setWindowIcon(QIcon("cat.png"));
+
     // put the window in center
     QDesktopWidget *desktop = QApplication::desktop();
     if (desktop->width() != 1366 && desktop->height() != 768)

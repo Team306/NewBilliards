@@ -105,6 +105,7 @@ public:
 	void changeHitPoint();
 
     bool cuePositionIsLegal();
+    void PlayerExchange();
 };
 
 
