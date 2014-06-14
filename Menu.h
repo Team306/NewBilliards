@@ -71,6 +71,10 @@ private:
     int circularWidth;
     int offset;
 
+    // pause button
+    QRect backRectChosen;
+    QRectF backRect;
+
 public:
 	Menu();
 	~Menu();
@@ -81,7 +85,7 @@ public:
 	void displayWaitingFrame(QPainter& painter);
 	void displayConnectFrame(QPainter& painter, Vector2 mousePosition);
 	void displayHitPoint(QPainter& painter, Vector2 hitPosition, int hitAngle);
-	void displayPauseButton(QPainter& painter);
+	void displayBack(QPainter& painter, Vector2);
 
 	QRect getPracticeChosen() const;
 	QRect getVersusChosen() const;
@@ -91,6 +95,7 @@ public:
 	QRect getSnookerChosen() const;
 	QRect getStartChosen() const;
 	QRect getConnectChosen() const;	
+	QRect getBackChosen() const;
 
 	Vector2 getHitCenterPosition() const;
 	int getHitRadius() const;

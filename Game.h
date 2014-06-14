@@ -88,6 +88,7 @@ public:
 	void checkStartFrameClick(const Menu &);
 	void checkConnectFrameClick(const Menu &);
 	bool checkHitPointClick(Vector2, int, int);
+	bool checkBack(const Menu &);
 
     GameSever* getGameSever() const;
     GameClient* getGameClient() const;

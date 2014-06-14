@@ -148,12 +148,17 @@ void Game::Draw(QPainter& painter)
     		cue.Draw(painter, ballsManager.getCueBall());
             menu.displayPlayer(painter, current_player == &player1);
             menu.displayHitPoint(painter, hitPosition, hitAngle);
+            menu.displayBack(painter, mousePosition);
     		break;
         case FREE_BALL:
             menu.displayPlayer(painter, current_player == &player1);
+            menu.displayHitPoint(painter, hitPosition, hitAngle);
+            menu.displayBack(painter, mousePosition);
             break;
         case BALL_IS_RUNNING:
             menu.displayPlayer(painter, current_player == &player1);
+            menu.displayHitPoint(painter, hitPosition, hitAngle);
+            menu.displayBack(painter, mousePosition);
             break;
         case END_FRAME:
             menu.displayEndFrame(painter, player1);
@@ -167,6 +172,7 @@ void Game::Draw(QPainter& painter)
             break;
         case CONNECT_FRAME:
             menu.displayConnectFrame(painter, mousePosition);
+            menu.displayBack(painter, mousePosition);
             break;
         default:
             break;
@@ -175,11 +181,11 @@ void Game::Draw(QPainter& painter)
     // debug info
     QFont font;
     painter.setFont(font);
-    painter.drawText(QRectF(420, 640, 250, 25), "mouse press elapsed time");
-    painter.drawText(QRectF(580, 640, 50, 25), QString::number(elapsedTime));
-    painter.drawText(QRectF(400, 640, 100, 100),QString::number(current_player->getPlayerflag()));
-    painter.drawText(QRectF(400, 600, 50, 25),QString::number(mousePosition.getX()));
-    painter.drawText(QRectF(440, 600, 50, 25),QString::number(mousePosition.getY()));
+    // painter.drawText(QRectF(420, 640, 250, 25), "mouse press elapsed time");
+    // painter.drawText(QRectF(580, 640, 50, 25), QString::number(elapsedTime));
+    // painter.drawText(QRectF(400, 640, 100, 100),QString::number(current_player->getPlayerflag()));
+    // painter.drawText(QRectF(400, 600, 50, 25),QString::number(mousePosition.getX()));
+    // painter.drawText(QRectF(440, 600, 50, 25),QString::number(mousePosition.getY()));
     //std::cout<<getPlayerflag()<<std::endl;
 
 }
@@ -198,12 +204,21 @@ void Game::mousePress(int elapsed)
 	switch (gameState)
 	{
 		case FREE_BALL:
+            if (checkBack(menu))
+            {
+                break;
+            }
+
             if (cuePositionIsLegal())
             {
                 gameState = WAIT_FOR_STROKE;
             }
 			break;
 		case WAIT_FOR_STROKE:
+            if (checkBack(menu))
+            {
+                break;
+            }
             if (checkHitPointClick(menu.getHitCenterPosition(), menu.getHitRadius(), menu.getAngleRadius()))
             {
                 break;
@@ -219,6 +234,7 @@ void Game::mousePress(int elapsed)
             checkStartFrameClick(menu);
         	break;
         case CONNECT_FRAME:
+            checkBack(menu);
             checkConnectFrameClick(menu);
             break;
         case END_FRAME:
@@ -381,6 +397,17 @@ bool Game::checkHitPointClick(Vector2 center, int hitRadius, int angleRadius)
             hitAngle = (int)angle;
             return true;
         }
+    }
+    return false;
+}
+
+bool Game::checkBack(const Menu& menu)
+{
+    if (menu.getBackChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = START_FRAME;
+        init();
+        return true;
     }
     return false;
 }
