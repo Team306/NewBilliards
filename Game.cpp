@@ -16,6 +16,7 @@ Game::Game()
 	gameState = START_FRAME;
     gameRule = EIGHT_BALL;
 	elapsedTime = 0;
+    client_connected = false;
     //player1.init();
     //player2.init();
     current_player = &player1;
@@ -29,6 +30,8 @@ void Game::init()
 {
 	// init here
     gameState = START_FRAME;
+    gameMode = PRACTICE_MODE;
+    client_connected = false;
     game_client->DisConnect();
     game_sever->StopListen();
     current_player = &player1;
@@ -188,6 +191,7 @@ void Game::Draw(QPainter& painter)
 void Game::setMousePosition(Vector2 position)
 {
 	mousePosition = position;
+    //std::cout<<"mousePosition<<<<<<"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
 }
 
 void Game::mousePress(int elapsed)
@@ -210,7 +214,7 @@ void Game::mousePress(int elapsed)
                 break;
             }
 
-            cue.Stroke(elapsed, ballsManager.getCueBall());
+            cue.Stroke(elapsed, ballsManager.getCueBall(), mousePosition);
             gameState = BALL_IS_RUNNING;
 			break;
         case BALL_IS_RUNNING:
@@ -296,4 +300,12 @@ void Game::ClientInit(int _gameRule){
     ballsManager.init(referee);
     cue.init(referee);
     gameState = FREE_BALL;
+}
+
+void Game::setClientConnected(bool connect_flag){
+    client_connected = connect_flag;
+}
+
+bool Game::getClientConnected() const {
+    return client_connected;
 }

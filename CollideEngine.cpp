@@ -95,7 +95,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
         if(ball.getPosition().getX()>=(table.getCheckp())[0].getX() \
                 && ball.getPosition().getX()<=(table.getCheckp())[1].getX())
         {
-            cout<<"!!!"<<extra<<endl;
+            //cout<<"!!!"<<extra<<endl;
             col_N=Vector3(0,1,0);
             this->ProcessWallToBallCollision(ball,col_N,-extra);
             return true;
@@ -109,7 +109,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
         if(ball.getPosition().getX()>=(table.getCheckp())[2].getX() \
                 && ball.getPosition().getX()<=(table.getCheckp())[3].getX())
         {
-            cout<<"!!!"<<extra<<endl;
+            //cout<<"!!!"<<extra<<endl;
             col_N=Vector3(0,1,0);
             this->ProcessWallToBallCollision(ball,col_N,-extra);
             return true;
@@ -123,7 +123,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
         if(ball.getPosition().getX()>=(table.getCheckp())[4].getX() \
                 && ball.getPosition().getX()<=(table.getCheckp())[5].getX())
         {
-            cout<<"!!!"<<extra<<endl;
+            //cout<<"!!!"<<extra<<endl;
             col_N=Vector3(0,-1,0);
             this->ProcessWallToBallCollision(ball,col_N,-extra);
             return true;
@@ -137,7 +137,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
         if(ball.getPosition().getX()>=(table.getCheckp())[6].getX() \
                 && ball.getPosition().getX()<=(table.getCheckp())[7].getX())
         {
-            cout<<"!!!"<<extra<<endl;
+            //cout<<"!!!"<<extra<<endl;
             col_N=Vector3(0,-1,0);
             this->ProcessWallToBallCollision(ball,col_N,-extra);
             return true;
@@ -151,7 +151,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
         if(ball.getPosition().getY()>=(table.getCheckp())[8].getY() \
                 && ball.getPosition().getY()<=(table.getCheckp())[9].getY())
         {
-            cout<<"!!!"<<extra<<endl;
+            //cout<<"!!!"<<extra<<endl;
             col_N=Vector3(1,0,0);
             this->ProcessWallToBallCollision(ball,col_N,-extra);
             return true;
@@ -165,7 +165,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
         if(ball.getPosition().getY()>=(table.getCheckp())[10].getY() \
                 && ball.getPosition().getY()<=(table.getCheckp())[11].getY())
         {
-            cout<<"!!!"<<extra<<endl;
+            //cout<<"!!!"<<extra<<endl;
             col_N=Vector3(-1,0,0);
             this->ProcessWallToBallCollision(ball,col_N,-extra);
             return true;
@@ -201,7 +201,7 @@ bool CollideEngine::CornerWallToBallCollision(const Table& table,Ball& ball)
 
     /*for(unsigned i=0;i<col_N.size();i++)
     {
-        cout<<i<<":"<<col_N[i][0]<<","<<col_N[i][1]<<","<<col_N[i][2]<<endl;
+        //cout<<i<<":"<<col_N[i][0]<<","<<col_N[i][1]<<","<<col_N[i][2]<<endl;
     }*/
 
 

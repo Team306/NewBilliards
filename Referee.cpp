@@ -263,7 +263,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, std::vector<Ball> _ballslist
             return TO_FREE_BALL;
         if(_currentplayer->getFirsthit() != Targetname)
         {
-            std::cout<<Targetname<<std::endl;
+            //std::cout<<Targetname<<std::endl;
             return TO_FREE_BALL;
         }
         if(_currentplayer->getOnpocketlist().size() != 0)

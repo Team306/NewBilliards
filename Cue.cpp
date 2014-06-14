@@ -2,6 +2,7 @@
 
 #include "Cue.h"
 #include "Game.h"
+#include<iostream>
 
 Cue::Cue()
 {
@@ -63,10 +64,11 @@ void Cue::Draw(QPainter& painter, Ball& cueBall)
 
 }
 
-void Cue::Stroke(int elapsed, Ball& cueBall)
+void Cue::Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition)
 {
 	// use elapsed to calc the speed
     Vector2 cuePosition = Vector2(cueBall.getPosition().getX(),cueBall.getPosition().getY());
+    ///std::cout<<"cueball::"<<cuePosition.getX()<<","<<cuePosition.getY()<<std::endl;
 	Vector2 speed = mousePosition - cuePosition;
     float scale = (float)elapsed / 100;
     // set max speed
@@ -81,4 +83,8 @@ void Cue::Stroke(int elapsed, Ball& cueBall)
 	}
 	speed = speed.getNormalize() * scale;
 	cueBall.setSpeed(speed);
+    //debug info
+    //std::cout<<"speed::"<<speed.getX()<<","<<speed.getY()<<std::endl;
+    //std::cout<<"mousepos::"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
+    //std::cout<<"scale::"<<scale<<std::endl;
 }

@@ -56,9 +56,9 @@ public:
     Vector3(const Vector2& v);
     ~Vector3();
     float operator[](int i) const;
-    float setX(float x);
-    float setY(float y);
-    float setZ(float z);
+    void  setX(float x);
+    void setY(float y);
+    void setZ(float z);
 
     float getX() const;
     float getY() const;
@@ -72,7 +72,7 @@ public:
     Vector3 operator/(float f) const;
     Vector3& operator*=(float f);
     Vector3& operator/=(float f);
-    Vector3& operator-();
+    Vector3 operator-();
 
     float Length2() const;
     float Length() const;

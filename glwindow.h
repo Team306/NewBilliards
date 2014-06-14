@@ -33,6 +33,7 @@ private slots:
     void newConnect();
     void serverRead();
     void clientRead();
+    void clientConnected();
 
 private:
 	Game game;
@@ -42,6 +43,7 @@ private:
 
     QByteArray ReadData;
     QByteArray SendData;
+    QList<QByteArray> toReadList;
 };
 
 

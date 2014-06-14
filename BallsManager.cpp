@@ -100,7 +100,7 @@ void BallsManager::Update(Table& table, Player *currentplayer)
 
     	}
     }
-
+    //std::cout<<cueBall.getPosition().getX()<<"#"<<cueBall.getPosition().getY()<<"#"<<cueBall.getSpeed().getX()<<"#"<<cueBall.getSpeed().getY()<<std::endl;
 }
 
 void BallsManager::Draw(QPainter& painter)

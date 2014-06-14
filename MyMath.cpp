@@ -61,18 +61,18 @@ float Vector2::dotProduct(Vector2& v) const
 
 Vector2& Vector2::operator+=(Vector2& v)
 {
-    Vector2 result = *this + v;
-    this->x = result.getX();
-    this->y = result.getY();
-    return result;
+    //Vector2 result = *this + v;
+    this->x += v.getX();
+    this->y += v.getY();
+    return *this;
 }
 
 Vector2& Vector2::operator-=(Vector2& v)
 {
-    Vector2 result = *this - v;
-    this->x = result.getX();
-    this->y = result.getY();
-    return result;
+    //Vector2 result = *this - v;
+    this->x += v.getX();
+    this->y += v.getY();
+    return *this;
 }
 
 Vector2& Vector2::operator*=(float f)
@@ -146,16 +146,16 @@ float Vector3::operator[](int i) const
     else return this->z;
 }
 
-float Vector3::setX(float x)
+void Vector3::setX(float x)
 {
     this->x=x;
 }
 
-float Vector3::setY(float y)
+void Vector3::setY(float y)
 {
     this->y=y;
 }
-float Vector3::setZ(float z)
+void Vector3::setZ(float z)
 {
     this->z=z;
 }
@@ -230,12 +230,9 @@ Vector3& Vector3::operator/=(float f)
     return *this;
 }
 
-Vector3& Vector3::operator-()
+Vector3 Vector3::operator-()
 {
-    this->x=-this->x;
-    this->y=-this->y;
-    this->z=-this->z;
-    return *this;
+    return Vector3(-this->x,-this->y,-this->z);
 }
 
 float Vector3::Length2() const

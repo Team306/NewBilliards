@@ -53,6 +53,7 @@ private:
     Player *current_player;
     GameSever *game_sever;
     GameClient *game_client;
+    bool client_connected;
 
 	GAME_STATE gameState;
 	GAME_MODE gameMode;
@@ -99,8 +100,11 @@ public:
     PLAYER_FLAG getPlayerFlag() const;
     GAME_MODE getGameMode() const;
     NETWORK_RULE getNetworkRule() const;
+
     void GameBegin();
     void ClientInit(int _gameRule);
+    void setClientConnected(bool);
+    bool getClientConnected() const;
 	void changeHitPoint();
 
     bool cuePositionIsLegal();
