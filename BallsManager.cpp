@@ -11,6 +11,7 @@ extern "C"{
 
 BallsManager::BallsManager()
 {
+    sound2 = new QSound("./sound/Pocket0.wav");
 }
 
 BallsManager::~BallsManager()
@@ -127,6 +128,7 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
     // after detect collision, check if the ball is into the pocket
     if (table.checkPockets(cueBall))
     {
+        sound2->play();
     	// call the referee, and next turn game change to free ball
         //cueBall.setSpeed(Vector2((0 - cueBall.getSpeed().getX()), (0 - cueBall.getSpeed().getY())));
         // cueBall.setSpeed(Vector2((0 - cueBall.getSpeed().getX()), (0 - cueBall.getSpeed().getY())));
@@ -142,6 +144,7 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
     {
     	if (table.checkPockets(ballsList[i]))
     	{
+            sound2->play();
     		// if ball is into the pocket, delete the ball
             currentplayer->setOnpocketlist(ballsList[i].getName());
             if(currentplayer->getBalltype() == NOTDEF && currentplayer->getFirsthit() != "eight"){

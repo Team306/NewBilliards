@@ -10,6 +10,7 @@
 #include "Table.h"
 #include "Player.h"
 #include "CollideEngine.h"
+#include <QSound>
 
 // detect all collisions in this class
 class BallsManager
@@ -18,6 +19,7 @@ private:
 	std::vector<Ball> ballsList;
     Ball cueBall;
     CollideEngine collideengine;
+    QSound *sound2;
 
 public:
 	BallsManager();

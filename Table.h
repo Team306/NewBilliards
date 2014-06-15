@@ -25,6 +25,9 @@ private:
     std::vector<Vector2> checkp;
     std::vector<Vector2> pocketp;
 
+    GLuint texture[3];
+
+
 public:
     Table();
     ~Table();
@@ -40,6 +43,9 @@ public:
     // update and draw
     void Update();
     void Draw(QPainter &);
+
+    void loadGLTextures();
+
     void Draw3D();
 
     // collision detection

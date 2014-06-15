@@ -5,6 +5,7 @@
 #include "Ball.h"
 #include "Table.h"
 #include <vector>
+#include <QSound>
 
 struct Collision
 {
@@ -33,6 +34,8 @@ const float F_WallToBall = 0.4f;
 
 class CollideEngine
 {
+private:
+    QSound *sound,*sound1;
 public:
     CollideEngine();
     ~CollideEngine();

@@ -1,5 +1,9 @@
 #include "CollideEngine.h"
-CollideEngine::CollideEngine() {}
+CollideEngine::CollideEngine()
+{
+    sound = new QSound("./sound/CollideEdge.wav");
+    sound1 = new QSound("./sound/Collide.wav");
+}
 CollideEngine::~CollideEngine() {}
 
 bool CollideEngine::DectBallToBallCollision(const Ball& ballA,const Ball& ballB)
@@ -45,6 +49,7 @@ void CollideEngine::ProcessBallToBallCollision(Ball& ballA,Ball& ballB)
 
     ballA.ApplyImpulse(c.In,c.CollidePosition);
     ballB.ApplyImpulse(-c.In,c.CollidePosition);
+    sound1->play();
 
     c.Vt=(c.Vr-c._N*c.Vn).Length();
 
@@ -325,6 +330,8 @@ void CollideEngine::ProcessWallToBallCollision(Ball& ball,const Vector3& col_N,f
 {
     Collision c;
     Vector3 pos_temp=ball.getPosition();
+
+    sound->play();
 
     pos_temp+=col_N*extra;
     ball.setPosition( pos_temp);

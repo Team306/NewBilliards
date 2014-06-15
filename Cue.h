@@ -7,6 +7,7 @@
 #include <QImage>
 #include "MyMath.h"
 #include "Referee.h"
+#include <QSound>
 
 // user controls it
 class Cue
@@ -21,6 +22,7 @@ private:
     QImage *image[44];
     bool powerGainEnableFlag;
     int powerGainCount;
+    QSound *sound;
 
 public:
 	Cue();
