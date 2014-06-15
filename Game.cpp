@@ -74,12 +74,14 @@ void Game::Update()
 	{
 		case FREE_BALL:
 			// check before set position
-            if(freeball_flag <= 1 && table.positionIsLegal(mousePosition,referee))
+            if(((gameRule == EIGHT_BALL && freeball_flag <= 1)||(gameRule == NINE_BALL && !freeball_flag))
+                    && table.positionIsLegal(mousePosition,referee))
             {
                 ballsManager.getCueBall().setPosition(mousePosition);
                 break;
             }
-            if(freeball_flag > 1 && table.positionIsIN(mousePosition,referee))
+            if(((gameRule == EIGHT_BALL && freeball_flag > 1) ||(gameRule == NINE_BALL && freeball_flag))
+                    && table.positionIsIN(mousePosition,referee))
             {
                 ballsManager.getCueBall().setPosition(mousePosition);
                 break;
