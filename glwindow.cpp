@@ -29,6 +29,10 @@ GLWindow::GLWindow(QWidget *parent)
     setAutoFillBackground(false);
     setAutoBufferSwap( false );
 
+    countTest=0;
+    connect(&testTime,SIGNAL(timeout()),this,SLOT(test()));
+    testTime.start(1000);
+
     setFixedSize(1120, 700);
     setWindowTitle(tr("Billiards by Team306"));
 
@@ -200,6 +204,7 @@ void GLWindow::resizeGL( int width, int height )
 
 void GLWindow::MainLoop()
 {
+    countTest++;
     if(game.getGameMode() == NETWORK_MODE && game.getNetworkRule() == CLIENT && game.getClientConnected() == false){
         game.getGameClient()->GameConnect();
         game.Update();
@@ -359,3 +364,7 @@ void GLWindow::ServerProcessList(){
     }
 }
 
+void GLWindow::test(){
+    std::cout<<countTest<<std::endl;
+    countTest = 0;
+}

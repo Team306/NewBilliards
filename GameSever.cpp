@@ -8,7 +8,7 @@ GameSever::GameSever(){
 }
 
 GameSever::~GameSever(){
-
+    delete client;
 }
 
 void GameSever::GameListen(){

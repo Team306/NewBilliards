@@ -38,10 +38,14 @@ private slots:
     void clientRead();
     void clientConnected();
 
+    void test();
+
 private:
 	Game game;
 
 	QTimer timer;
+    QTimer testTime;
+    int countTest;
     QByteArray ReadData;
     QByteArray SendData;
     QList<QByteArray> toReadList;
