@@ -26,6 +26,8 @@ GLWindow::GLWindow(QWidget *parent)
     timer.setSingleShot(false);
     connect(&timer, SIGNAL(timeout()), this, SLOT(MainLoop()));
     timer.start(msPerFrame);
+    sound = new QSound("./sound/UserEnter.wav");
+
     setAutoFillBackground(false);
     setAutoBufferSwap( false );
 
@@ -295,6 +297,7 @@ void GLWindow::ClientProcessList(){
                     }
                     else{
                             if(readlist[i] == "S"){
+                                sound->play();
                                 QByteArray start;
                                 start.clear();
                                 start.append(QString("S#"));
@@ -346,6 +349,7 @@ void GLWindow::ServerProcessList(){
                 }
                 else{
                     if(readlist[i] == "S"){
+                        sound->play();
                         game.GameBegin();
                         i = i+2;
                     }

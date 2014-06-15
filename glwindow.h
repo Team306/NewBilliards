@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QTIme>
 #include <QPushButton>
+#include <QSound>
 #include "Game.h"
 
 class GLWindow : public QGLWidget
@@ -51,6 +52,7 @@ private:
     QList<QByteArray> toReadList;
     void ClientProcessList();
     void ServerProcessList();
+    QSound *sound;
 };
 
 

@@ -21,6 +21,9 @@ Game::Game()
     current_player = &player1;
     hitAngle = 0;
     freeball_flag = 0;
+    sound = new QSound("./sound/CaromHall.wav");
+    sound->setLoops(-1);
+    sound->play();
 }
 
 Game::~Game()

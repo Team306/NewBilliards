@@ -173,7 +173,7 @@ void Table::loadGLTextures()
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-  if ( !buf.load( "./data/table3.bmp" ) )
+  if ( !buf.load( "./data/table4.bmp" ) )
   {
     qWarning( "Could not read image file, using single-color instead." );
     QImage dummy(128,128,QImage::Format_RGB32);
@@ -252,6 +252,11 @@ void Table::Draw3D()
        glColor3f(1,1,1);
        glVertex3f((position.getX()+lineX-560)*z/hy/0.1,(-position.getY()+350)*z/hy/0.1,-z);
        glVertex3f((position.getX()+lineX-560)*z/hy/0.1,(-position.getY()-size.getY()+350)*z/hy/0.1,-z);
+       glEnd();
+
+       glPointSize(8.0f);
+       glBegin(GL_POINTS);
+       glVertex3f((position.getX()+lineX-560)*z/hy/0.1,(-position.getY()-size.getY()/2+350)*z/hy/0.1,-z);
        glEnd();
 
        glEnable(GL_TEXTURE_2D);

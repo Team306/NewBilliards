@@ -11,6 +11,7 @@
 #include "GameSever.h"
 #include "GameClient.h"
 #include "Menu.h"
+#include <QSound>
 
 // control all logic in this class
 // such as initialize a new game
@@ -68,6 +69,8 @@ private:
 
 	// debug variables
      unsigned freeball_flag;
+
+     QSound *sound;
 
 public:
 	Game();

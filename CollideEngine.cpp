@@ -1,8 +1,8 @@
 #include "CollideEngine.h"
 CollideEngine::CollideEngine()
 {
-    sound = new QSound("./sound/CollideEdge.wav");
-    sound1 = new QSound("./sound/Collide.wav");
+    sound = new QSound("./sound/CollideEdge2.wav");
+    sound1 = new QSound("./sound/Collide2.wav");
 }
 CollideEngine::~CollideEngine() {}
 
