@@ -108,7 +108,7 @@ public:
     void PlayerExchange();
 
     Cue& getCue();
-    void displayTargetBalls();
+    void displayTargetBalls(QPainter &);
 };
 
 

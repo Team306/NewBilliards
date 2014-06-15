@@ -286,3 +286,8 @@ void Referee::setBallAtSpots(Ball& ball, Vector3 spotPosition, std::vector<Ball>
     // std::cout << "set ball at spot " << spotPosition.getX() << ", " << spotPosition.getY() << std::endl;
     return;
 }
+
+std::string Referee::getTargetName() const
+{
+    return Targetname;
+}

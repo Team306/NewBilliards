@@ -52,6 +52,7 @@ public:
     Vector3 getAngleSpeed() const;
     void setAngleSpeed(const Vector3& v);
     float getRadius() const;
+    void setRadius(float);
     float getIm() const;
     int getBallState() const;
     void setBallState(int);

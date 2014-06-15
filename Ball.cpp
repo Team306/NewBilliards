@@ -73,6 +73,11 @@ float Ball::getRadius() const
     return this->radius;
 }
 
+void Ball::setRadius(float newRadius)
+{
+    radius = newRadius;
+}
+
 float Ball::getIm() const
 {
     return this->Im;
