@@ -2,7 +2,7 @@
 
 #include "Cue.h"
 #include "Game.h"
-#include<iostream>
+#include <iostream>
 
 Cue::Cue()
 {
@@ -18,46 +18,13 @@ void Cue::init(Referee& referee)
 	cueLength = 50;
 	powerGainEnableFlag = false;
 	powerGainCount = 0;
+    powerGainIncrement = true;
 
-    // load image
-    QImage rawImage;
-    rawImage.load("Textures/HitAngle—left.png");
-
-    // debug info
-    if (rawImage.isNull())
-    {
-        std::cout << "Load Textures fails in cue" << std::endl;
-    }
-
-    // format: QImage::Format_ARGB32
-    for (int i = 0; i < 22; ++i)
-    {
-        image[i] = new QImage(43, 47, QImage::Format_ARGB32);
-        *image[i] = rawImage.copy(i * 43 + 1, 0, 43, 47);
-    }
-    rawImage.load("Textures/HitAngle—right.png");
-    for (int i = 22; i < 29; ++i)
-    {
-        image[i] = new QImage(43, 47, QImage::Format_ARGB32);
-        *image[i] = rawImage.copy((i - 22) * 43 + 1, 0, 43, 47);
-    }
-
-    // has some problem below
-    for (int i = 29; i < 33; ++i)
-    {
-        image[i] = new QImage(43, 47, QImage::Format_ARGB32);
-        *image[i] = rawImage.copy((i - 22) * 43 + 1, 0, 43, 47);
-    }
-
-    // adapt the bad picture
-    for (int i = 33; i < 44; ++i)
-    {
-        image[i] = new QImage(43, 47, QImage::Format_ARGB32);
-        *image[i] = rawImage.copy((i - 22) * 43, 0, 43, 47);
-    }
+    // // load image
+    cueImage.load("Textures/cue.png");
 
     // debug info
-    if (rawImage.isNull())
+    if (cueImage.isNull())
     {
         std::cout << "Load Textures fails in cue" << std::endl;
     }
@@ -73,7 +40,23 @@ void Cue::Update(int gameState, Vector2 mousePosition)
 			this->mousePosition = mousePosition;
 			if (powerGainEnableFlag)
 			{
-				powerGainCount++;
+                if (powerGainIncrement)
+                {
+                    powerGainCount++;
+                }
+                else
+                {
+                    powerGainCount--;
+                }
+
+                if (powerGainCount >= 540 - 1)
+                {
+                    powerGainIncrement = false;
+                }
+                if (powerGainCount <= 0)
+                {
+                    powerGainIncrement = true;
+                }
 			}
 
 			break;
@@ -114,25 +97,58 @@ void Cue::Draw(QPainter& painter, Ball& cueBall, Vector2 mousePosition)
 	painter.setPen(QPen(cueColor, 12, Qt::SolidLine, Qt::RoundCap));
 	painter.drawLine(beginPosition.getX(), beginPosition.getY(), endPosition.getX(), endPosition.getY());
 
+    // draw cue
+    const float PI = 3.141593;
+    if (direction.getX() >= 0)
+    {
+        if (direction.getY() >= 0)
+        {
+            // right down
+            int angle = atan(direction.getY() / direction.getX()) / PI * 180;
+            Vector2 drawPoint = cuePosition;
+            QMatrix matrix;
+            matrix.rotate(angle);
+            QImage rotateImage = cueImage.transformed(matrix);
+            QPixmap pixmap = QPixmap::fromImage(rotateImage);
+            painter.drawPixmap(drawPoint.getX(), drawPoint.getY(), pixmap);
+        }
+        else
+        {
+            // right up
+        }
+    }
+    else
+    {
+        if (direction.getY() >= 0)
+        {
+            // left down
+        }
+        else
+        {
+            // left up
+        }
+    }
+
+
+    QMatrix matrix;
+    matrix.rotate(89);
+    QImage rotateImage = cueImage.transformed(matrix);
+    QPixmap pixmap = QPixmap::fromImage(rotateImage);
+    painter.drawPixmap(100, 100, pixmap);
+
     // draw power gauge
-    // for (int i = 0; i < 22; ++i)
-    // {
-    //     QPixmap pixmap = QPixmap::fromImage(*image[i]);
-    //     painter.drawPixmap(100, 100 + i * 20, pixmap);
-    // }
-    // for (int i = 22; i < 44; ++i)
-    // {
-    //     QPixmap pixmap = QPixmap::fromImage(*image[i]);
-    //     painter.drawPixmap(200, 100 + (i - 22) * 20, pixmap);
-    // }
     if (powerGainEnableFlag)
     {
-    	// draw
-        int beginIndex = 0;
-        int index = (powerGainCount / 10) % (44 - beginIndex) + beginIndex;
-        QPixmap pixmap = QPixmap::fromImage(*image[index]);
-    	int offset = 50;
-    	painter.drawPixmap(cuePosition.getX(), cuePosition.getY() - offset, pixmap);
+        // draw arc
+        int offset = 35;
+        int angle = (powerGainCount / 2) % 270;
+        QConicalGradient conicalGradient(cuePosition.getX(), cuePosition.getY(), 0);
+        conicalGradient.setColorAt(0, QColor(255, 255, 255));
+        conicalGradient.setColorAt(0.3, QColor(0xE4, 0x00, 0x7F));
+        conicalGradient.setColorAt(0.8, QColor(255, 0, 0));        
+        conicalGradient.setColorAt(1, QColor(255, 255, 255));
+        painter.setPen(QPen(QBrush(conicalGradient), 5));
+        painter.drawArc(QRectF(cuePosition.getX() - offset, cuePosition.getY() - offset, offset * 2, offset * 2), 0, angle * 16);
     }
 }
 
@@ -167,6 +183,7 @@ void Cue::enablePowerGain()
 {
 	powerGainCount = 0;
 	powerGainEnableFlag = true;
+    powerGainIncrement = true;
 }
 
 void Cue::disablePowerGain()

@@ -18,9 +18,11 @@ private:
 	float cueLength;
 
 	// power gauge
-    QImage *image[44];
+    // QImage *image[44];
+    QImage cueImage;
     bool powerGainEnableFlag;
     int powerGainCount;
+    bool powerGainIncrement;
 
 public:
 	Cue();
