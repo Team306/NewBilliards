@@ -149,7 +149,9 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
                 if(ballsList[i].getName() == "one" || ballsList[i].getName() == "two" || ballsList[i].getName() == "three"
                         || ballsList[i].getName() == "four"||ballsList[i].getName() == "five" ||ballsList[i].getName() == "six" ||ballsList[i].getName() == "seven"){
                     currentplayer->setBalltype(SMALL);
-                    currentplayer->setFirsthit(ballsList[i].getName());
+                    if(gameRule == EIGHT_BALL){
+                        currentplayer->setFirsthit(ballsList[i].getName());
+                    }
                 }
                 else{
                     if(ballsList[i].getName() == "eight"){
@@ -157,7 +159,9 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
                     }
                     else{
                        currentplayer->setBalltype(BIG);
-                        currentplayer->setFirsthit(ballsList[i].getName());
+                       if(gameRule == EIGHT_BALL){
+                           currentplayer->setFirsthit(ballsList[i].getName());
+                       }
                     }
                 }
             }
