@@ -133,6 +133,123 @@ void Table::Draw(QPainter& painter)
     painter.drawPolygon(T6);
 }
 
+void Table::Draw3D()
+{
+    float va = 5;
+       float hy = 700 / (2 * tan(va / 2 * M_PI / 180) * 0.1);
+       float z = 1000;
+
+       glLoadIdentity();
+       //glTranslatef(0, 0, 0);
+
+       glEnable(GL_COLOR_MATERIAL);
+       glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
+       glBegin(GL_QUADS);
+       glColor3f(0.35686,0.11373,0.10980);
+
+       glVertex3f((picPosition.getX() - 560) * z / hy /0.1, (-picPosition.getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((picPosition.getX() - 560) *z/ hy /0.1, (-picPosition.getY() - picSize.getY() + 350) *z/ hy/0.1, -z);
+       glVertex3f((picPosition.getX() +picSize.getX() - 560) * z / hy / 0.1, (-picPosition.getY() - picSize.getY() + 350) *z/ hy/0.1, -z);
+       glVertex3f((picPosition.getX() +picSize.getX() - 560) * z / hy/0.1 , (-picPosition.getY() + 350) * z / hy/0.1, -z);
+
+       z=1100;
+
+       glColor3f(0.26667,0.58431,0.23529);
+       glVertex3f((position.getX() - 560) * z / hy /0.1, (-position.getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((position.getX() - 560) *z/ hy /0.1, (-position.getY() - size.getY() + 350) *z/ hy/0.1, -z);
+       glVertex3f((position.getX() +size.getX() - 560) * z / hy / 0.1, (-position.getY() - size.getY() + 350) *z/ hy/0.1, -z);
+       glVertex3f((position.getX() +size.getX() - 560) * z / hy/0.1 , (-position.getY() + 350) * z / hy/0.1, -z);
+       glEnd();
+
+       glBegin(GL_LINES);
+       glColor3f(1,1,1);
+       glVertex3f((position.getX()+lineX-560)*z/hy/0.1,(-position.getY()+350)*z/hy/0.1,-z);
+       glVertex3f((position.getX()+lineX-560)*z/hy/0.1,(-position.getY()-size.getY()+350)*z/hy/0.1,-z);
+       glEnd();
+
+       z= 1100;
+       glBegin(GL_QUADS);
+       glColor3f(0.41373,0.68431,0.41373);
+       glVertex3f((pocketp[1].getX() - 560) * z / hy / 0.1, (-pocketp[1].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((pocketp[0].getX() - 560) * z / hy / 0.1, (-pocketp[0].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[0].getX() - 560) * z / hy / 0.1, (-checkp[0].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[1].getX() - 560) * z / hy / 0.1, (-checkp[1].getY() + 350) * z / hy / 0.1, -z);
+
+       glVertex3f((pocketp[3].getX() - 560) * z / hy / 0.1, (-pocketp[3].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((pocketp[2].getX() - 560) * z / hy / 0.1, (-pocketp[2].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[2].getX() - 560) * z / hy / 0.1, (-checkp[2].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[3].getX() - 560) * z / hy / 0.1, (-checkp[3].getY() + 350) * z / hy / 0.1, -z);
+
+       glVertex3f((pocketp[4].getX() - 560) * z / hy / 0.1, (-pocketp[4].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((pocketp[5].getX() - 560) * z / hy / 0.1, (-pocketp[5].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[5].getX() - 560) * z / hy / 0.1, (-checkp[5].getY() + 350) * z/ hy / 0.1, -z);
+       glVertex3f((checkp[4].getX() - 560) * z / hy / 0.1, (-checkp[4].getY() + 350) * z/ hy / 0.1, -z);
+
+       glVertex3f((pocketp[6].getX() - 560) * z / hy / 0.1, (-pocketp[6].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((pocketp[7].getX() - 560) * z / hy / 0.1, (-pocketp[7].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[7].getX() - 560) * z / hy / 0.1, (-checkp[7].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[6].getX() - 560) * z / hy / 0.1, (-checkp[6].getY() + 350) * z / hy / 0.1, -z);
+
+       glVertex3f((pocketp[8].getX() - 560) * z / hy / 0.1, (-pocketp[8].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((pocketp[9].getX() - 560) * z / hy / 0.1, (-pocketp[9].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[9].getX() - 560) * z / hy / 0.1, (-checkp[9].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[8].getX() - 560) * z / hy / 0.1, (-checkp[8].getY() + 350) * z / hy / 0.1, -z);
+
+       glVertex3f((pocketp[11].getX() - 560) * z / hy / 0.1, (-pocketp[11].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((pocketp[10].getX() - 560) * z / hy / 0.1, (-pocketp[10].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[10].getX() - 560) * z / hy / 0.1, (-checkp[10].getY() + 350) * z / hy / 0.1, -z);
+       glVertex3f((checkp[11].getX() - 560) * z / hy / 0.1, (-checkp[11].getY() + 350) * z / hy / 0.1, -z);
+
+       glEnd();
+
+       int n = 1000;
+
+       glColor3f(0,0,0);
+       glLoadIdentity();
+       glTranslatef((p0.getX() - 560) * z / hy / 0.1, (-p0.getY() + 350) * z / hy / 0.1, -z);
+       glBegin(GL_TRIANGLE_FAN);
+       for(int i=0; i<n; ++i)
+           glVertex3f(pocketRadius * z / hy / 0.1 * cos(2*M_PI/n*i), pocketRadius * z / hy / 0.1 *sin(2*M_PI/n*i), 0);
+       glEnd();
+
+       glLoadIdentity();
+       glTranslatef((p1.getX() - 560) * z / hy / 0.1, (-p1.getY() + 350) * z / hy / 0.1, -z);
+       glBegin(GL_TRIANGLE_FAN);
+       for(int i=0; i<n; ++i)
+           glVertex3f(pocketRadius * z / hy / 0.1 * cos(2*M_PI/n*i), pocketRadius * z / hy / 0.1 *sin(2*M_PI/n*i), 0);
+       glEnd();
+
+       glLoadIdentity();
+       glTranslatef((p2.getX() - 560) * z / hy / 0.1, (-p2.getY() + 350) * z / hy / 0.1, -z);
+       glBegin(GL_TRIANGLE_FAN);
+       for(int i=0; i<n; ++i)
+           glVertex3f(pocketRadius * z / hy / 0.1 * cos(2*M_PI/n*i), pocketRadius * z / hy / 0.1 *sin(2*M_PI/n*i), 0);
+       glEnd();
+
+       glLoadIdentity();
+       glTranslatef((p3.getX() - 560) * z / hy / 0.1, (-p3.getY() + 350) * z / hy / 0.1, -z);
+       glBegin(GL_TRIANGLE_FAN);
+       for(int i=0; i<n; ++i)
+           glVertex3f(pocketRadius * z / hy / 0.1 * cos(2*M_PI/n*i), pocketRadius * z / hy / 0.1 *sin(2*M_PI/n*i), 0);
+       glEnd();
+
+       glLoadIdentity();
+       glTranslatef((p4.getX() - 560) * z / hy / 0.1, (-p4.getY() + 350) * z / hy / 0.1, -z);
+       glBegin(GL_TRIANGLE_FAN);
+       for(int i=0; i<n; ++i)
+           glVertex3f(pocketRadius * z / hy / 0.1 * cos(2*M_PI/n*i), pocketRadius * 0.75 * z / hy / 0.1 *sin(2*M_PI/n*i), 0);
+       glEnd();
+
+       glLoadIdentity();
+       glTranslatef((p5.getX() - 560) * z / hy / 0.1, (-p5.getY() + 350) * z / hy / 0.1, -z);
+       glBegin(GL_TRIANGLE_FAN);
+       for(int i=0; i<n; ++i)
+           glVertex3f(pocketRadius * z / hy / 0.1 * cos(2*M_PI/n*i), pocketRadius * 0.75 * z / hy / 0.1 *sin(2*M_PI/n*i), 0);
+       glEnd();
+
+       glDisable(GL_COLOR_MATERIAL);
+}
+
 bool Table::positionIsLegal(Vector2 p,Referee &referee)
 {
     Vector3 V(p.getX(),p.getY(),0);

@@ -16,12 +16,18 @@ const int msPerFrame = 16;
 // update times in each frame
 const int updateCount = 5;
 
+GLfloat lightAmbient[4] = { 0.8, 0.8, 0.8, 1.0 };
+GLfloat lightDiffuse[4] = { 1.0, 1.0, 1.0, 1.0 };
+GLfloat lightPosition[4] = { 0.0, 0.0, -600.0, 1.0};
+
 GLWindow::GLWindow(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     timer.setSingleShot(false);
     connect(&timer, SIGNAL(timeout()), this, SLOT(MainLoop()));
     timer.start(msPerFrame);
+    setAutoFillBackground(false);
+    setAutoBufferSwap( false );
 
     setFixedSize(1120, 700);
     setWindowTitle(tr("Billiards by Team306"));
@@ -51,11 +57,19 @@ GLWindow::~GLWindow()
 void GLWindow::initializeGL()
 {
     glEnable(GL_MULTISAMPLE);
-    // glShadeModel(GL_SMOOTH);
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor( 0.0, 0.0, 0.0, 0.0 );
+    glClearDepth( 1.0 );
+    glShadeModel( GL_SMOOTH );
+    glLightfv( GL_LIGHT0, GL_AMBIENT, lightAmbient );
+    glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse );
+    glLightfv( GL_LIGHT0, GL_POSITION, lightPosition );
+    glEnable( GL_DEPTH_TEST );
+    glDepthFunc( GL_LEQUAL );
+    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
-    // temp put init here
 
+    glEnable( GL_LIGHT0 );
+    glEnable( GL_LIGHTING );
     game.init();
     connect(game.getGameSever(),SIGNAL(newConnection()),this,SLOT(newConnect()));
     connect(game.getGameClient(),SIGNAL(connected()),this,SLOT(clientConnected()));
@@ -89,7 +103,7 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
                                                   ||game.getGameState() == BALL_IS_RUNNING )){
             SendData.clear();
             SendData.append(QString("EL#"));
-            SendData.append(QString::number(elapsedTime));
+            SendData.append(QString::number(game.getCue().getPowerCount()));
             SendData.append(QString(","));
             SendData.append(QString::number(mouse_x));
             SendData.append(QString(","));
@@ -141,13 +155,53 @@ void GLWindow::mouseMoveEvent(QMouseEvent *event)
 
 void GLWindow::paintEvent(QPaintEvent *event)
 {
-    // makeCurrent();
-    // glClear(GL_COLOR_BUFFER_BIT);
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+//    glEnable(GL_FLAT);
+//    QPainter painter(this);
+//    painter.setRenderHint(QPainter::Antialiasing);
+//    game.Draw(painter);
+//    painter.end();
+//    glDisable(GL_FLAT);
+
+    makeCurrent();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glEnable( GL_CULL_FACE );
+
+    glLoadIdentity();
+    game.Draw3D();
+
+    glDisable(GL_CULL_FACE);
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
+    painter.end();
+
+    glEnable(GL_FLAT);
+    painter.begin(this);
+    painter.setRenderHint(QPainter::Antialiasing);
     game.Draw(painter);
     painter.end();
+    glDisable(GL_FLAT);
+    //glFlush();
+    swapBuffers();
+}
+
+void GLWindow::resizeGL( int width, int height )
+{
+  if ( height == 0 )
+  {
+    height = 1;
+  }
+
+  glViewport( 0, 0, (GLint)width, (GLint)height );
+  glMatrixMode( GL_PROJECTION );
+  glLoadIdentity();
+  gluPerspective( 5, (GLfloat)width/(GLfloat)height, 0.1, 10000.0 );
+  glMatrixMode( GL_MODELVIEW );
 }
 
 void GLWindow::MainLoop()
@@ -184,14 +238,6 @@ void GLWindow::MainLoop()
     // updateGL();
 }
 
-void GLWindow::paintGL()
-{
-    makeCurrent();
-    glClear(GL_COLOR_BUFFER_BIT);
-
-}
-
-
 void GLWindow::newConnect(){
     game.getGameSever()->setClient();
     QByteArray start;
@@ -219,6 +265,7 @@ void GLWindow::serverRead(){
                 if(readlist[i] == "EL"){
                 QStringList infolist = readlist[i+1].split(",");
                 int elapsedTime = infolist[0].toInt();
+                game.getCue().setPowerCount(elapsedTime);
                 game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
                 game.mousePress(elapsedTime);
                 i = i+2;
@@ -260,6 +307,7 @@ void GLWindow::clientRead(){
                 if(readlist[i] == "EL"){
                     QStringList infolist = readlist[i+1].split(",");
                     int elapsedTime = infolist[0].toInt();
+                    game.getCue().setPowerCount(elapsedTime);
                     game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
                     game.mousePress(elapsedTime);
                     i = i+2;

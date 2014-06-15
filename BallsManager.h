@@ -28,7 +28,8 @@ public:
 
 	// update and draw
     void Update(Table &, Player *, int gameRule);
-	void Draw(QPainter &);
+    void Draw();
+
 
 	// get and set
 	Ball& getCueBall();

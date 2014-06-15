@@ -145,9 +145,9 @@ void Cue::Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition, Vector2 hitP
     // float scale = (float)elapsed / 100;
     float scale = (float)powerGainCount / 100;
     // set max speed
-    if (scale > 5)
+    if (scale > 3)
 	{
-        scale = 5;
+        scale = 3;
 	}
 	// set min speed ? is needed?
 	if (scale < 0.2)
@@ -155,6 +155,7 @@ void Cue::Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition, Vector2 hitP
 		scale = 0.2;
 	}
 	speed = speed.getNormalize() * scale;
+    speed.setXY(speed.getX(),speed.getY());
 	cueBall.setSpeed(speed);
     //debug info
     //std::cout<<"speed::"<<speed.getX()<<","<<speed.getY()<<std::endl;
@@ -176,4 +177,8 @@ void Cue::disablePowerGain()
 int Cue::getPowerCount() const
 {
     return powerGainCount;
+}
+
+void Cue::setPowerCount(int powerCount){
+    powerGainCount = powerCount;
 }

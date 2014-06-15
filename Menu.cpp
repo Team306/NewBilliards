@@ -68,6 +68,7 @@ Menu::Menu()
     backRectChosen = QRect(25, 650, 100, 30);
 }
 
+
 Menu::~Menu()
 {
 }

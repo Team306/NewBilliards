@@ -2,7 +2,11 @@
 #ifndef BALL_H
 #define BALL_H
 
-
+#include <QGLWidget>
+#include <GL/gl.h>
+#include <GL/glaux.h>
+#include <GL/glu.h>
+#include <QImage>
 #include <QPainter>
 #include <QColor>
 #include <string>
@@ -12,11 +16,9 @@
 
 enum BALL_STATE { STILL, RUNNING, ON_THE_POCKET };
 
-
-const float Fslip_GroundToBall = 0.0005f;//hua dong
-const float Froll_GroundToBall = 0.00009f;//gun dong
-const float Frotate_GroundToBall=0.00001f;//ce xuan
-
+const float Fslip_GroundToBall = 0.002f;//hua dong
+const float Froll_GroundToBall = 0.00015f;//gun dong
+const float Frotate_GroundToBall=0.0001f;//ce xuan
 const float Fslip_Threshold=(1.0f+1.0f/0.4f)*Fslip_GroundToBall;
 const float Froll_Threshold=1.0f*Froll_GroundToBall;
 const float Frotate_Threshold=1.0f*Frotate_GroundToBall;
@@ -26,17 +28,21 @@ const float M=1.0f;
 class Ball
 {
 private:
-    Vector3 position;
-    Vector3 speed;
-    Vector3 anglespeed;
+    Vector3 position;  //coordinate system:qt
+    Vector3 speed;     //coordinate system:qt
+    Vector3 anglespeed; //coordinate system:qt
     float radius;
     float Im;
 
     // ball's info
     std::string name;
     QColor color;
-
     BALL_STATE ballState;
+
+    //GL
+    GLUquadricObj *quadratic;
+    Quaternion oriention;  //coordinate system:opengl
+    GLuint texture[1];
 
 public:
     Ball();
@@ -44,9 +50,14 @@ public:
     Ball(const Vector2& position, float radius);
     ~Ball();
 
+    void loadGLTextures();
+
     Vector3 getPosition() const;
     void setPosition(const Vector3& v);
     void setPosition(const Vector2& v); //z=0
+    void setPositionX(float x);
+    void setPositionY(float y);
+    void setPositionZ(float z);
     Vector3 getSpeed() const;
     void setSpeed(const Vector3& v);
     Vector3 getAngleSpeed() const;
@@ -65,7 +76,7 @@ public:
 
 
     void Move();
-    virtual void Draw(QPainter &);
+    void Draw(QPainter&);
 
 };
 
