@@ -19,10 +19,12 @@ private:
 	float cueLength;
 
 	// power gauge
-    QImage *image[44];
+    // QImage *image[44];
+    QImage cueImage;
     bool powerGainEnableFlag;
     int powerGainCount;
     QSound *sound;
+    bool powerGainIncrement;
 
 public:
 	Cue();
@@ -33,9 +35,9 @@ public:
 
 	// update and draw
     void Update(int gameState, Vector2 mousePosition);
-	void Draw(QPainter &, Ball& cueBall);	
+	void Draw(QPainter &, Ball& cueBall, Vector2 mousePosition);	
 
-    void Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle);
+    void Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle);
 
     // power gauge
     void enablePowerGain();

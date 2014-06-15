@@ -27,6 +27,9 @@ void Table::init(Referee& referee)
     p4.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + pocketRadius + 8);
     p5.setXY(picPosition.getX() + picSize.getX() / 2, picPosition.getY() + size.getY() - pocketRadius + position.getY() * 2 - 8);
 
+    if(checkp.size() > 0 || pocketp.size() > 0)
+        return;
+
     checkp.push_back(Vector2(position.getX() + pocketRadius + 28, position.getY() + 15));//topleft_left
     checkp.push_back(Vector2(position.getX() + size.getX() / 2 - pocketRadius - 8, position.getY() + 15));//topleft_right
     checkp.push_back(Vector2(position.getX() + size.getX() / 2 + pocketRadius + 8, position.getY() + 15));//topright_left
@@ -357,6 +360,18 @@ bool Table::positionIsLegal(Vector2 p,Referee &referee)
     return false;
 }
 
+bool Table::positionIsIN(Vector2 p, Referee &referee)
+{
+    Vector3 V(p.getX(),p.getY(),0);
+    if( (p.getX() > checkp[9].getX() + referee.getBallRadius()) && (p.getX() < checkp[11].getX() - referee.getBallRadius()) &&
+            (p.getY() > checkp[0].getY() + referee.getBallRadius()) &&
+            (p.getY() < checkp[5].getY() - referee.getBallRadius()))
+        {
+                return true;
+        }
+    return false;
+}
+
 bool Table::checkPockets(Ball& ball)
 {
     // if the ball is in the pocket return true;
@@ -370,15 +385,3 @@ bool Table::checkPockets(Ball& ball)
     return false;
 }
 
-void Table::clear()
-{
-    checkp.clear();
-    pocketp.clear();
-
-    T1.clear();
-    T2.clear();
-    T3.clear();
-    T4.clear();
-    T5.clear();
-    T6.clear();
-}

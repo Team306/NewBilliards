@@ -15,12 +15,12 @@ Game::Game()
     player2.setPlayerflag(GUEST);
 	gameState = START_FRAME;
     gameRule = EIGHT_BALL;
-	elapsedTime = 0;
     client_connected = false;
     //player1.init();
     //player2.init();
     current_player = &player1;
     hitAngle = 0;
+    freeball_flag = 0;
 }
 
 Game::~Game()
@@ -38,13 +38,13 @@ void Game::init()
     current_player = &player1;
     player1.setPlayerflag(LOCAL);
     player2.setPlayerflag(GUEST);
-    elapsedTime = 0;
     player1.init();
     player2.init();
     referee.init(gameRule);
     table.init(referee);
 	ballsManager.init(referee);
 	cue.init(referee);
+    freeball_flag = 0;
 }
 
 void Game::Update()
@@ -74,11 +74,19 @@ void Game::Update()
 	{
 		case FREE_BALL:
 			// check before set position
-            if(table.positionIsLegal(mousePosition,referee))
+            if(((gameRule == EIGHT_BALL && freeball_flag <= 1)||(gameRule == NINE_BALL && !freeball_flag))
+                    && table.positionIsLegal(mousePosition,referee))
             {
                 ballsManager.getCueBall().setPosition(mousePosition);
+                break;
             }
-			break;
+            if(((gameRule == EIGHT_BALL && freeball_flag > 1) ||(gameRule == NINE_BALL && freeball_flag))
+                    && table.positionIsIN(mousePosition,referee))
+            {
+                ballsManager.getCueBall().setPosition(mousePosition);
+                break;
+            }
+            break;
 		case BALL_IS_RUNNING:
             if (!ballsManager.isRunning())
 			{
@@ -86,11 +94,12 @@ void Game::Update()
                 if(gameMode == PRACTICE_MODE){
                     if(referee.judge(current_player, &ballsManager) == TO_FREE_BALL){
                        gameState = FREE_BALL;
+                       current_player->Goon();
                     }
                     else{
                         gameState = WAIT_FOR_STROKE;
+                        current_player->Goon();
                     }
-                    current_player->Goon();
                     referee.setTargetname(ballsManager.getBallsList());
                     break;
                 }
@@ -137,12 +146,10 @@ void Game::Draw(QPainter& painter)
     switch (gameState)
     {
     	case WAIT_FOR_STROKE:
-    		cue.Draw(painter, ballsManager.getCueBall());
+    		cue.Draw(painter, ballsManager.getCueBall(), mousePosition);
             menu.displayPlayer(painter, current_player == &player1);
             menu.displayHitPoint(painter, hitPosition, hitAngle);
             menu.displayBack(painter, mousePosition);
-
-            displayTargetBalls(painter);
     		break;
         case FREE_BALL:
             menu.displayPlayer(painter, current_player == &player1);
@@ -186,7 +193,12 @@ void Game::Draw(QPainter& painter)
 void Game::Draw3D()
 {
     table.Draw3D();
-    ballsManager.Draw();
+    ballsManager.Draw3D();
+
+    if (gameState == WAIT_FOR_STROKE)
+    {
+        displayTargetBalls();
+    }
 }
 
 
@@ -196,10 +208,9 @@ void Game::setMousePosition(Vector2 position)
     //std::cout<<"mousePosition<<<<<<"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
 }
 
-void Game::mousePress(int elapsed)
+void Game::mousePress()
 {
 	// use in debug
-	elapsedTime = elapsed;
 	// do else thing
 	switch (gameState)
 	{
@@ -224,7 +235,8 @@ void Game::mousePress(int elapsed)
                 break;
             }
             // if do not change hit point continue
-            cue.Stroke(elapsed, ballsManager.getCueBall(),mousePosition, hitPosition, hitAngle);
+            cue.Stroke(ballsManager.getCueBall(),mousePosition, hitPosition, hitAngle);
+            freeball_flag++;
             gameState = BALL_IS_RUNNING;
 			break;
         case BALL_IS_RUNNING:
@@ -260,9 +272,12 @@ GAME_RULE Game::getGameRule() const
 bool Game::cuePositionIsLegal()
 {
     std::vector<Ball> ballsList = ballsManager.getBallsList();
+    Vector3 cueBallPosition = ballsManager.getCueBall().getPosition();
+    if(cueBallPosition.getX() == -100 || cueBallPosition.getY() == -100){
+        return false;
+    }
     for (unsigned i = 0; i < ballsList.size(); ++i)
     {
-        Vector3 cueBallPosition = ballsManager.getCueBall().getPosition();
         if (cueBallPosition.DistanceTo(ballsList[i].getPosition()) < 2 * ballsManager.getCueBall().getRadius())
         {
             return false;
@@ -298,6 +313,7 @@ void Game::GameBegin() {
 void Game::ClientInit(int _gameRule){
     gameRule = (GAME_RULE)_gameRule;
     referee.init(gameRule);
+    //
     table.init(referee);
     ballsManager.init(referee);
     cue.init(referee);
@@ -338,19 +354,16 @@ void Game::checkStartFrameClick(const Menu& menu)
     if (menu.getEightBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameRule = EIGHT_BALL;
-        table.clear();
         init();
     }
     if (menu.getNineBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameRule = NINE_BALL;
-        table.clear();
         init();
     }
     if (menu.getSnookerChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameRule = SNOOKER;
-        table.clear();
         init();
     }
 }
@@ -419,8 +432,21 @@ bool Game::checkBack(const Menu& menu)
 {
     if (menu.getBackChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
     {
+        if(gameMode == NETWORK_MODE){
+            QByteArray tosend;
+            tosend.clear();
+            tosend.append(QString("O"));
+            tosend.append(QString("#"));
+            tosend.append(QString::number(1));
+            tosend.append(QString("#"));
+            if(network_rule == SERVER){
+                getGameSever()->sendMessage(tosend);
+            }
+            else{
+                getGameClient()->sendMessage(tosend);
+            }
+        }
         gameState = START_FRAME;
-        table.clear();
         init();
         return true;
     }
@@ -432,8 +458,7 @@ Cue& Game::getCue()
     return cue;
 }
 
-
-void Game::displayTargetBalls(QPainter& painter)
+void Game::displayTargetBalls()
 {
     // 3d display target balls here
     std::vector<Ball> remainBallsListCopy = ballsManager.getBallsList();
@@ -476,14 +501,14 @@ void Game::displayTargetBalls(QPainter& painter)
                 {
                     remainBallsListCopy[index].setPosition(Vector2(200 + 10, 660));
                     remainBallsListCopy[index].setRadius(10);
-                    remainBallsListCopy[index].Draw(painter);
+                    remainBallsListCopy[index].Draw3D();
                 }
                 else
                 {
                     // draw under player1
                     remainBallsListCopy[index].setPosition(Vector2(630 + 10, 660));
                     remainBallsListCopy[index].setRadius(10);
-                    remainBallsListCopy[index].Draw(painter);
+                    remainBallsListCopy[index].Draw3D();
                 }
             }
             else
@@ -496,14 +521,14 @@ void Game::displayTargetBalls(QPainter& painter)
                     {
                         remainBallsListCopy[index].setPosition(Vector2(200 + 10 + i * 30, 660));
                         remainBallsListCopy[index].setRadius(10);
-                        remainBallsListCopy[index].Draw(painter);
+                        remainBallsListCopy[index].Draw3D();
                     }
                     else
                     {
                         // draw under player1
                         remainBallsListCopy[index].setPosition(Vector2(630 + 10 + i * 30, 660));
                         remainBallsListCopy[index].setRadius(10);
-                        remainBallsListCopy[index].Draw(painter);
+                        remainBallsListCopy[index].Draw3D();
                     }
                 }
             }
@@ -525,14 +550,14 @@ void Game::displayTargetBalls(QPainter& painter)
                 // draw under player1
                 remainBallsListCopy[index].setPosition(Vector2(200, 660));
                 remainBallsListCopy[index].setRadius(10);
-                remainBallsListCopy[index].Draw(painter);
+                remainBallsListCopy[index].Draw3D();
             }
             else
             {
                 // draw under player1
                 remainBallsListCopy[index].setPosition(Vector2(630, 660));
                 remainBallsListCopy[index].setRadius(10);
-                remainBallsListCopy[index].Draw(painter);
+                remainBallsListCopy[index].Draw3D();
             }
             break;
         default:

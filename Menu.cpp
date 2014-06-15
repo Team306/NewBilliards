@@ -38,7 +38,6 @@ Menu::Menu()
     endContinueRect = QRectF(340, 480, 1000, 250);
 
     // player
-
     player1RectSmall = QRectF(250, 600, 1000, 250);
     player1RectBig = QRectF(200, 580, 1000, 250);
     player2RectSmall = QRectF(680, 600, 1000, 250);
@@ -308,7 +307,6 @@ void Menu::displayHitPoint(QPainter& painter, Vector2 hitPosition, int hitAngle)
         hitPointCenterPosition.getY() - (hitPointRadius + offset + 1) * sin(float(hitAngle) / 180 * PI), 
         hitPointCenterPosition.getX() + (hitPointRadius + offset + circularWidth + 1) * cos(float(hitAngle) / 180 * PI), 
         hitPointCenterPosition.getY() - (hitPointRadius + offset + circularWidth + 1) * sin(float(hitAngle) / 180 * PI));
-
 
     // text angle display
     QFont font("Consolas", 18, 18, false);

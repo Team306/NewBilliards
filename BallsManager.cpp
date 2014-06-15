@@ -137,8 +137,6 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
         cueBall.setPosition(Vector2(-100,-100));
         currentplayer->setCueball_in(1);
         currentplayer->setOnpocketlist(cueBall.getName());
-        cueBall.setPosition(Vector2(-100, -100));
-        cueBall.setBallState(STILL);
     }
     for (unsigned i = 0; i < ballsList.size(); ++i)
     {
@@ -178,15 +176,14 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
     }
 }
 
-void BallsManager::Draw()
+void BallsManager::Draw3D()
 {
-    QPainter painter;
     for (std::vector<Ball>::iterator iter = ballsList.begin(); iter != ballsList.end(); ++iter)
 	{
 		// Draw each ball here;
-        iter->Draw(painter);
+        iter->Draw3D();
 	}
-    cueBall.Draw(painter);
+    cueBall.Draw3D();
 }
 
 Ball& BallsManager::getCueBall()

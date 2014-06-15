@@ -79,26 +79,22 @@ void GLWindow::initializeGL()
 void GLWindow::mousePressEvent(QMouseEvent *event)
 {
     if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME){
-        mousePressTime.start();
         game.getCue().enablePowerGain();
     }
 }
 
 void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-
-
     if(game.getGameState() != BALL_IS_RUNNING &&(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME)){
         // change to cue power gain
         game.getCue().disablePowerGain();
 
-        int elapsedTime = mousePressTime.elapsed();
     // call game method
         int mouse_x = event->x();
         int mouse_y = event->y();
        //std::cout<<"Realease::"<<mouse_x<<","<<mouse_y<<std::endl;
         game.setMousePosition(Vector2(mouse_x, mouse_y));
-        game.mousePress(elapsedTime);
+        game.mousePress();
         if(game.getGameMode() == NETWORK_MODE && (game.getGameState() == WAIT_FOR_STROKE || game.getGameState() == FREE_BALL
                                                   ||game.getGameState() == BALL_IS_RUNNING )){
             SendData.clear();
@@ -126,8 +122,6 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void GLWindow::mouseMoveEvent(QMouseEvent *event)
 {
-
-
     if(game.getGameState() != BALL_IS_RUNNING &&(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME)){
         int mouse_x = event->x();
         int mouse_y = event->y();
@@ -192,16 +186,16 @@ void GLWindow::paintEvent(QPaintEvent *event)
 
 void GLWindow::resizeGL( int width, int height )
 {
-  if ( height == 0 )
-  {
-    height = 1;
-  }
-
-  glViewport( 0, 0, (GLint)width, (GLint)height );
-  glMatrixMode( GL_PROJECTION );
-  glLoadIdentity();
-  gluPerspective( 5, (GLfloat)width/(GLfloat)height, 0.1, 10000.0 );
-  glMatrixMode( GL_MODELVIEW );
+    if ( height == 0 )
+    {
+        height = 1;
+    }
+    
+    glViewport( 0, 0, (GLint)width, (GLint)height );
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    gluPerspective( 5, (GLfloat)width/(GLfloat)height, 0.1, 10000.0 );
+    glMatrixMode( GL_MODELVIEW );
 }
 
 void GLWindow::MainLoop()
@@ -212,7 +206,12 @@ void GLWindow::MainLoop()
         update();
         return;
     }
-
+    if(game.getNetworkRule() == SERVER){
+        ServerProcessList();
+    }
+    if(game.getNetworkRule() == CLIENT){
+        ClientProcessList();
+    }
     for (int i = 0; i < updateCount; ++i)
     {
         game.Update();
@@ -251,48 +250,19 @@ void GLWindow::newConnect(){
 
 void GLWindow::serverRead(){
     toReadList<<game.getGameSever()->getMessage();
-
-    if(game.getGameState() != BALL_IS_RUNNING){
-        while(!toReadList.isEmpty()){
-            ReadData.clear();
-            ReadData = toReadList[0];
-            //ReadData = game.getGameSever()->getMessage();
-            QString readStr = QVariant(ReadData).toString();
-            //std::cout<<"Read::::"<<readStr.toStdString()<<std::endl;
-            QStringList readlist = readStr.split("#");
-
-            for(int i = 0; i< readlist.size();){
-                if(readlist[i] == "EL"){
-                QStringList infolist = readlist[i+1].split(",");
-                int elapsedTime = infolist[0].toInt();
-                game.getCue().setPowerCount(elapsedTime);
-                game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
-                game.mousePress(elapsedTime);
-                i = i+2;
-            }
-            else{
-                if(readlist[i] == "P"){
-                    QStringList position = readlist[i+1].split(",");
-                    game.setMousePosition(Vector2(position[0].toFloat(),position[1].toFloat()));
-                    i = i+2;
-                }
-                else{
-                    if(readlist[i] == "S"){
-                        game.GameBegin();
-                        i = i+2;
-                    }
-                    else i = i+2;
-                }
-            }
-        }
-        toReadList.removeFirst();
-        }
-    }
+    ServerProcessList();
 }
 
 void GLWindow::clientRead(){
     toReadList<<game.getGameClient()->getMessage();
+    ClientProcessList();
+}
 
+void GLWindow::clientConnected(){
+    game.setClientConnected(true);
+}
+
+void GLWindow::ClientProcessList(){
     if(game.getGameState() != BALL_IS_RUNNING){
         while(!toReadList.isEmpty()){
             ReadData.clear();
@@ -306,10 +276,10 @@ void GLWindow::clientRead(){
             for(int i = 0; i<readlist.size();){
                 if(readlist[i] == "EL"){
                     QStringList infolist = readlist[i+1].split(",");
-                    int elapsedTime = infolist[0].toInt();
-                    game.getCue().setPowerCount(elapsedTime);
+                    int powerCount = infolist[0].toInt();
+                    game.getCue().setPowerCount(powerCount);
                     game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
-                    game.mousePress(elapsedTime);
+                    game.mousePress();
                     i = i+2;
                 }
                 else{
@@ -329,15 +299,63 @@ void GLWindow::clientRead(){
                                 game.ClientInit(readlist[i+1].toInt());
                                 i = i+2;
                             }
-                            else i = i+2;
-                    }
-                }
+                            else{
+                                if(readlist[i] == "O"){
+                                    game.init();
+                                    i = i + 2;
+                                }
+                                else i = i + 2;
+                             }
+                        }
+                   }
             }
            toReadList.removeFirst();
        }
     }
 }
 
-void GLWindow::clientConnected(){
-    game.setClientConnected(true);
+void GLWindow::ServerProcessList(){
+    if(game.getGameState() != BALL_IS_RUNNING){
+        while(!toReadList.isEmpty()){
+            ReadData.clear();
+            ReadData = toReadList[0];
+            //ReadData = game.getGameSever()->getMessage();
+            QString readStr = QVariant(ReadData).toString();
+            //std::cout<<"Read::::"<<readStr.toStdString()<<std::endl;
+            QStringList readlist = readStr.split("#");
+
+            for(int i = 0; i< readlist.size();){
+                if(readlist[i] == "EL"){
+                QStringList infolist = readlist[i+1].split(",");
+                int powerCount = infolist[0].toInt();
+                game.getCue().setPowerCount(powerCount);
+                game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
+                game.mousePress();
+                i = i+2;
+            }
+            else{
+                if(readlist[i] == "P"){
+                    QStringList position = readlist[i+1].split(",");
+                    game.setMousePosition(Vector2(position[0].toFloat(),position[1].toFloat()));
+                    i = i+2;
+                }
+                else{
+                    if(readlist[i] == "S"){
+                        game.GameBegin();
+                        i = i+2;
+                    }
+                    else{
+                        if(readlist[i] == "O"){
+                          game.init();
+                          i = i + 2;
+                        }
+                        else i = i + 2;
+                    }
+                }
+            }
+        }
+        toReadList.removeFirst();
+        }
+    }
 }
+

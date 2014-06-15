@@ -67,7 +67,7 @@ private:
     int hitAngle;	// from 0 to 85, maybe can set a max value below 90
 
 	// debug variables
-	int elapsedTime;
+     unsigned freeball_flag;
 
 public:
 	Game();
@@ -81,7 +81,7 @@ public:
     void Draw3D();
 	// deal with mouse event
 	void setMousePosition(Vector2);
-	void mousePress(int elapsed);
+    void mousePress();
 
 	GAME_STATE getGameState() const;
 
@@ -108,7 +108,7 @@ public:
     void PlayerExchange();
 
     Cue& getCue();
-    void displayTargetBalls(QPainter &);
+    void displayTargetBalls();
 };
 
 

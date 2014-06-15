@@ -62,7 +62,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
         for(unsigned i=0; i<onPocketlist.size(); i++){
             if(onPocketlist[i] == "eight"){
                 //std::cout<<"8"<<std::endl;
-                if(_currentplayer->getBalltype() == NOTDEF){
+                if(_currentplayer->getBalltype() == NOTDEF || _currentplayer->getFirsthit() != "eight"){
                     _currentplayer->setGameresult(FAIL);
                 }
 
@@ -95,7 +95,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
 
         }
 
-        if(_currentplayer->getBalltype() == NOTDEF){
+        if(_currentplayer->getBalltype() == NOTDEF && _currentplayer->getCueball_in() ==0 ){
             return TO_EXCHANGE;
         }
 
