@@ -86,11 +86,12 @@ void Game::Update()
                 if(gameMode == PRACTICE_MODE){
                     if(referee.judge(current_player, &ballsManager) == TO_FREE_BALL){
                        gameState = FREE_BALL;
+                       current_player->Goon();
                     }
                     else{
                         gameState = WAIT_FOR_STROKE;
+                        current_player->Goon();
                     }
-                    current_player->Goon();
                     referee.setTargetname(ballsManager.getBallsList());
                     break;
                 }

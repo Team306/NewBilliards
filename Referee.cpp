@@ -95,7 +95,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
 
         }
 
-        if(_currentplayer->getBalltype() == NOTDEF){
+        if(_currentplayer->getBalltype() == NOTDEF && _currentplayer->getCueball_in() ==0 ){
             return TO_EXCHANGE;
         }
 
