@@ -81,7 +81,7 @@ public:
     void Draw3D();
 	// deal with mouse event
 	void setMousePosition(Vector2);
-	void mousePress(int elapsed);
+    void mousePress();
 
 	GAME_STATE getGameState() const;
 

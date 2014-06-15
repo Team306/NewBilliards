@@ -200,10 +200,9 @@ void Game::setMousePosition(Vector2 position)
     //std::cout<<"mousePosition<<<<<<"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
 }
 
-void Game::mousePress(int elapsed)
+void Game::mousePress()
 {
 	// use in debug
-	elapsedTime = elapsed;
 	// do else thing
 	switch (gameState)
 	{
@@ -228,7 +227,7 @@ void Game::mousePress(int elapsed)
                 break;
             }
             // if do not change hit point continue
-            cue.Stroke(elapsed, ballsManager.getCueBall(),mousePosition, hitPosition, hitAngle);
+            cue.Stroke(ballsManager.getCueBall(),mousePosition, hitPosition, hitAngle);
             gameState = BALL_IS_RUNNING;
 			break;
         case BALL_IS_RUNNING:

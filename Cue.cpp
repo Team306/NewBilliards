@@ -136,7 +136,7 @@ void Cue::Draw(QPainter& painter, Ball& cueBall, Vector2 mousePosition)
     }
 }
 
-void Cue::Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle)
+void Cue::Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle)
 {
 	// use elapsed to calc the speed
     Vector2 cuePosition = Vector2(cueBall.getPosition().getX(),cueBall.getPosition().getY());
@@ -158,9 +158,9 @@ void Cue::Stroke(int elapsed, Ball& cueBall, Vector2 mousePosition, Vector2 hitP
     speed.setXY(speed.getX(),speed.getY());
 	cueBall.setSpeed(speed);
     //debug info
-    //std::cout<<"speed::"<<speed.getX()<<","<<speed.getY()<<std::endl;
-    //std::cout<<"mousepos::"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
-    //std::cout<<"scale::"<<scale<<std::endl;
+    std::cout<<"speed::"<<speed.getX()<<","<<speed.getY()<<std::endl;
+    std::cout<<"mousepos::"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
+    std::cout<<"scale::"<<scale<<std::endl;
 }
 
 void Cue::enablePowerGain()

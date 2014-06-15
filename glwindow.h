@@ -42,11 +42,11 @@ private:
 	Game game;
 
 	QTimer timer;
-	QTime mousePressTime;
-
     QByteArray ReadData;
     QByteArray SendData;
     QList<QByteArray> toReadList;
+    void ClientProcessList();
+    void ServerProcessList();
 };
 
 
