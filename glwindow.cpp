@@ -16,9 +16,9 @@ const int msPerFrame = 16;
 // update times in each frame
 const int updateCount = 5;
 
-GLfloat lightAmbient[4] = { 0.2, 0.2, 0.2, 1.0 };
+GLfloat lightAmbient[4] = { 0.8, 0.8, 0.8, 1.0 };
 GLfloat lightDiffuse[4] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat lightPosition[4] = { 0.0, 0.0, -900.0, 1.0};
+GLfloat lightPosition[4] = { 0.0, 0.0, -600.0, 1.0};
 
 GLWindow::GLWindow(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
@@ -57,15 +57,15 @@ void GLWindow::initializeGL()
     glClearColor( 0.0, 0.0, 0.0, 0.0 );
     glClearDepth( 1.0 );
     glShadeModel( GL_SMOOTH );
+    glLightfv( GL_LIGHT0, GL_AMBIENT, lightAmbient );
+    glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse );
+    glLightfv( GL_LIGHT0, GL_POSITION, lightPosition );
     glEnable( GL_DEPTH_TEST );
     glDepthFunc( GL_LEQUAL );
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-    //glLightfv( GL_LIGHT0, GL_AMBIENT, lightAmbient );
-    //glLightfv( GL_LIGHT0, GL_DIFFUSE, lightDiffuse );
-    //glLightfv( GL_LIGHT0, GL_POSITION, lightPosition );
 
-    //glEnable( GL_LIGHT0 );
-    //glEnable( GL_LIGHTING );
+    glEnable( GL_LIGHT0 );
+    glEnable( GL_LIGHTING );
     game.init();
     connect(game.getGameSever(),SIGNAL(newConnection()),this,SLOT(newConnect()));
     connect(game.getGameClient(),SIGNAL(readyRead()),this,SLOT(clientRead()));
@@ -139,12 +139,12 @@ void GLWindow::paintEvent(QPaintEvent *event)
 {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-    glEnable(GL_FLAT);
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    game.Draw(painter);
-    painter.end();
-    glDisable(GL_FLAT);
+//    glEnable(GL_FLAT);
+//    QPainter painter(this);
+//    painter.setRenderHint(QPainter::Antialiasing);
+//    game.Draw(painter);
+//    painter.end();
+//    glDisable(GL_FLAT);
 
     makeCurrent();
     glMatrixMode(GL_MODELVIEW);
@@ -158,9 +158,16 @@ void GLWindow::paintEvent(QPaintEvent *event)
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
-    painter.begin(this);
+    QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.end();
+
+    glEnable(GL_FLAT);
+    painter.begin(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    game.Draw(painter);
+    painter.end();
+    glDisable(GL_FLAT);
     //glFlush();
     swapBuffers();
 }

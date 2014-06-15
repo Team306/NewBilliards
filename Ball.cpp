@@ -1,6 +1,10 @@
 // Copyright (C) 2014 Team306
 
 #include "Ball.h"
+GLfloat mat_Ambient[4] = { 0.8, 0.8, 0.8, 1.0 };
+GLfloat mat_Diffuse[4] = { 0.8, 0.8, 0.8, 1.0 };
+GLfloat mat_Specular[4] = {1.0, 1.0, 1.0,1.0};
+GLfloat mat_Shininess[]={1.0};
 
 Ball::Ball()
 {
@@ -239,7 +243,10 @@ void Ball::Draw()
 
      glTranslatef((this->position.getX()-640.0)/1280.0*hx*z/0.1,(-this->position.getY()+360.0)/720.0*hy*z/0.1,-z);
      glMultMatrixf(GLm);
-
+     glMaterialfv(GL_FRONT,GL_AMBIENT,mat_Ambient);
+     glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_Diffuse);
+     //glMaterialfv(GL_FRONT,GL_SPECULAR,mat_Specular);
+     glMaterialfv(GL_FRONT,GL_SHININESS,mat_Shininess);
      quadratic=gluNewQuadric();
      gluQuadricNormals(quadratic, GLU_SMOOTH);
      gluQuadricTexture(quadratic, GL_TRUE);
