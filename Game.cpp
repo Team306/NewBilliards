@@ -423,6 +423,20 @@ bool Game::checkBack(const Menu& menu)
 {
     if (menu.getBackChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
     {
+        if(gameMode == NETWORK_MODE){
+            QByteArray tosend;
+            tosend.clear();
+            tosend.append(QString("O"));
+            tosend.append(QString("#"));
+            tosend.append(QString::number(1));
+            tosend.append(QString("#"));
+            if(network_rule == SERVER){
+                getGameSever()->sendMessage(tosend);
+            }
+            else{
+                getGameClient()->sendMessage(tosend);
+            }
+        }
         gameState = START_FRAME;
         table.clear();
         init();

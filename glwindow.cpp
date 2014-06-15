@@ -277,7 +277,13 @@ void GLWindow::serverRead(){
                         game.GameBegin();
                         i = i+2;
                     }
-                    else i = i+2;
+                    else{
+                        if(readlist[i] == "O"){
+                          game.init();
+                          i = i + 2;
+                        }
+                        else i = i + 2;
+                    }
                 }
             }
         }
@@ -325,9 +331,15 @@ void GLWindow::clientRead(){
                                 game.ClientInit(readlist[i+1].toInt());
                                 i = i+2;
                             }
-                            else i = i+2;
-                    }
-                }
+                            else{
+                                if(readlist[i] == "O"){
+                                    game.init();
+                                    i = i + 2;
+                                }
+                                else i = i + 2;
+                             }
+                        }
+                   }
             }
            toReadList.removeFirst();
        }
@@ -337,3 +349,4 @@ void GLWindow::clientRead(){
 void GLWindow::clientConnected(){
     game.setClientConnected(true);
 }
+
