@@ -138,7 +138,7 @@ void Game::Draw(QPainter& painter)
     switch (gameState)
     {
     	case WAIT_FOR_STROKE:
-    		cue.Draw(painter, ballsManager.getCueBall());
+    		cue.Draw(painter, ballsManager.getCueBall(), mousePosition);
             menu.displayPlayer(painter, current_player == &player1);
             menu.displayHitPoint(painter, hitPosition, hitAngle);
             menu.displayBack(painter, mousePosition);

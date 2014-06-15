@@ -82,7 +82,7 @@ void Cue::Update(int gameState, Vector2 mousePosition)
 	}
 }
 
-void Cue::Draw(QPainter& painter, Ball& cueBall)
+void Cue::Draw(QPainter& painter, Ball& cueBall, Vector2 mousePosition)
 {
 	// Draw front sight 
 	QColor frontSightColor(200, 200, 200, 100);
