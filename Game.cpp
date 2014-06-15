@@ -91,6 +91,7 @@ void Game::Update()
                         gameState = WAIT_FOR_STROKE;
                     }
                     current_player->Goon();
+                    referee.setTargetname(ballsManager.getBallsList());
                     break;
                 }
                 switch(referee.judge(current_player, &ballsManager)){
@@ -129,8 +130,8 @@ void Game::Update()
 void Game::Draw(QPainter& painter)
 {
 	// draw all thing 
-    table.Draw(painter);
-    ballsManager.Draw(painter);
+    //table.Draw3D();
+    //ballsManager.Draw();
 
     // only display the cue when gameState == wait for stroke
     switch (gameState)
@@ -140,6 +141,8 @@ void Game::Draw(QPainter& painter)
             menu.displayPlayer(painter, current_player == &player1);
             menu.displayHitPoint(painter, hitPosition, hitAngle);
             menu.displayBack(painter, mousePosition);
+
+            displayTargetBalls(painter);
     		break;
         case FREE_BALL:
             menu.displayPlayer(painter, current_player == &player1);
@@ -178,8 +181,14 @@ void Game::Draw(QPainter& painter)
     // painter.drawText(QRectF(400, 600, 50, 25),QString::number(mousePosition.getX()));
     // painter.drawText(QRectF(440, 600, 50, 25),QString::number(mousePosition.getY()));
     //std::cout<<getPlayerflag()<<std::endl;
-
 }
+
+void Game::Draw3D()
+{
+    table.Draw3D();
+    ballsManager.Draw();
+}
+
 
 void Game::setMousePosition(Vector2 position)
 {
@@ -423,11 +432,110 @@ Cue& Game::getCue()
     return cue;
 }
 
-void Game::displayTargetBalls()
+
+void Game::displayTargetBalls(QPainter& painter)
 {
     // 3d display target balls here
-    std::vector<Ball> remainBallsList = ballsManager.getBallsList();
+    std::vector<Ball> remainBallsListCopy = ballsManager.getBallsList();
     // get current player and judge self balls 
     // and then set then to the right position and angle
     // directly draw them in this methods
+    std::string targetName;
+    int index;
+    std::vector<int> targetIndexs;
+    switch (gameRule)
+    {
+        case EIGHT_BALL:
+            // if not decide ball type
+            if (current_player->getBalltype() == NOTDEF)
+            {
+                break;
+            }
+
+            // if decide and display
+            for (unsigned i = 0; i < remainBallsListCopy.size(); ++i)
+            {
+                if (referee.judgeSelfball(current_player, remainBallsListCopy[i].getName()))
+                {
+                    targetIndexs.push_back(i);
+                }
+            }
+
+            if (targetIndexs.size() == 0)
+            {
+                // only remain eight ball
+                for (unsigned i = 0; i < remainBallsListCopy.size(); ++i)
+                {
+                    if (remainBallsListCopy[i].getName() == "eight")
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                if (current_player == &player1)
+                {
+                    remainBallsListCopy[index].setPosition(Vector2(200 + 10, 660));
+                    remainBallsListCopy[index].setRadius(10);
+                    remainBallsListCopy[index].Draw(painter);
+                }
+                else
+                {
+                    // draw under player1
+                    remainBallsListCopy[index].setPosition(Vector2(630 + 10, 660));
+                    remainBallsListCopy[index].setRadius(10);
+                    remainBallsListCopy[index].Draw(painter);
+                }
+            }
+            else
+            {
+                // draw all potential target ball
+                for (unsigned i = 0; i < targetIndexs.size(); ++i)
+                {
+                    index = targetIndexs[i];
+                    if (current_player == &player1)
+                    {
+                        remainBallsListCopy[index].setPosition(Vector2(200 + 10 + i * 30, 660));
+                        remainBallsListCopy[index].setRadius(10);
+                        remainBallsListCopy[index].Draw(painter);
+                    }
+                    else
+                    {
+                        // draw under player1
+                        remainBallsListCopy[index].setPosition(Vector2(630 + 10 + i * 30, 660));
+                        remainBallsListCopy[index].setRadius(10);
+                        remainBallsListCopy[index].Draw(painter);
+                    }
+                }
+            }
+
+            break;
+        case NINE_BALL:
+            targetName = referee.getTargetName();
+            for (unsigned i = 0; i < remainBallsListCopy.size(); ++i)
+            {
+                if (remainBallsListCopy[i].getName() == targetName)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            // just put the target ball at the center under the player name
+            if (current_player == &player1)
+            {
+                // draw under player1
+                remainBallsListCopy[index].setPosition(Vector2(200, 660));
+                remainBallsListCopy[index].setRadius(10);
+                remainBallsListCopy[index].Draw(painter);
+            }
+            else
+            {
+                // draw under player1
+                remainBallsListCopy[index].setPosition(Vector2(630, 660));
+                remainBallsListCopy[index].setRadius(10);
+                remainBallsListCopy[index].Draw(painter);
+            }
+            break;
+        default:
+            break;
+    }
 }

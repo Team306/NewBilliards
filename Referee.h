@@ -23,7 +23,6 @@ private:
     GAME_RULE game_rule;
     JUDGE_RESULT judge_result;
     int scoreToadd;
-    bool judgeSelfball(Player *, std::string);
     std::string Targetname;
 
 public:
@@ -39,8 +38,10 @@ public:
     void clearjudgeResult();
     void setTargetname(std::vector<Ball>);
     int getRule() const;
+    bool judgeSelfball(Player *, std::string);
 
     void setBallAtSpots(Ball& ball, Vector3 spotPosition, std::vector<Ball> ballsList);
+    std::string getTargetName() const;
 };
 
 

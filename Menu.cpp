@@ -38,10 +38,11 @@ Menu::Menu()
     endContinueRect = QRectF(340, 480, 1000, 250);
 
     // player
-    player1RectSmall = QRectF(250, 620, 1000, 250);
-    player1RectBig = QRectF(200, 600, 1000, 250);
-    player2RectSmall = QRectF(680, 620, 1000, 250);
-    player2RectBig = QRectF(630, 600, 1000, 250);
+
+    player1RectSmall = QRectF(250, 600, 1000, 250);
+    player1RectBig = QRectF(200, 580, 1000, 250);
+    player2RectSmall = QRectF(680, 600, 1000, 250);
+    player2RectBig = QRectF(630, 580, 1000, 250);
 
     // waiting frame
     waitingRect = QRectF(320, 260, 1000, 250);
@@ -67,6 +68,7 @@ Menu::Menu()
     backRect = QRectF(25, 650, 100, 30);
     backRectChosen = QRect(25, 650, 100, 30);
 }
+
 
 Menu::~Menu()
 {
@@ -306,6 +308,13 @@ void Menu::displayHitPoint(QPainter& painter, Vector2 hitPosition, int hitAngle)
         hitPointCenterPosition.getY() - (hitPointRadius + offset + 1) * sin(float(hitAngle) / 180 * PI), 
         hitPointCenterPosition.getX() + (hitPointRadius + offset + circularWidth + 1) * cos(float(hitAngle) / 180 * PI), 
         hitPointCenterPosition.getY() - (hitPointRadius + offset + circularWidth + 1) * sin(float(hitAngle) / 180 * PI));
+
+
+    // text angle display
+    QFont font("Consolas", 18, 18, false);
+    painter.setFont(font);
+    painter.setPen(QColor(255, 0, 0));
+    painter.drawText(QRectF(hitPointCenterPosition.getX() + hitPointRadius + offset, hitPointCenterPosition.getY() + offset, 100, 30), QString::number(hitAngle) + "°");
 
     // Hit Point
     // draw white ball

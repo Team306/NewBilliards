@@ -78,6 +78,12 @@ void BallsManager::init(Referee& referee)
 
     // close lua virtual machine
     lua_close(s);
+
+    //load texture
+    for(int i=0;i<ballsList.size();i++)
+    {
+        ballsList[i].loadGLTextures();
+    }
 }
 
 void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
@@ -124,7 +130,7 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
     	// call the referee, and next turn game change to free ball
         //cueBall.setSpeed(Vector2((0 - cueBall.getSpeed().getX()), (0 - cueBall.getSpeed().getY())));
         // cueBall.setSpeed(Vector2((0 - cueBall.getSpeed().getX()), (0 - cueBall.getSpeed().getY())));
-        cueBall.setSpeed(Vector3(0, 0,0));
+        cueBall.setSpeed(Vector3(0, 0, 0));
         cueBall.setBallState(STILL);
         cueBall.setPosition(Vector2(-100,-100));
         currentplayer->setCueball_in(1);
@@ -167,15 +173,15 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
     		ballsList.pop_back();
     	}
     }
-    //std::cout<<cueBall.getPosition().getX()<<"#"<<cueBall.getPosition().getY()<<"#"<<cueBall.getSpeed().getX()<<"#"<<cueBall.getSpeed().getY()<<std::endl;
 }
 
-void BallsManager::Draw(QPainter& painter)
+void BallsManager::Draw()
 {
-	for (std::vector<Ball>::iterator iter = ballsList.begin(); iter != ballsList.end(); ++iter)
+    QPainter painter;
+    for (std::vector<Ball>::iterator iter = ballsList.begin(); iter != ballsList.end(); ++iter)
 	{
 		// Draw each ball here;
-		iter->Draw(painter);
+        iter->Draw(painter);
 	}
     cueBall.Draw(painter);
 }
