@@ -19,17 +19,17 @@ Menu::Menu()
     networkModeRectSmall = QRectF(400, 480, 350, 50);
     networkModeRectBig = QRectF(340, 460, 500, 100);
 
-    eightBallRuleRect = QRectF(840, 570, 300, 30);
-    nineBallRuleRect = QRectF(840, 610, 300, 30);
-    snookerRuleRect = QRectF(840, 650, 300, 30);
+    eightBallRuleRect = QRectF(840, 610, 300, 30);
+    nineBallRuleRect = QRectF(840, 650, 300, 30);
+    // snookerRuleRect = QRectF(840, 650, 300, 30);
 
-    eightBallChosen = QRect(840, 570, 300, 30);
-    nineBallChosen = QRect(840, 610, 300, 30);
-    snookerChosen = QRect(840, 650, 300, 30);
+    eightBallChosen = QRect(840, 610, 300, 30);
+    nineBallChosen = QRect(840, 650, 300, 30);
+    // snookerChosen = QRect(840, 650, 300, 30);
 
-    eightBallTick = QRectF(800, 570, 300, 30);
-    nineBallTick = QRectF(800, 610, 300, 30);
-    snookerTick = QRectF(800, 650, 300, 30);
+    eightBallTick = QRectF(800, 610, 300, 30);
+    nineBallTick = QRectF(800, 650, 300, 30);
+    // snookerTick = QRectF(800, 650, 300, 30);
 
     copyrightRect = QRectF(50, 640, 250, 25);
 
@@ -143,7 +143,7 @@ void Menu::displayStartFrame(QPainter& painter, Vector2 mousePosition, int gameR
     painter.setFont(font);
     painter.drawText(eightBallRuleRect, "Eight Ball");
     painter.drawText(nineBallRuleRect, "Nine Ball");
-    painter.drawText(snookerRuleRect, "Snooker");
+    // painter.drawText(snookerRuleRect, "Snooker");
 
     // paint chosen rule
     switch (gameRule)
@@ -155,7 +155,7 @@ void Menu::displayStartFrame(QPainter& painter, Vector2 mousePosition, int gameR
             painter.drawText(nineBallTick, "√");
             break;
         case SNOOKER:
-            painter.drawText(snookerTick, "√");
+            // painter.drawText(snookerTick, "√");
             break;
     }
 

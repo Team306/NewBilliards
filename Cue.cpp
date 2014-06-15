@@ -21,14 +21,14 @@ void Cue::init(Referee& referee)
 	powerGainCount = 0;
     powerGainIncrement = true;
 
-    // // load image
-    cueImage.load("Textures/cue.png");
+    // // // load image
+    // cueImage.load("Textures/cue.png");
 
-    // debug info
-    if (cueImage.isNull())
-    {
-        std::cout << "Load Textures fails in cue" << std::endl;
-    }
+    // // debug info
+    // if (cueImage.isNull())
+    // {
+    //     std::cout << "Load Textures fails in cue" << std::endl;
+    // }
 }
 
 void Cue::Update(int gameState, Vector2 mousePosition)
