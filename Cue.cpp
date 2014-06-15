@@ -94,48 +94,58 @@ void Cue::Draw(QPainter& painter, Ball& cueBall, Vector2 mousePosition)
 	endPosition = cuePosition + offset;
 	offset = offset * 8;
 	beginPosition = cuePosition + offset;
-	QColor cueColor(143, 100, 69);
-	painter.setPen(QPen(cueColor, 12, Qt::SolidLine, Qt::RoundCap));
+
+    QLinearGradient linearGradient(beginPosition.getX(), beginPosition.getY(), endPosition.getX(), endPosition.getY());
+    linearGradient.setColorAt(1, QColor(183, 136, 87));
+    linearGradient.setColorAt(0.66, QColor(217, 167, 116));
+    linearGradient.setColorAt(0.32, QColor(206, 147, 97));
+    linearGradient.setColorAt(0.30, QColor(62, 27, 26));
+    linearGradient.setColorAt(0, QColor(62, 27, 26));
+	// QColor cueColor(143, 100, 69);
+    // QColor cueColor(183, 136, 87);
+	// painter.setPen(QPen(cueColor, 8, Qt::SolidLine, Qt::RoundCap));
+    QPen cuePen(QBrush(linearGradient), 8);
+    cuePen.setCapStyle(Qt::RoundCap);
+    painter.setPen(cuePen);
 	painter.drawLine(beginPosition.getX(), beginPosition.getY(), endPosition.getX(), endPosition.getY());
 
-    // draw cue
-    const float PI = 3.141593;
-    if (direction.getX() >= 0)
-    {
-        if (direction.getY() >= 0)
-        {
-            // right down
-            int angle = atan(direction.getY() / direction.getX()) / PI * 180;
-            Vector2 drawPoint = cuePosition;
-            QMatrix matrix;
-            matrix.rotate(angle);
-            QImage rotateImage = cueImage.transformed(matrix);
-            QPixmap pixmap = QPixmap::fromImage(rotateImage);
-            painter.drawPixmap(drawPoint.getX(), drawPoint.getY(), pixmap);
-        }
-        else
-        {
-            // right up
-        }
-    }
-    else
-    {
-        if (direction.getY() >= 0)
-        {
-            // left down
-        }
-        else
-        {
-            // left up
-        }
-    }
+    // // draw cue image
+    // const float PI = 3.141593;
+    // if (direction.getX() >= 0)
+    // {
+    //     if (direction.getY() >= 0)
+    //     {
+    //         // right down
+    //         int angle = atan(direction.getY() / direction.getX()) / PI * 180;
+    //         Vector2 drawPoint = cuePosition;
+    //         QMatrix matrix;
+    //         matrix.rotate(angle);
+    //         QImage rotateImage = cueImage.transformed(matrix);
+    //         QPixmap pixmap = QPixmap::fromImage(rotateImage);
+    //         painter.drawPixmap(drawPoint.getX(), drawPoint.getY(), pixmap);
+    //     }
+    //     else
+    //     {
+    //         // right up
+    //     }
+    // }
+    // else
+    // {
+    //     if (direction.getY() >= 0)
+    //     {
+    //         // left down
+    //     }
+    //     else
+    //     {
+    //         // left up
+    //     }
+    // }
 
-
-    QMatrix matrix;
-    matrix.rotate(89);
-    QImage rotateImage = cueImage.transformed(matrix);
-    QPixmap pixmap = QPixmap::fromImage(rotateImage);
-    painter.drawPixmap(100, 100, pixmap);
+    // QMatrix matrix;
+    // matrix.rotate(0);
+    // QImage rotateImage = cueImage.transformed(matrix);
+    // QPixmap pixmap = QPixmap::fromImage(rotateImage);
+    // painter.drawPixmap(100, 100, pixmap);
 
     // draw power gauge
     if (powerGainEnableFlag)
