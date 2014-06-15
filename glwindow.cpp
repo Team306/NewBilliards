@@ -86,8 +86,6 @@ void GLWindow::mousePressEvent(QMouseEvent *event)
 
 void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-
-
     if(game.getGameState() != BALL_IS_RUNNING &&(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME)){
         // change to cue power gain
         game.getCue().disablePowerGain();
@@ -126,8 +124,6 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void GLWindow::mouseMoveEvent(QMouseEvent *event)
 {
-
-
     if(game.getGameState() != BALL_IS_RUNNING &&(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME)){
         int mouse_x = event->x();
         int mouse_y = event->y();
@@ -192,16 +188,16 @@ void GLWindow::paintEvent(QPaintEvent *event)
 
 void GLWindow::resizeGL( int width, int height )
 {
-  if ( height == 0 )
-  {
-    height = 1;
-  }
-
-  glViewport( 0, 0, (GLint)width, (GLint)height );
-  glMatrixMode( GL_PROJECTION );
-  glLoadIdentity();
-  gluPerspective( 5, (GLfloat)width/(GLfloat)height, 0.1, 10000.0 );
-  glMatrixMode( GL_MODELVIEW );
+    if ( height == 0 )
+    {
+        height = 1;
+    }
+    
+    glViewport( 0, 0, (GLint)width, (GLint)height );
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    gluPerspective( 5, (GLfloat)width/(GLfloat)height, 0.1, 10000.0 );
+    glMatrixMode( GL_MODELVIEW );
 }
 
 void GLWindow::MainLoop()

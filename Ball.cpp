@@ -229,7 +229,7 @@ void Ball::Move()
     this->oriention.Normalize();
 }
 
-void Ball::Draw(QPainter &)
+void Ball::Draw3D()
 {
     if (ballState == ON_THE_POCKET)
     {

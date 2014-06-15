@@ -173,15 +173,14 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
     }
 }
 
-void BallsManager::Draw()
+void BallsManager::Draw3D()
 {
-    QPainter painter;
     for (std::vector<Ball>::iterator iter = ballsList.begin(); iter != ballsList.end(); ++iter)
 	{
 		// Draw each ball here;
-        iter->Draw(painter);
+        iter->Draw3D();
 	}
-    cueBall.Draw(painter);
+    cueBall.Draw3D();
 }
 
 Ball& BallsManager::getCueBall()

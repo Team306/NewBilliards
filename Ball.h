@@ -76,7 +76,7 @@ public:
 
 
     void Move();
-    void Draw(QPainter&);
+    void Draw3D();
 
 };
 

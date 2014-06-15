@@ -28,7 +28,7 @@ public:
 
 	// update and draw
     void Update(Table &, Player *, int gameRule);
-    void Draw();
+    void Draw3D();
 
 
 	// get and set

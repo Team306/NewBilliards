@@ -142,7 +142,6 @@ void Game::Draw(QPainter& painter)
             menu.displayPlayer(painter, current_player == &player1);
             menu.displayHitPoint(painter, hitPosition, hitAngle);
             menu.displayBack(painter, mousePosition);
-            displayTargetBalls(painter);
     		break;
         case FREE_BALL:
             menu.displayPlayer(painter, current_player == &player1);
@@ -186,7 +185,12 @@ void Game::Draw(QPainter& painter)
 void Game::Draw3D()
 {
     table.Draw3D();
-    ballsManager.Draw();
+    ballsManager.Draw3D();
+
+    if (gameState == WAIT_FOR_STROKE)
+    {
+        displayTargetBalls();
+    }
 }
 
 
@@ -432,7 +436,7 @@ Cue& Game::getCue()
     return cue;
 }
 
-void Game::displayTargetBalls(QPainter& painter)
+void Game::displayTargetBalls()
 {
     // 3d display target balls here
     std::vector<Ball> remainBallsListCopy = ballsManager.getBallsList();
@@ -475,14 +479,14 @@ void Game::displayTargetBalls(QPainter& painter)
                 {
                     remainBallsListCopy[index].setPosition(Vector2(200 + 10, 660));
                     remainBallsListCopy[index].setRadius(10);
-                    remainBallsListCopy[index].Draw(painter);
+                    remainBallsListCopy[index].Draw3D();
                 }
                 else
                 {
                     // draw under player1
                     remainBallsListCopy[index].setPosition(Vector2(630 + 10, 660));
                     remainBallsListCopy[index].setRadius(10);
-                    remainBallsListCopy[index].Draw(painter);
+                    remainBallsListCopy[index].Draw3D();
                 }
             }
             else
@@ -495,14 +499,14 @@ void Game::displayTargetBalls(QPainter& painter)
                     {
                         remainBallsListCopy[index].setPosition(Vector2(200 + 10 + i * 30, 660));
                         remainBallsListCopy[index].setRadius(10);
-                        remainBallsListCopy[index].Draw(painter);
+                        remainBallsListCopy[index].Draw3D();
                     }
                     else
                     {
                         // draw under player1
                         remainBallsListCopy[index].setPosition(Vector2(630 + 10 + i * 30, 660));
                         remainBallsListCopy[index].setRadius(10);
-                        remainBallsListCopy[index].Draw(painter);
+                        remainBallsListCopy[index].Draw3D();
                     }
                 }
             }
@@ -524,14 +528,14 @@ void Game::displayTargetBalls(QPainter& painter)
                 // draw under player1
                 remainBallsListCopy[index].setPosition(Vector2(200, 660));
                 remainBallsListCopy[index].setRadius(10);
-                remainBallsListCopy[index].Draw(painter);
+                remainBallsListCopy[index].Draw3D();
             }
             else
             {
                 // draw under player1
                 remainBallsListCopy[index].setPosition(Vector2(630, 660));
                 remainBallsListCopy[index].setRadius(10);
-                remainBallsListCopy[index].Draw(painter);
+                remainBallsListCopy[index].Draw3D();
             }
             break;
         default:
