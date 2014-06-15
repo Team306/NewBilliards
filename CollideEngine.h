@@ -29,7 +29,7 @@ struct Collision
 const float E_BallToBall = 0.9f;
 const float E_WallToBall = 0.65f;
 const float F_BallToBall = 0.2f;
-const float F_WallToBall = 0.5f;
+const float F_WallToBall = 0.4f;
 
 class CollideEngine
 {

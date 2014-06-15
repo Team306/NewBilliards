@@ -16,9 +16,11 @@ Game::Game()
 	gameState = START_FRAME;
     gameRule = EIGHT_BALL;
 	elapsedTime = 0;
+    client_connected = false;
     //player1.init();
     //player2.init();
     current_player = &player1;
+    hitAngle = 0;
 }
 
 Game::~Game()
@@ -29,6 +31,8 @@ void Game::init()
 {
 	// init here
     gameState = START_FRAME;
+    gameMode = PRACTICE_MODE;
+    client_connected = false;
     game_client->DisConnect();
     game_sever->StopListen();
     current_player = &player1;
@@ -47,7 +51,7 @@ void Game::Update()
 {
 	// update
 	cue.Update(gameState, mousePosition);
-    ballsManager.Update(table, current_player);
+    ballsManager.Update(table, current_player, gameRule);
 
     if(player1.getBalltype() == NOTDEF || player2.getBalltype() == NOTDEF){
         if(current_player->getBalltype() == SMALL){
@@ -76,52 +80,42 @@ void Game::Update()
             }
 			break;
 		case BALL_IS_RUNNING:
-			if (!ballsManager.isRunning())
+            if (!ballsManager.isRunning())
 			{
                 // std::cout<<current_player->getCueball_in()<<std::endl;
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_FREE_BALL){
-                    referee.setTargetname(ballsManager.getBallsList());
-                    gameState = FREE_BALL;
-                    if(current_player == &player1){
-                        current_player->Exchange();
-                        current_player = &player2;
-                        break;
+                if(gameMode == PRACTICE_MODE){
+                    if(referee.judge(current_player, &ballsManager) == TO_FREE_BALL){
+                        gameState = FREE_BALL;
                     }
                     else{
-                        current_player->Exchange();
-                        current_player = &player1;
-                        break;
+                        gameState = WAIT_FOR_STROKE;
                     }
-                }
-
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_EXCHANGE){
-                    referee.setTargetname(ballsManager.getBallsList());
-                    gameState = WAIT_FOR_STROKE;
-                    if(current_player == &player1){
-                        current_player->Exchange();
-                        current_player = &player2;
-                        break;
-                    }
-                    else{
-                        current_player->Exchange();
-                        current_player = &player1;
-                        break;
-                    }
-                }
-
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_GOON){
-                    referee.setTargetname(ballsManager.getBallsList());
                     current_player->Goon();
-                    gameState = WAIT_FOR_STROKE;
+                    referee.setTargetname(ballsManager.getBallsList());
                     break;
                 }
-
-                if(referee.judge(current_player,ballsManager.getBallsList()) == TO_END){
-                    gameState = END_FRAME;
-                    break;
+                switch(referee.judge(current_player, &ballsManager)){
+                    case TO_FREE_BALL:
+                        referee.setTargetname(ballsManager.getBallsList());
+                        gameState = FREE_BALL;
+                        PlayerExchange();
+                        break;
+                    case TO_EXCHANGE:
+                        referee.setTargetname(ballsManager.getBallsList());
+                        gameState = WAIT_FOR_STROKE;
+                        PlayerExchange();
+                        break;
+                    case TO_GOON:
+                        referee.setTargetname(ballsManager.getBallsList());
+                        current_player->Goon();
+                        gameState = WAIT_FOR_STROKE;
+                        break;
+                    case TO_END:
+                        gameState = END_FRAME;
+                        break;
+                    default:
+                        break;
                 }
-
-				// call the referee
 			}
 			break;
         case WAIT_FOR_STROKE:
@@ -144,30 +138,34 @@ void Game::Draw(QPainter& painter)
     {
     	case WAIT_FOR_STROKE:
     		cue.Draw(painter, ballsManager.getCueBall());
-            displayPlayer(painter);
-            displayChangeLabel(painter);
+            menu.displayPlayer(painter, current_player == &player1);
+            menu.displayHitPoint(painter, hitPosition, hitAngle);
+            menu.displayBack(painter, mousePosition);
+            displayTargetBalls(painter);
     		break;
         case FREE_BALL:
-            displayPlayer(painter);
+            menu.displayPlayer(painter, current_player == &player1);
+            menu.displayHitPoint(painter, hitPosition, hitAngle);
+            menu.displayBack(painter, mousePosition);
             break;
         case BALL_IS_RUNNING:
-            displayPlayer(painter);
+            menu.displayPlayer(painter, current_player == &player1);
+            menu.displayHitPoint(painter, hitPosition, hitAngle);
+            menu.displayBack(painter, mousePosition);
             break;
         case END_FRAME:
-            displayEndFrame(painter);
+            menu.displayEndFrame(painter, player1);
             break;
         case START_FRAME:
             // print the start frame
-            displayStartFrame(painter);
+            menu.displayStartFrame(painter, mousePosition, gameRule);
         	break;
         case WAIT_FOR_CONNECT:
-            displayWaitingFrame(painter);
+            menu.displayWaitingFrame(painter);
             break;
-        case START_AND_CONNECT_CHOOSE:
-            displayConnectChooseFrame(painter);
-            break;
-        case CHANGE_HIT_POINT:
-            displayHitPoint(painter);
+        case CONNECT_FRAME:
+            menu.displayConnectFrame(painter, mousePosition);
+            menu.displayBack(painter, mousePosition);
             break;
         default:
             break;
@@ -176,11 +174,11 @@ void Game::Draw(QPainter& painter)
     // debug info
     QFont font;
     painter.setFont(font);
-    painter.drawText(QRectF(420, 640, 250, 25), "mouse press elapsed time");
-    painter.drawText(QRectF(580, 640, 50, 25), QString::number(elapsedTime));
-    painter.drawText(QRectF(400, 640, 100, 100),QString::number(current_player->getPlayerflag()));
-    painter.drawText(QRectF(400, 600, 50, 25),QString::number(mousePosition.getX()));
-    painter.drawText(QRectF(440, 600, 50, 25),QString::number(mousePosition.getY()));
+    // painter.drawText(QRectF(420, 640, 250, 25), "mouse press elapsed time");
+    // painter.drawText(QRectF(580, 640, 50, 25), QString::number(elapsedTime));
+    // painter.drawText(QRectF(400, 640, 100, 100),QString::number(current_player->getPlayerflag()));
+    // painter.drawText(QRectF(400, 600, 50, 25),QString::number(mousePosition.getX()));
+    // painter.drawText(QRectF(440, 600, 50, 25),QString::number(mousePosition.getY()));
     //std::cout<<getPlayerflag()<<std::endl;
 }
 
@@ -194,6 +192,7 @@ void Game::Draw3D()
 void Game::setMousePosition(Vector2 position)
 {
 	mousePosition = position;
+    //std::cout<<"mousePosition<<<<<<"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
 }
 
 void Game::mousePress(int elapsed)
@@ -204,42 +203,42 @@ void Game::mousePress(int elapsed)
 	switch (gameState)
 	{
 		case FREE_BALL:
+            if (checkBack(menu))
+            {
+                break;
+            }
+
             if (cuePositionIsLegal())
             {
                 gameState = WAIT_FOR_STROKE;
             }
 			break;
 		case WAIT_FOR_STROKE:
-            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
+            if (checkBack(menu))
             {
-                gameState = CHANGE_HIT_POINT;
                 break;
             }
-
-            cue.Stroke(elapsed, ballsManager.getCueBall());
+            if (checkHitPointClick(menu.getHitCenterPosition(), menu.getHitRadius(), menu.getAngleRadius()))
+            {
+                break;
+            }
+            // if do not change hit point continue
+            cue.Stroke(elapsed, ballsManager.getCueBall(),mousePosition, hitPosition, hitAngle);
             gameState = BALL_IS_RUNNING;
 			break;
         case BALL_IS_RUNNING:
             break;    
         case START_FRAME:
         	// decide game mode
-            checkStartFrameClick();
+            checkStartFrameClick(menu);
         	break;
-        case START_AND_CONNECT_CHOOSE:
-            checkConnectChooseFrame();
+        case CONNECT_FRAME:
+            checkBack(menu);
+            checkConnectFrameClick(menu);
             break;
         case END_FRAME:
             gameState = START_FRAME;
             init();
-            break;
-        case CHANGE_HIT_POINT:
-            if (QRect(1050, 680, 200, 30).contains(mousePosition.getX(), mousePosition.getY(), false))
-            {
-                gameState = WAIT_FOR_STROKE;
-                break;
-            }
-            // check other input
-            changeHitPoint();
             break;
         default:
             break;
@@ -302,4 +301,239 @@ void Game::ClientInit(int _gameRule){
     ballsManager.init(referee);
     cue.init(referee);
     gameState = FREE_BALL;
+}
+
+
+void Game::setClientConnected(bool connect_flag){
+    client_connected = connect_flag;
+}
+
+bool Game::getClientConnected() const {
+    return client_connected;
+}
+
+void Game::checkStartFrameClick(const Menu& menu)
+{
+    if (menu.getPracticeChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = FREE_BALL;
+        gameMode = PRACTICE_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(300, 300));
+    }
+    if (menu.getVersusChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = FREE_BALL;
+        gameMode = VERSUS_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(300, 300));
+    }
+    if (menu.getNetworkChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = CONNECT_FRAME;
+        gameMode = NETWORK_MODE;
+        ballsManager.getCueBall().setPosition(Vector2(300, 300));
+    }
+
+    // choose rule
+    if (menu.getEightBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = EIGHT_BALL;
+        table.clear();
+        init();
+    }
+    if (menu.getNineBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = NINE_BALL;
+        table.clear();
+        init();
+    }
+    if (menu.getSnookerChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameRule = SNOOKER;
+        table.clear();
+        init();
+    }
+}
+
+void Game::checkConnectFrameClick(const Menu& menu)
+{
+    if (menu.getStartChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = WAIT_FOR_CONNECT;
+        game_sever->GameListen();
+        network_rule = SERVER;
+    }
+    if (menu.getConnectChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = WAIT_FOR_CONNECT;
+        game_client->GameConnect();
+        network_rule = CLIENT;
+        player1.setPlayerflag(GUEST);
+        player2.setPlayerflag(LOCAL);
+    }
+}
+
+bool Game::checkHitPointClick(Vector2 center, int hitRadius, int angleRadius)
+{
+    const float PI = 3.141593;
+
+    // check hit point
+    Vector2 newHitPosition = mousePosition - center;
+    if (newHitPosition.Length() < hitRadius)
+    {
+        hitPosition = newHitPosition;
+        return true;
+    }
+
+    // check hit angle
+    if (newHitPosition.Length() > hitRadius && newHitPosition.Length() < angleRadius)
+    {
+        // if in the angle, change the hit angle and return true, else return false;
+        float x = newHitPosition.getX();
+        float y = -newHitPosition.getY();
+        float angle = atan(y / x) / PI * 180;
+        if (angle >= 0 && angle <= 85)
+        {
+            hitAngle = (int)angle;
+            return true;
+        }
+    }
+    return false;
+}
+
+
+void Game::PlayerExchange(){
+    if(current_player == &player1){
+        current_player->Exchange();
+        current_player = &player2;
+        return;
+    }
+    else{
+        current_player->Exchange();
+        current_player = &player1;
+        return;
+    }
+}
+
+bool Game::checkBack(const Menu& menu)
+{
+    if (menu.getBackChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
+    {
+        gameState = START_FRAME;
+        table.clear();
+        init();
+        return true;
+    }
+    return false;
+}
+
+Cue& Game::getCue()
+{
+    return cue;
+}
+
+void Game::displayTargetBalls(QPainter& painter)
+{
+    // 3d display target balls here
+    std::vector<Ball> remainBallsListCopy = ballsManager.getBallsList();
+    // get current player and judge self balls 
+    // and then set then to the right position and angle
+    // directly draw them in this methods
+    std::string targetName;
+    int index;
+    std::vector<int> targetIndexs;
+    switch (gameRule)
+    {
+        case EIGHT_BALL:
+            // if not decide ball type
+            if (current_player->getBalltype() == NOTDEF)
+            {
+                break;
+            }
+
+            // if decide and display
+            for (unsigned i = 0; i < remainBallsListCopy.size(); ++i)
+            {
+                if (referee.judgeSelfball(current_player, remainBallsListCopy[i].getName()))
+                {
+                    targetIndexs.push_back(i);
+                }
+            }
+
+            if (targetIndexs.size() == 0)
+            {
+                // only remain eight ball
+                for (unsigned i = 0; i < remainBallsListCopy.size(); ++i)
+                {
+                    if (remainBallsListCopy[i].getName() == "eight")
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+                if (current_player == &player1)
+                {
+                    remainBallsListCopy[index].setPosition(Vector2(200 + 10, 660));
+                    remainBallsListCopy[index].setRadius(10);
+                    remainBallsListCopy[index].Draw(painter);
+                }
+                else
+                {
+                    // draw under player1
+                    remainBallsListCopy[index].setPosition(Vector2(630 + 10, 660));
+                    remainBallsListCopy[index].setRadius(10);
+                    remainBallsListCopy[index].Draw(painter);
+                }
+            }
+            else
+            {
+                // draw all potential target ball
+                for (unsigned i = 0; i < targetIndexs.size(); ++i)
+                {
+                    index = targetIndexs[i];
+                    if (current_player == &player1)
+                    {
+                        remainBallsListCopy[index].setPosition(Vector2(200 + 10 + i * 30, 660));
+                        remainBallsListCopy[index].setRadius(10);
+                        remainBallsListCopy[index].Draw(painter);
+                    }
+                    else
+                    {
+                        // draw under player1
+                        remainBallsListCopy[index].setPosition(Vector2(630 + 10 + i * 30, 660));
+                        remainBallsListCopy[index].setRadius(10);
+                        remainBallsListCopy[index].Draw(painter);
+                    }
+                }
+            }
+
+            break;
+        case NINE_BALL:
+            targetName = referee.getTargetName();
+            for (unsigned i = 0; i < remainBallsListCopy.size(); ++i)
+            {
+                if (remainBallsListCopy[i].getName() == targetName)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            // just put the target ball at the center under the player name
+            if (current_player == &player1)
+            {
+                // draw under player1
+                remainBallsListCopy[index].setPosition(Vector2(200, 660));
+                remainBallsListCopy[index].setRadius(10);
+                remainBallsListCopy[index].Draw(painter);
+            }
+            else
+            {
+                // draw under player1
+                remainBallsListCopy[index].setPosition(Vector2(630, 660));
+                remainBallsListCopy[index].setRadius(10);
+                remainBallsListCopy[index].Draw(painter);
+            }
+            break;
+        default:
+            break;
+    }
 }

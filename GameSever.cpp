@@ -13,6 +13,7 @@ GameSever::~GameSever(){
 
 void GameSever::GameListen(){
     listen(QHostAddress::Any,19999);
+    waitForNewConnection();
 }
 
 void GameSever::StopListen(){
@@ -25,10 +26,11 @@ void GameSever::setClient(){
 
 void GameSever::sendMessage(QByteArray message){
     client->write(message);
+    //client->waitForBytesWritten();
 }
 
 QByteArray GameSever::getMessage(){
-    return client->readAll();
+    return client->readLine();
 }
 
 QTcpSocket* GameSever::getClient() const{

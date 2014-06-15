@@ -52,13 +52,10 @@ void CollideEngine::ProcessBallToBallCollision(Ball& ballA,Ball& ballB)
     if(c.Vt<=0.0f) return;
 
     c._T=-GetNormalize(c.Vr-c._N*c.Vn);
-    //Vector3 Temp=Vector3(c._N*c.Vn);
-    //cout<<"C.Vr:"<<c.Vr[0]<<","<<c.Vr[1]<<","<<c.Vr[2]<<endl;
-    //cout<<"C.Temp:"<<Temp[0]<<","<<Temp[1]<<","<<Temp[2]<<endl<<endl;
 
     c.Ca=1.0f/M+DotProduct(c._T, CrossProduct((CrossProduct(c.Ra, c._T) / ballA.getIm()), c.Ra)) ;
     c.Cb=1.0f/M+DotProduct(c._T, CrossProduct((CrossProduct(c.Rb, c._T) / ballB.getIm()), c.Ra)) ;
-    cout<<"c.Ca:"<<c.Ca<<";c.Cb"<<c.Cb<<endl;
+    //cout<<"c.Ca:"<<c.Ca<<";c.Cb"<<c.Cb<<endl;
     float It;
     It = c.Vt/(c.Ca+c.Cb);
     if (It < F_BallToBall*c.In.Length())
@@ -66,7 +63,6 @@ void CollideEngine::ProcessBallToBallCollision(Ball& ballA,Ball& ballB)
     else
     {
         c.It = c._T*F_BallToBall*c.In.Length();
-        cout<<"hehe"<<endl;
     }
 
     ballA.ApplyImpulse(c.It,c.CollidePosition);
@@ -212,7 +208,7 @@ bool CollideEngine::CornerWallToBallCollision(const Table& table,Ball& ball)
 
     /*for(unsigned i=0;i<col_N.size();i++)
     {
-        cout<<i<<":"<<col_N[i][0]<<","<<col_N[i][1]<<","<<col_N[i][2]<<endl;
+        //cout<<i<<":"<<col_N[i][0]<<","<<col_N[i][1]<<","<<col_N[i][2]<<endl;
     }*/
 
 
@@ -281,12 +277,6 @@ void CollideEngine::CornerRadWallToBallCollision(const Table& table,Ball& ball)
         pointmiddle.push_back((pointp[i]+pointw[i])/2);
     }
 
-   /* for(unsigned i=0;i<12;i++)
-    {
-        cout<<i<<":"<<pointp[i].getX()<<","<<pointp[i].getY()<<endl;
-        cout<<i<<":"<<pointw[i].getX()<<","<<pointw[i].getY()<<endl;
-        cout<<i<<":"<<pointmiddle[i].getX()<<","<<pointmiddle[i].getY()<<endl;
-    }*/
 
     middleline.push_back((specialAntiRotate90(pointp[0]-pointw[0])).getNormalize());
     middleline.push_back((specialAntiRotate90(pointw[1]-pointp[1])).getNormalize());
@@ -301,10 +291,6 @@ void CollideEngine::CornerRadWallToBallCollision(const Table& table,Ball& ball)
     middleline.push_back((specialAntiRotate90(pointp[10]-pointw[10])).getNormalize());
     middleline.push_back((specialAntiRotate90(pointw[11]-pointp[11])).getNormalize());
 
-    /*for(unsigned i=0;i<12;i++)
-    {
-        cout<<i<<"::"<<middleline[i].getX()<<","<<middleline[i].getY()<<endl;
-    }*/
 
     for(unsigned i=0;i<table.getCheckp().size();i++)
     {
@@ -320,10 +306,6 @@ void CollideEngine::CornerRadWallToBallCollision(const Table& table,Ball& ball)
         extra.push_back(DistanceBetween(Vector3(centre[i]),ball.getPosition())-r-ball.getRadius());
     }
 
-    /*for(unsigned i=0;i<centre.size();i++)
-    {
-        cout<<i<<":"<<centre[i].getX()<<","<<centre[i].getY()<<endl;
-    }*/
 
     for(unsigned i=0;i<extra.size();i++)
     {
@@ -331,7 +313,7 @@ void CollideEngine::CornerRadWallToBallCollision(const Table& table,Ball& ball)
         {
             //cout<<"!!!"<<extra[i]<<endl;
             col_N=GetNormalize(ball.getPosition()-Vector3(centre[i]));
-            cout<<col_N.Length()<<"##"<<endl<<endl;
+            //cout<<col_N.Length()<<"##"<<endl<<endl;
             this->ProcessWallToBallCollision(ball,col_N,-extra[i]);
             return;
         }
@@ -371,7 +353,7 @@ void CollideEngine::ProcessWallToBallCollision(Ball& ball,const Vector3& col_N,f
     //cout<<"c.Ca:"<<c.Ca<<endl;
     float It;
     It = c.Vt/(c.Ca);
-    cout<<"It:"<<It<<";F:"<<F_WallToBall*c.In.Length()<<endl;
+    //cout<<"It:"<<It<<";F:"<<F_WallToBall*c.In.Length()<<endl;
     if (It < F_WallToBall*c.In.Length())
         c.It = c._T*It;
     else

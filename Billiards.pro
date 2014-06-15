@@ -41,10 +41,15 @@ HEADERS  += \
     CollideEngine.h \
     MyMath.h \
     GameSever.h \
-    GameClient.h
+    GameClient.h \
+    Menu.h
 
-contains(QT_CONFIG, opengles.) {
-    contains(QT_CONFIG, angle): \
-        warning("Qt was built with ANGLE, which provides only OpenGL ES 2.0 on top of DirectX 9.0c")
-    error("This example requires Qt to be configured with -opengl desktop")
-}
+INCLUDEPATH += $$PWD/Lua5.2/include
+LIBS += -L$$PWD/Lua5.2 -llua52
+
+RESOURCES +=
+
+OTHER_FILES += \
+    myicon.rc
+
+RC_FILE += myicon.rc

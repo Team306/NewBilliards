@@ -16,9 +16,9 @@
 
 enum BALL_STATE { STILL, RUNNING, ON_THE_POCKET };
 
-const float Fslip_GroundToBall = 0.003f;//hua dong
-const float Froll_GroundToBall = 0.0002f;//gun dong
-const float Frotate_GroundToBall=0.00014f;//ce xuan
+const float Fslip_GroundToBall = 0.002f;//hua dong
+const float Froll_GroundToBall = 0.00015f;//gun dong
+const float Frotate_GroundToBall=0.0001f;//ce xuan
 const float Fslip_Threshold=(1.0f+1.0f/0.4f)*Fslip_GroundToBall;
 const float Froll_Threshold=1.0f*Froll_GroundToBall;
 const float Frotate_Threshold=1.0f*Frotate_GroundToBall;
@@ -63,6 +63,7 @@ public:
     Vector3 getAngleSpeed() const;
     void setAngleSpeed(const Vector3& v);
     float getRadius() const;
+    void setRadius(float);
     float getIm() const;
     int getBallState() const;
     void setBallState(int);
@@ -75,7 +76,7 @@ public:
 
 
     void Move();
-    void Draw();
+    void Draw(QPainter&);
 
 };
 

@@ -1,6 +1,8 @@
-# Billiards
-----------------
+# NewBilliards
+
 using Qt5 platform
+
+using Lua 5.2.3
 
 release 0.1 Version 2014-06-07 0:30
 
@@ -17,7 +19,7 @@ release 0.1 Version 2014-06-07 0:30
 	使用Qt OpenGL进行2D转3D的尝试
 
 ## 项目地址
-github.com/Team306/Billiards
+https://github.com/Team306/NewBilliards
 
 ## *GLOSARRY*
 这是网上找的资料，直接贴在这里了

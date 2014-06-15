@@ -5,6 +5,9 @@
 #include <QTcpSocket>
 #include <QByteArray>
 #include <QStringList>
+#include <QTimer>
+#include <QHostAddress>
+#include <QHostInfo>
 
 class GameClient: public QTcpSocket{
 public:
@@ -17,7 +20,9 @@ public:
 
 private:
     QString IP_Address;
-    bool found_flag;
+    QStringList Host_IP;
+    int counter1;
+    int counter2;
 };
 
 #endif // GAMECLIENT_H

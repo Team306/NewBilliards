@@ -18,16 +18,16 @@ private:
 	std::vector<Ball> ballsList;
     Ball cueBall;
     CollideEngine collideengine;
+
 public:
 	BallsManager();
 	~BallsManager();
 
 	// init methods
 	void init(Referee &);
-	void reset(Referee &); // reset all balls position
 
 	// update and draw
-    void Update(Table &, Player *);
+    void Update(Table &, Player *, int gameRule);
     void Draw();
 
 	// get and set
@@ -35,6 +35,8 @@ public:
     std::vector<Ball> getBallsList() const;
 
 	bool isRunning() const;
+
+	Ball& getBall(std::string name);
 };
 
 

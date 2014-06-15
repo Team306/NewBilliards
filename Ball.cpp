@@ -121,6 +121,11 @@ float Ball::getRadius() const
     return this->radius;
 }
 
+void Ball::setRadius(float newRadius)
+{
+    radius = newRadius;
+}
+
 float Ball::getIm() const
 {
     return this->Im;
@@ -224,7 +229,7 @@ void Ball::Move()
     this->oriention.Normalize();
 }
 
-void Ball::Draw()
+void Ball::Draw(QPainter &)
 {
     if (ballState == ON_THE_POCKET)
     {
@@ -233,7 +238,7 @@ void Ball::Draw()
     glLoadIdentity();
     double fovy=5;
     double hy=2*tan(fovy/2.0*M_PI/180.0)*0.1;
-    double hx=2*tan(fovy/2.0*M_PI/180.0)*0.1*(1280.0/720.0);
+    double hx=2*tan(fovy/2.0*M_PI/180.0)*0.1*(1120.0/700.0);
     double z=800;
     Matrix3 m=this->oriention.MakeMatrix3FromQ();
     GLfloat GLm[16]={m[0],m[1],m[2],0,\
@@ -241,7 +246,7 @@ void Ball::Draw()
                      m[6],m[7],m[8],0,\
                      0,0,0,1};
 
-     glTranslatef((this->position.getX()-640.0)/1280.0*hx*z/0.1,(-this->position.getY()+360.0)/720.0*hy*z/0.1,-z);
+     glTranslatef((this->position.getX()-560.0)/1120.0*hx*z/0.1,(-this->position.getY()+350.0)/700.0*hy*z/0.1,-z);
      glMultMatrixf(GLm);
      glMaterialfv(GL_FRONT,GL_AMBIENT,mat_Ambient);
      glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_Diffuse);
@@ -253,7 +258,7 @@ void Ball::Draw()
      glEnable(GL_TEXTURE_2D); // open texture
 
      glBindTexture(GL_TEXTURE_2D, texture[0]);
-     gluSphere(quadratic,this->radius/720.0*hy*z/0.1,32,32);
+     gluSphere(quadratic,this->radius/700.0*hy*z/0.1,32,32);
 
      gluQuadricTexture(quadratic,GLU_TRUE);
      gluQuadricDrawStyle(quadratic,GLU_FILL);  //fill texture

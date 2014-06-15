@@ -14,7 +14,7 @@
 // fps
 const int msPerFrame = 16;
 // update times in each frame
-const int updateCount = 5;
+const int updateCount = 10;
 
 GLfloat lightAmbient[4] = { 0.8, 0.8, 0.8, 1.0 };
 GLfloat lightDiffuse[4] = { 1.0, 1.0, 1.0, 1.0 };
@@ -28,14 +28,17 @@ GLWindow::GLWindow(QWidget *parent)
     timer.start(msPerFrame);
     setAutoFillBackground(false);
     setAutoBufferSwap( false );
-    setFixedSize(1280, 720);
+
+    setFixedSize(1120, 700);
     setWindowTitle(tr("Billiards by Team306"));
+
+    setWindowIcon(QIcon("cat.png"));
 
     // put the window in center
     QDesktopWidget *desktop = QApplication::desktop();
     if (desktop->width() != 1366 && desktop->height() != 768)
     {
-        move((1920 - 1280) / 2, (1080 - 720) / 2);
+        move((1920 - 1120) / 2, (1080 - 700) / 2);
     }
     else
     {
@@ -68,6 +71,7 @@ void GLWindow::initializeGL()
     glEnable( GL_LIGHTING );
     game.init();
     connect(game.getGameSever(),SIGNAL(newConnection()),this,SLOT(newConnect()));
+    connect(game.getGameClient(),SIGNAL(connected()),this,SLOT(clientConnected()));
     connect(game.getGameClient(),SIGNAL(readyRead()),this,SLOT(clientRead()));
 }
 
@@ -75,15 +79,24 @@ void GLWindow::mousePressEvent(QMouseEvent *event)
 {
     if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME){
         mousePressTime.start();
+        game.getCue().enablePowerGain();
     }
 }
 
 void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-    if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME){
+
+
+    if(game.getGameState() != BALL_IS_RUNNING &&(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME)){
+        // change to cue power gain
+        game.getCue().disablePowerGain();
+
         int elapsedTime = mousePressTime.elapsed();
     // call game method
-        game.setMousePosition(Vector2(event->x(), event->y()));
+        int mouse_x = event->x();
+        int mouse_y = event->y();
+       //std::cout<<"Realease::"<<mouse_x<<","<<mouse_y<<std::endl;
+        game.setMousePosition(Vector2(mouse_x, mouse_y));
         game.mousePress(elapsedTime);
         if(game.getGameMode() == NETWORK_MODE && (game.getGameState() == WAIT_FOR_STROKE || game.getGameState() == FREE_BALL
                                                   ||game.getGameState() == BALL_IS_RUNNING )){
@@ -91,9 +104,9 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
             SendData.append(QString("EL#"));
             SendData.append(QString::number(elapsedTime));
             SendData.append(QString(","));
-            SendData.append(QString::number(event->x()));
+            SendData.append(QString::number(mouse_x));
             SendData.append(QString(","));
-            SendData.append(QString::number(event->y()));
+            SendData.append(QString::number(mouse_y));
             SendData.append(QString("#"));
             QString sendStr = QVariant(SendData).toString();
             //std::cout<<sendStr.toStdString()<<std::endl;
@@ -104,7 +117,7 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
             }
             if(game.getNetworkRule() == CLIENT){
                 game.getGameClient()->sendMessage(SendData);
-                std::cout<<sendStr.toStdString()<<std::endl;
+                //std::cout<<sendStr.toStdString()<<std::endl;
             }
         }
     }
@@ -112,14 +125,18 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void GLWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME){
-        game.setMousePosition(Vector2(event->x(), event->y()));
+
+
+    if(game.getGameState() != BALL_IS_RUNNING &&(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME)){
+        int mouse_x = event->x();
+        int mouse_y = event->y();
+        game.setMousePosition(Vector2(mouse_x, mouse_y));
         if(game.getGameMode() == NETWORK_MODE && (game.getGameState() == WAIT_FOR_STROKE || game.getGameState() == FREE_BALL)){
             SendData.clear();
             SendData.append(QString("P#"));
-            SendData.append(QString::number(event->x()));
+            SendData.append(QString::number(mouse_x));
             SendData.append(QString(","));
-            SendData.append(QString::number(event->y()));
+            SendData.append(QString::number(mouse_y));
             SendData.append(QString("#"));
             QString sendStr = QVariant(SendData).toString();
             if(game.getNetworkRule() == SERVER){
@@ -128,7 +145,7 @@ void GLWindow::mouseMoveEvent(QMouseEvent *event)
             }
             if(game.getNetworkRule() == CLIENT){
                 game.getGameClient()->sendMessage(SendData);
-                std::cout<<sendStr.toStdString()<<std::endl;
+                //std::cout<<sendStr.toStdString()<<std::endl;
             }
         }
     }
@@ -188,6 +205,13 @@ void GLWindow::resizeGL( int width, int height )
 
 void GLWindow::MainLoop()
 {
+    if(game.getGameMode() == NETWORK_MODE && game.getNetworkRule() == CLIENT && game.getClientConnected() == false){
+        game.getGameClient()->GameConnect();
+        game.Update();
+        update();
+        return;
+    }
+
     for (int i = 0; i < updateCount; ++i)
     {
         game.Update();
@@ -209,9 +233,9 @@ void GLWindow::MainLoop()
             break;
     }
     // call repaint
-    this->update();
+    update();
+    // updateGL();
 }
-
 
 void GLWindow::newConnect(){
     game.getGameSever()->setClient();
@@ -221,62 +245,96 @@ void GLWindow::newConnect(){
     start.append(QString::number(game.getGameRule()));
     start.append(QString("#"));
     game.getGameSever()->sendMessage(start);
-    game.GameBegin();
     connect(game.getGameSever()->getClient(),SIGNAL(readyRead()),this,SLOT(serverRead()));
 }
 
 void GLWindow::serverRead(){
-    ReadData.clear();
-    ReadData = game.getGameSever()->getMessage();
-    QString readStr = QVariant(ReadData).toString();
-    //std::cout<<"Read::::"<<readStr.toStdString()<<std::endl;
-    QStringList readlist = readStr.split("#");
-    for(int i = 0; i< readlist.size();){
-        if(readlist[i] == "EL"){
-            QStringList infolist = readlist[i+1].split(",");
-            int elapsedTime = infolist[0].toInt();
-            game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
-            game.mousePress(elapsedTime);
-            i = i+2;
-        }
-        else{
-            if(readlist[i] == "P"){
-                QStringList position = readlist[i+1].split(",");
-                game.setMousePosition(Vector2(position[0].toFloat(),position[1].toFloat()));
+    toReadList<<game.getGameSever()->getMessage();
+
+    if(game.getGameState() != BALL_IS_RUNNING){
+        while(!toReadList.isEmpty()){
+            ReadData.clear();
+            ReadData = toReadList[0];
+            //ReadData = game.getGameSever()->getMessage();
+            QString readStr = QVariant(ReadData).toString();
+            //std::cout<<"Read::::"<<readStr.toStdString()<<std::endl;
+            QStringList readlist = readStr.split("#");
+
+            for(int i = 0; i< readlist.size();){
+                if(readlist[i] == "EL"){
+                QStringList infolist = readlist[i+1].split(",");
+                int elapsedTime = infolist[0].toInt();
+                game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
+                game.mousePress(elapsedTime);
                 i = i+2;
             }
-            else i = i+2;
+            else{
+                if(readlist[i] == "P"){
+                    QStringList position = readlist[i+1].split(",");
+                    game.setMousePosition(Vector2(position[0].toFloat(),position[1].toFloat()));
+                    i = i+2;
+                }
+                else{
+                    if(readlist[i] == "S"){
+                        game.GameBegin();
+                        i = i+2;
+                    }
+                    else i = i+2;
+                }
+            }
+        }
+        toReadList.removeFirst();
         }
     }
 }
 
 void GLWindow::clientRead(){
-    ReadData.clear();
-    ReadData = game.getGameClient()->getMessage();
-    QString readStr = QVariant(ReadData).toString();
-    //std::cout<<readStr.toStdString()<<std::endl;
-    QStringList readlist = readStr.split("#");
-   for(int i = 0; i<readlist.size();){
-        if(readlist[i] == "EL"){
-            QStringList infolist = readlist[i+1].split(",");
-            int elapsedTime = infolist[0].toInt();
-            game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
-            game.mousePress(elapsedTime);
-            i = i+2;
-        }
-        else{
-            if(readlist[i] == "P"){
-                QStringList position = readlist[i+1].split(",");
-                game.setMousePosition(Vector2(position[0].toFloat(),position[1].toFloat()));
-                i = i+2;
-            }
-            else{
-                    if(readlist[i] == "S"){
-                    game.ClientInit(readlist[i+1].toInt());
+    toReadList<<game.getGameClient()->getMessage();
+
+    if(game.getGameState() != BALL_IS_RUNNING){
+        while(!toReadList.isEmpty()){
+            ReadData.clear();
+            ReadData = toReadList[0];
+            //ReadData = game.getGameClient()->getMessage();
+            QString readStr = QVariant(ReadData).toString();
+
+            std::cout<<readStr.toStdString()<<std::endl;
+            QStringList readlist = readStr.split("#");
+
+            for(int i = 0; i<readlist.size();){
+                if(readlist[i] == "EL"){
+                    QStringList infolist = readlist[i+1].split(",");
+                    int elapsedTime = infolist[0].toInt();
+                    game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
+                    game.mousePress(elapsedTime);
                     i = i+2;
+                }
+                else{
+                    if(readlist[i] == "P"){
+                        QStringList position = readlist[i+1].split(",");
+                        game.setMousePosition(Vector2(position[0].toFloat(),position[1].toFloat()));
+                        i = i+2;
                     }
-                    else i = i+2;
+                    else{
+                            if(readlist[i] == "S"){
+                                QByteArray start;
+                                start.clear();
+                                start.append(QString("S#"));
+                                start.append(QString::number(0));
+                                start.append(QString("#"));
+                                game.getGameClient()->sendMessage(start);
+                                game.ClientInit(readlist[i+1].toInt());
+                                i = i+2;
+                            }
+                            else i = i+2;
+                    }
+                }
             }
-        }
-   }
+           toReadList.removeFirst();
+       }
+    }
+}
+
+void GLWindow::clientConnected(){
+    game.setClientConnected(true);
 }
