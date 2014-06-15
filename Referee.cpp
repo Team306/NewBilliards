@@ -132,6 +132,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
                 {
                     if(onPocketlist[k] == "cueBall")
                     {
+                        //std::cout<<"1"<<std::endl;
                         // _currentplayer->setGameresult(FAIL);
                         // break;
                         Ball& ball = ballsManager->getBall("nine");
@@ -147,6 +148,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
                 {
                     if(_currentplayer->getFirsthit() != Targetname)
                     {
+                        //std::cout<<"2"<<std::endl;
                         // _currentplayer->setGameresult(FAIL);
                         Ball& ball = ballsManager->getBall("nine");
                         if (ball.getName() == "nine")
@@ -165,16 +167,27 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
         }
 
         if(_currentplayer->getCueball_in())       //cueball in
+        {
+            //std::cout<<"3"<<std::endl;
             return TO_FREE_BALL;
+        }
         if(_currentplayer->getHitflag() == 0)
+        {
+            //std::cout<<"4"<<std::endl;
             return TO_FREE_BALL;
+        }
         if(_currentplayer->getFirsthit() != Targetname)
         {
             //std::cout<<Targetname<<std::endl;
+            //std::cout<<"5"<<std::endl;
             return TO_FREE_BALL;
         }
         if(_currentplayer->getOnpocketlist().size() != 0)
+        {
+            //std::cout<<"6"<<std::endl;
             return TO_GOON;
+        }
+        //std::cout<<"7"<<std::endl;
         return TO_EXCHANGE;
     }
 }
