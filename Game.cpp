@@ -499,14 +499,14 @@ void Game::displayTargetBalls()
                 }
                 if (current_player == &player1)
                 {
-                    remainBallsListCopy[index].setPosition(Vector2(200 + 10, 660));
+                    remainBallsListCopy[index].setPosition(Vector2(200 + 10, 675));
                     remainBallsListCopy[index].setRadius(10);
                     remainBallsListCopy[index].Draw3D();
                 }
                 else
                 {
                     // draw under player1
-                    remainBallsListCopy[index].setPosition(Vector2(630 + 10, 660));
+                    remainBallsListCopy[index].setPosition(Vector2(630 + 10, 675));
                     remainBallsListCopy[index].setRadius(10);
                     remainBallsListCopy[index].Draw3D();
                 }
@@ -519,14 +519,14 @@ void Game::displayTargetBalls()
                     index = targetIndexs[i];
                     if (current_player == &player1)
                     {
-                        remainBallsListCopy[index].setPosition(Vector2(200 + 10 + i * 30, 660));
+                        remainBallsListCopy[index].setPosition(Vector2(200 + 10 + i * 30, 675));
                         remainBallsListCopy[index].setRadius(10);
                         remainBallsListCopy[index].Draw3D();
                     }
                     else
                     {
                         // draw under player1
-                        remainBallsListCopy[index].setPosition(Vector2(630 + 10 + i * 30, 660));
+                        remainBallsListCopy[index].setPosition(Vector2(630 + 10 + i * 30, 675));
                         remainBallsListCopy[index].setRadius(10);
                         remainBallsListCopy[index].Draw3D();
                     }
@@ -548,14 +548,14 @@ void Game::displayTargetBalls()
             if (current_player == &player1)
             {
                 // draw under player1
-                remainBallsListCopy[index].setPosition(Vector2(200, 660));
+                remainBallsListCopy[index].setPosition(Vector2(200, 675));
                 remainBallsListCopy[index].setRadius(10);
                 remainBallsListCopy[index].Draw3D();
             }
             else
             {
                 // draw under player1
-                remainBallsListCopy[index].setPosition(Vector2(630, 660));
+                remainBallsListCopy[index].setPosition(Vector2(630, 675));
                 remainBallsListCopy[index].setRadius(10);
                 remainBallsListCopy[index].Draw3D();
             }

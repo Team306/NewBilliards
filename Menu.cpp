@@ -38,10 +38,10 @@ Menu::Menu()
     endContinueRect = QRectF(340, 480, 1000, 250);
 
     // player
-    player1RectSmall = QRectF(250, 600, 1000, 250);
-    player1RectBig = QRectF(200, 580, 1000, 250);
-    player2RectSmall = QRectF(680, 600, 1000, 250);
-    player2RectBig = QRectF(630, 580, 1000, 250);
+    player1RectSmall = QRectF(250, 620, 1000, 250);
+    player1RectBig = QRectF(200, 600, 1000, 250);
+    player2RectSmall = QRectF(680, 620, 1000, 250);
+    player2RectBig = QRectF(630, 600, 1000, 250);
 
     // waiting frame
     waitingRect = QRectF(320, 260, 1000, 250);
@@ -85,8 +85,10 @@ void Menu::displayStartFrame(QPainter& painter, Vector2 mousePosition, int gameR
     painter.drawText(titleBackRect, "Billiards");
 
     // paint the upper part
-    QColor miku_blue(00, 174, 255);
-    painter.setPen(miku_blue);
+    // QColor miku_blue(00, 174, 255);
+    // painter.setPen(miku_blue);
+    QColor megurine_iro(0xE4, 0x00, 0x7F);
+    painter.setPen(megurine_iro);
     painter.drawText(titleRect, "Billiards");
 
     // print the 3 mode choose
