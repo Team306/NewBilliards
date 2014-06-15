@@ -95,8 +95,22 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
 
         }
 
+        if(_currentplayer->getBalltype() == NOTDEF){
+            return TO_EXCHANGE;
+        }
 
         if(_currentplayer->getCueball_in()){       //cueball in
+            return TO_FREE_BALL;
+        }
+
+        //first hit other's ball
+        if(judgeSelfball(_currentplayer,_currentplayer->getFirsthit())==false){
+            return TO_FREE_BALL;
+        }
+
+
+        //hit no ball
+        if(_currentplayer->getHitflag()==0){
             return TO_FREE_BALL;
         }
 
@@ -104,21 +118,7 @@ JUDGE_RESULT Referee::judge(Player *_currentplayer, BallsManager* ballsManager){
             return TO_EXCHANGE;
         }
 
-        //first hit other's ball
-        if(judgeSelfball(_currentplayer,_currentplayer->getFirsthit())==false){
-            return TO_EXCHANGE;
-        }
 
-        if(_currentplayer->getBalltype() == SMALL && _currentplayer->getFirsthit() != "one" && _currentplayer->getFirsthit() != "two"
-                && _currentplayer->getFirsthit() != "three" && _currentplayer->getFirsthit() != "four" && _currentplayer->getFirsthit() != "five"
-                &&_currentplayer->getFirsthit() != "six" &&_currentplayer->getFirsthit() != "seven"){
-            return TO_EXCHANGE;
-        }
-
-        //hit no ball
-        if(_currentplayer->getHitflag()==0){
-            return TO_EXCHANGE;
-        }
         return TO_GOON;
         break;
 

@@ -39,6 +39,7 @@ public:
     void enablePowerGain();
     void disablePowerGain();
     int getPowerCount() const;
+    void setPowerCount(int powerCount);
 };
 
 

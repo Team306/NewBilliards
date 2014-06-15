@@ -177,3 +177,7 @@ int Cue::getPowerCount() const
 {
     return powerGainCount;
 }
+
+void Cue::setPowerCount(int powerCount){
+    powerGainCount = powerCount;
+}

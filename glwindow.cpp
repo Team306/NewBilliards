@@ -89,7 +89,7 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
                                                   ||game.getGameState() == BALL_IS_RUNNING )){
             SendData.clear();
             SendData.append(QString("EL#"));
-            SendData.append(QString::number(elapsedTime));
+            SendData.append(QString::number(game.getCue().getPowerCount()));
             SendData.append(QString(","));
             SendData.append(QString::number(mouse_x));
             SendData.append(QString(","));
@@ -219,6 +219,7 @@ void GLWindow::serverRead(){
                 if(readlist[i] == "EL"){
                 QStringList infolist = readlist[i+1].split(",");
                 int elapsedTime = infolist[0].toInt();
+                game.getCue().setPowerCount(elapsedTime);
                 game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
                 game.mousePress(elapsedTime);
                 i = i+2;
@@ -260,6 +261,7 @@ void GLWindow::clientRead(){
                 if(readlist[i] == "EL"){
                     QStringList infolist = readlist[i+1].split(",");
                     int elapsedTime = infolist[0].toInt();
+                    game.getCue().setPowerCount(elapsedTime);
                     game.setMousePosition(Vector2(infolist[1].toFloat(),infolist[2].toFloat()));
                     game.mousePress(elapsedTime);
                     i = i+2;

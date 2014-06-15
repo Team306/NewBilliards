@@ -142,6 +142,7 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
                 if(ballsList[i].getName() == "one" || ballsList[i].getName() == "two" || ballsList[i].getName() == "three"
                         || ballsList[i].getName() == "four"||ballsList[i].getName() == "five" ||ballsList[i].getName() == "six" ||ballsList[i].getName() == "seven"){
                     currentplayer->setBalltype(SMALL);
+                    currentplayer->setFirsthit(ballsList[i].getName());
                 }
                 else{
                     if(ballsList[i].getName() == "eight"){
@@ -149,6 +150,7 @@ void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)
                     }
                     else{
                        currentplayer->setBalltype(BIG);
+                        currentplayer->setFirsthit(ballsList[i].getName());
                     }
                 }
             }
@@ -201,7 +203,7 @@ bool BallsManager::isRunning() const
 	{
 		return false;
 	}
-	return true;
+    return true;
 }
 
 std::vector<Ball> BallsManager::getBallsList() const{
