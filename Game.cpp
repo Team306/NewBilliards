@@ -142,7 +142,6 @@ void Game::Draw(QPainter& painter)
             menu.displayPlayer(painter, current_player == &player1);
             menu.displayHitPoint(painter, hitPosition, hitAngle);
             menu.displayBack(painter, mousePosition);
-
             displayTargetBalls(painter);
     		break;
         case FREE_BALL:
@@ -432,7 +431,6 @@ Cue& Game::getCue()
 {
     return cue;
 }
-
 
 void Game::displayTargetBalls(QPainter& painter)
 {
