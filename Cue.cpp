@@ -163,32 +163,32 @@ void Cue::Draw(QPainter& painter, Ball& cueBall, Vector2 mousePosition)
     }
 }
 
-void Cue::Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle)
+void Cue::Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle,int HitRadius)
 {
     sound->play();
 	// use elapsed to calc the speed
-    Vector2 cuePosition = Vector2(cueBall.getPosition().getX(),cueBall.getPosition().getY());
-    std::cout<<"cueball::"<<cuePosition.getX()<<","<<cuePosition.getY()<<std::endl;
-	Vector2 speed = mousePosition - cuePosition;
+    Vector3 hitPoint(0,0,0);
+    Vector3 hitDirection=GetNormalize(Vector3(mousePosition)-cueBall.getPosition());
+    Vector3 v_temp1(specialAntiRotate90(Vector2(-hitDirection.getX(),-hitDirection.getY())));
+    Vector3 v_temp2=Vector3(0,0,-1)*cos(hitAngle*M_PI/180.0)+hitDirection*sin(hitAngle*M_PI/180.0);
+    Vector3 v_temp=v_temp1*(hitPosition.getX()/HitRadius*cueBall.getRadius())\
+                    + v_temp2*(-hitPosition.getY()/HitRadius*cueBall.getRadius());
+
+    hitDirection=hitDirection*cos(hitAngle*M_PI/180.0)+Vector3(0,0,sin(hitAngle*M_PI/180.0));
+    hitPoint=cueBall.getPosition() + v_temp + (-hitDirection)*sqrt(cueBall.getRadius()*cueBall.getRadius()-v_temp.Length2());
+    cout<<hitPoint[0]<<";"<<hitPoint[1]<<";"<<hitPoint[2]<<endl;
+    //cout<<cueBall.getRadius()<<endl;
+    //cout<<v_temp1.Length2()<<endl;
+    //cout<<v_temp2.Length2()<<endl<<endl;
+
     // float scale = (float)elapsed / 100;
-    float scale = (float)powerGainCount / 100;
-    // set max speed
-    if (scale > 3)
-	{
-        scale = 3;
-	}
-	// set min speed ? is needed?
-	if (scale < 0.2)
-	{
-		scale = 0.2;
-	}
-	speed = speed.getNormalize() * scale;
-    speed.setXY(speed.getX(),speed.getY());
-	cueBall.setSpeed(speed);
+    float scale = (float)powerGainCount / 50;
+
+    cueBall.ApplyImpulse(scale*hitDirection,hitPoint);
     //debug info
-    std::cout<<"speed::"<<speed.getX()<<","<<speed.getY()<<std::endl;
-    std::cout<<"mousepos::"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
-    std::cout<<"scale::"<<powerGainCount<<std::endl;
+    //std::cout<<"speed::"<<speed.getX()<<","<<speed.getY()<<std::endl;
+    //std::cout<<"mousepos::"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
+    //std::cout<<"scale::"<<powerGainCount<<std::endl;
 }
 
 void Cue::enablePowerGain()

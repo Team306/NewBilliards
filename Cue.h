@@ -37,7 +37,7 @@ public:
     void Update(int gameState, Vector2 mousePosition);
 	void Draw(QPainter &, Ball& cueBall, Vector2 mousePosition);	
 
-    void Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle);
+    void Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int hitAngle,int HitRadius);
 
     // power gauge
     void enablePowerGain();

@@ -255,13 +255,22 @@ void CollideEngine::CornerRadWallToBallCollision(const Table& table,Ball& ball)
     vector<Vector2> centre;
     Vector3 col_N;
     vector<float> extra;
+    double d;
 
     //init
     for(unsigned i=0;i<table.getCheckp().size();i++)
     {
         Vector2 offset=(table.getPocketp()[i]-table.getCheckp()[i]).getNormalize()*1.0f;
         pointp.push_back(table.getCheckp()[i]+offset);
-        assert(offset.Length()==1);
+        if(i<4)
+            pointp.back().setXY(pointp.back().getX(),pointp.back().getY()-0.4);
+        else if(i<8)
+            pointp.back().setXY(pointp.back().getX(),pointp.back().getY()+0.4);
+        else if(i<10)
+            pointp.back().setXY(pointp.back().getX()-0.4,pointp.back().getY());
+        else
+            pointp.back().setXY(pointp.back().getX()+0.4,pointp.back().getY());
+        //assert(offset.Length()==1);
     }
 
     pointw.push_back(Vector2(table.getCheckp()[0].getX()+1,table.getCheckp()[0].getY()));
@@ -316,10 +325,14 @@ void CollideEngine::CornerRadWallToBallCollision(const Table& table,Ball& ball)
     {
         if(extra[i]<0)
         {
-            //cout<<"!!!"<<extra[i]<<endl;
-            col_N=GetNormalize(ball.getPosition()-Vector3(centre[i]));
-            //cout<<col_N.Length()<<"##"<<endl<<endl;
-            this->ProcessWallToBallCollision(ball,col_N,-extra[i]);
+            d=(double)DotProduct(ball.getPosition()-Vector3(centre[i]),Vector3(table.getCheckp()[i])-Vector3(centre[i]));
+            d/=(ball.getPosition()-Vector3(centre[i])).Length()*(Vector3(table.getCheckp()[i])-Vector3(centre[i])).Length();
+            d=acos(d);
+            if(d<=(2/180.0*M_PI))
+            {
+                col_N=GetNormalize(ball.getPosition()-Vector3(centre[i]));
+                this->ProcessWallToBallCollision(ball,col_N,-extra[i]);
+            }
             return;
         }
     }

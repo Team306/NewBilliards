@@ -12,6 +12,9 @@ Ball::Ball()
     this->anglespeed=Vector3(0,0,0);
     this->Im=0.4f*M*(this->radius)*(this->radius);
     oriention=Quaternion(1,0,0,0);
+    Vector3 anglespeed_temp(-M_PI/2,0,0);
+    this->oriention-=this->oriention*anglespeed_temp*0.5f;
+    this->oriention.Normalize();
     ballState = STILL;
 }
 Ball::Ball(const Vector3& position, float radius)
@@ -21,6 +24,9 @@ Ball::Ball(const Vector3& position, float radius)
     this->anglespeed=Vector3(0,0,0);
     this->Im=0.4f*M*(this->radius)*(this->radius);
     oriention=Quaternion(1,0,0,0);
+    Vector3 anglespeed_temp(-M_PI/2,0,0);
+    this->oriention-=this->oriention*anglespeed_temp*0.5f;
+    this->oriention.Normalize();
     ballState = STILL;
 }
 
@@ -31,6 +37,9 @@ Ball::Ball(const Vector2& position, float radius)
     this->anglespeed=Vector3(0,0,0);
     this->Im=0.4f*M*(this->radius)*(this->radius);
     oriention=Quaternion(1,0,0,0);
+    Vector3 anglespeed_temp(-M_PI/2,0,0);
+    this->oriention-=this->oriention*anglespeed_temp*0.5f;
+    this->oriention.Normalize();
     ballState = STILL;
 }
 
@@ -224,7 +233,7 @@ void Ball::Move()
         }
     }
     this->position += (this->speed * 1.0f);
-    Vector3 anglespeed_temp(this->anglespeed[0],-this->anglespeed[1],this->anglespeed[2]);
+    Vector3 anglespeed_temp(this->anglespeed[0],-this->anglespeed[1],-this->anglespeed[2]);
     this->oriention-=this->oriention*anglespeed_temp*0.5f;
     this->oriention.Normalize();
 }

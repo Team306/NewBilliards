@@ -235,7 +235,7 @@ void Game::mousePress()
                 break;
             }
             // if do not change hit point continue
-            cue.Stroke(ballsManager.getCueBall(),mousePosition, hitPosition, hitAngle);
+            cue.Stroke(ballsManager.getCueBall(),mousePosition, hitPosition, hitAngle ,menu.getAngleRadius());
             freeball_flag++;
             gameState = BALL_IS_RUNNING;
 			break;
