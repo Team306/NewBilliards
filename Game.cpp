@@ -272,9 +272,12 @@ GAME_RULE Game::getGameRule() const
 bool Game::cuePositionIsLegal()
 {
     std::vector<Ball> ballsList = ballsManager.getBallsList();
+    Vector3 cueBallPosition = ballsManager.getCueBall().getPosition();
+    if(cueBallPosition.getX() == -100 || cueBallPosition.getY() == -100){
+        return false;
+    }
     for (unsigned i = 0; i < ballsList.size(); ++i)
     {
-        Vector3 cueBallPosition = ballsManager.getCueBall().getPosition();
         if (cueBallPosition.DistanceTo(ballsList[i].getPosition()) < 2 * ballsManager.getCueBall().getRadius())
         {
             return false;
