@@ -82,7 +82,7 @@ void CollideEngine::TableCollision(const Table& table,Ball& ball)
 
     if(!wallhit && !cornerwallhit)
     {
-        //this->CornerRadWallToBallCollision(table,ball);
+        this->CornerRadWallToBallCollision(table,ball);
     }
 
 }

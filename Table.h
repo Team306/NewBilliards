@@ -48,7 +48,6 @@ public:
     // check if the ball is into the pocket
     bool checkPockets(Ball &);
 
-    void clear();
 };
 
 

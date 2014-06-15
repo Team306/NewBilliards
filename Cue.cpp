@@ -140,7 +140,7 @@ void Cue::Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int 
 {
 	// use elapsed to calc the speed
     Vector2 cuePosition = Vector2(cueBall.getPosition().getX(),cueBall.getPosition().getY());
-    ///std::cout<<"cueball::"<<cuePosition.getX()<<","<<cuePosition.getY()<<std::endl;
+    std::cout<<"cueball::"<<cuePosition.getX()<<","<<cuePosition.getY()<<std::endl;
 	Vector2 speed = mousePosition - cuePosition;
     // float scale = (float)elapsed / 100;
     float scale = (float)powerGainCount / 100;
@@ -160,7 +160,7 @@ void Cue::Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int 
     //debug info
     std::cout<<"speed::"<<speed.getX()<<","<<speed.getY()<<std::endl;
     std::cout<<"mousepos::"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
-    std::cout<<"scale::"<<scale<<std::endl;
+    std::cout<<"scale::"<<powerGainCount<<std::endl;
 }
 
 void Cue::enablePowerGain()

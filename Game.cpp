@@ -301,6 +301,7 @@ void Game::GameBegin() {
 void Game::ClientInit(int _gameRule){
     gameRule = (GAME_RULE)_gameRule;
     referee.init(gameRule);
+    //
     table.init(referee);
     ballsManager.init(referee);
     cue.init(referee);
@@ -341,19 +342,16 @@ void Game::checkStartFrameClick(const Menu& menu)
     if (menu.getEightBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameRule = EIGHT_BALL;
-        table.clear();
         init();
     }
     if (menu.getNineBallChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameRule = NINE_BALL;
-        table.clear();
         init();
     }
     if (menu.getSnookerChosen().contains(mousePosition.getX(), mousePosition.getY(), false))
     {
         gameRule = SNOOKER;
-        table.clear();
         init();
     }
 }
@@ -437,7 +435,6 @@ bool Game::checkBack(const Menu& menu)
             }
         }
         gameState = START_FRAME;
-        table.clear();
         init();
         return true;
     }
