@@ -15,12 +15,12 @@ Game::Game()
     player2.setPlayerflag(GUEST);
 	gameState = START_FRAME;
     gameRule = EIGHT_BALL;
-	elapsedTime = 0;
     client_connected = false;
     //player1.init();
     //player2.init();
     current_player = &player1;
     hitAngle = 0;
+    freeball_flag = 0;
 }
 
 Game::~Game()
@@ -38,13 +38,13 @@ void Game::init()
     current_player = &player1;
     player1.setPlayerflag(LOCAL);
     player2.setPlayerflag(GUEST);
-    elapsedTime = 0;
     player1.init();
     player2.init();
     referee.init(gameRule);
     table.init(referee);
 	ballsManager.init(referee);
 	cue.init(referee);
+    freeball_flag = 0;
 }
 
 void Game::Update()
@@ -74,11 +74,17 @@ void Game::Update()
 	{
 		case FREE_BALL:
 			// check before set position
-            if(table.positionIsLegal(mousePosition,referee))
+            if(freeball_flag <= 1 && table.positionIsLegal(mousePosition,referee))
             {
                 ballsManager.getCueBall().setPosition(mousePosition);
+                break;
             }
-			break;
+            if(freeball_flag > 1 && table.positionIsIN(mousePosition,referee))
+            {
+                ballsManager.getCueBall().setPosition(mousePosition);
+                break;
+            }
+            break;
 		case BALL_IS_RUNNING:
             if (!ballsManager.isRunning())
 			{
@@ -228,6 +234,7 @@ void Game::mousePress()
             }
             // if do not change hit point continue
             cue.Stroke(ballsManager.getCueBall(),mousePosition, hitPosition, hitAngle);
+            freeball_flag++;
             gameState = BALL_IS_RUNNING;
 			break;
         case BALL_IS_RUNNING:

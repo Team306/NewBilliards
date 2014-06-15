@@ -265,6 +265,18 @@ bool Table::positionIsLegal(Vector2 p,Referee &referee)
     return false;
 }
 
+bool Table::positionIsIN(Vector2 p, Referee &referee)
+{
+    Vector3 V(p.getX(),p.getY(),0);
+    if( (p.getX() > checkp[9].getX() + referee.getBallRadius()) && (p.getX() < checkp[11].getX() - referee.getBallRadius()) &&
+            (p.getY() > checkp[0].getY() + referee.getBallRadius()) &&
+            (p.getY() < checkp[5].getY() - referee.getBallRadius()))
+        {
+                return true;
+        }
+    return false;
+}
+
 bool Table::checkPockets(Ball& ball)
 {
     // if the ball is in the pocket return true;

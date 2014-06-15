@@ -67,7 +67,7 @@ private:
     int hitAngle;	// from 0 to 85, maybe can set a max value below 90
 
 	// debug variables
-	int elapsedTime;
+     unsigned freeball_flag;
 
 public:
 	Game();
