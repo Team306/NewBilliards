@@ -5,7 +5,9 @@ using Qt5 platform
 using Lua 5.2.3
 
 release 0.1 Version 2014-06-07 0:30
+
 release 0.2 Version 2014-06-15 10:30
+
 release 0.3 Version 2014-06-16 8:45
 
 ## *DEADLINE*

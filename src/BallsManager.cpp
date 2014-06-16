@@ -85,6 +85,7 @@ void BallsManager::init(Referee& referee)
     {
         ballsList[i].loadGLTextures();
     }
+    cueBall.loadGLTextures();
 }
 
 void BallsManager::Update(Table& table, Player *currentplayer, int gameRule)

@@ -66,7 +66,7 @@ configTable = {
 		-- 	{ 1030, 90, 255, 252, 250, "nine" },
 		-- },
 	},
-	-- snooker
+	-- snooker, just use in test
 	{
 		["ballRadius"] = 20.3,
 		cueBall = { 300, 300, 195, 195, 195 },
