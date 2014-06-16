@@ -15,35 +15,36 @@ TARGET = Billiards
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-    Game.cpp \
-    Ball.cpp \
-    BallsManager.cpp \
-    Table.cpp \
-    glwindow.cpp \
-    Referee.cpp \
-    Cue.cpp \
-    Player.cpp \
-    CollideEngine.cpp \
-    MyMath.cpp \
-    GameSever.cpp \
-    GameClient.cpp \
-    Menu.cpp
+SOURCES += \
+    src/Ball.cpp \
+    src/BallsManager.cpp \
+    src/CollideEngine.cpp \
+    src/Cue.cpp \
+    src/Game.cpp \
+    src/GameClient.cpp \
+    src/GameSever.cpp \
+    src/glwindow.cpp \
+    src/main.cpp \
+    src/Menu.cpp \
+    src/MyMath.cpp \
+    src/Player.cpp \
+    src/Referee.cpp \
+    src/Table.cpp
 
 HEADERS  += \
-    Ball.h \
-    BallsManager.h \
-    Cue.h \
-    Game.h \
-    Table.h \
-    glwindow.h \
-    Referee.h \
-    Player.h \
-    CollideEngine.h \
-    MyMath.h \
-    GameSever.h \
-    GameClient.h \
-    Menu.h
+    src/Ball.h \
+    src/BallsManager.h \
+    src/CollideEngine.h \
+    src/Cue.h \
+    src/Game.h \
+    src/GameClient.h \
+    src/GameSever.h \
+    src/glwindow.h \
+    src/Menu.h \
+    src/MyMath.h \
+    src/Player.h \
+    src/Referee.h \
+    src/Table.h
 
 INCLUDEPATH += $$PWD/Lua5.2/include
 LIBS += -L$$PWD/Lua5.2 -llua52
