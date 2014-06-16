@@ -19,7 +19,6 @@ Player::~Player(){
 void Player::Goon(){
     hit_flag = 0;
     cueball_in = 0;
-
     if(toHit_balltype == RED){
         toHit_balltype = COLOR;
     }

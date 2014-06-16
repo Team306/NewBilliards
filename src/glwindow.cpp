@@ -99,8 +99,8 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
         game.getCue().disablePowerGain();
 
     // call game method
-        int mouse_x = event->x();
-        int mouse_y = event->y();
+        float mouse_x = event->x();
+        float mouse_y = event->y();
        //std::cout<<"Realease::"<<mouse_x<<","<<mouse_y<<std::endl;
         game.setMousePosition(Vector2(mouse_x, mouse_y));
         game.mousePress();
@@ -132,8 +132,8 @@ void GLWindow::mouseReleaseEvent(QMouseEvent *event)
 void GLWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if(game.getGameState() != BALL_IS_RUNNING &&(game.getPlayerFlag() == LOCAL || game.getGameMode() != NETWORK_MODE || game.getGameState() == END_FRAME)){
-        int mouse_x = event->x();
-        int mouse_y = event->y();
+        float mouse_x = event->x();
+        float mouse_y = event->y();
         game.setMousePosition(Vector2(mouse_x, mouse_y));
         if(game.getGameMode() == NETWORK_MODE && (game.getGameState() == WAIT_FOR_STROKE || game.getGameState() == FREE_BALL)){
             SendData.clear();
