@@ -176,6 +176,8 @@ void Ball::ApplyImpulse(const Vector3& impulse,const Vector3& collideposition)
     }
     this->speed.setZ(0.0f);
     this->anglespeed+= CrossProduct(collideposition-this->position,impulse)/this->Im;
+    cout<<speed[0]<<","<<speed[1]<<","<<speed[2]<<endl;
+    cout<<anglespeed[0]<<","<<anglespeed[1]<<","<<anglespeed[2]<<endl;
     if(this->speed.Length()>0 || this->anglespeed.Length()>0)
         this->ballState=RUNNING;
 }

@@ -176,13 +176,13 @@ void Cue::Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int 
 
     hitDirection=hitDirection*cos(hitAngle*M_PI/180.0)+Vector3(0,0,sin(hitAngle*M_PI/180.0));
     hitPoint=cueBall.getPosition() + v_temp + (-hitDirection)*sqrt(cueBall.getRadius()*cueBall.getRadius()-v_temp.Length2());
-    cout<<hitPoint[0]<<";"<<hitPoint[1]<<";"<<hitPoint[2]<<endl;
+    //cout<<hitPoint[0]<<";"<<hitPoint[1]<<";"<<hitPoint[2]<<endl;
     //cout<<cueBall.getRadius()<<endl;
     //cout<<v_temp1.Length2()<<endl;
     //cout<<v_temp2.Length2()<<endl<<endl;
 
     // float scale = (float)elapsed / 100;
-    float scale = (float)powerGainCount / 50;
+    float scale = (float)powerGainCount / 100;
 
     cueBall.ApplyImpulse(scale*hitDirection,hitPoint);
     //debug info

@@ -10,7 +10,7 @@ bool CollideEngine::DectBallToBallCollision(const Ball& ballA,const Ball& ballB)
 {
    if(ballA.getBallState()==STILL && ballB.getBallState()==STILL)
        return false;
-   if(DistanceBetween(ballA.getPosition(),ballB.getPosition())>=(ballA.getRadius()+ballB.getRadius()))
+   if((DistanceBetween(ballA.getPosition(),ballB.getPosition())-(ballA.getRadius()+ballB.getRadius()))>0.001)
        return false;
    return true;
 }
@@ -41,7 +41,7 @@ void CollideEngine::ProcessBallToBallCollision(Ball& ballA,Ball& ballB)
     c.Vr=c.Va-c.Vb;
     c.Vn=DotProduct(c._N,c.Vr);
 
-    if(c.Vn>=0) return;
+    if(c.Vn>=-0.0001f) return;
 
     c.Ca=1.0f/M;
     c.Cb=1.0f/M;
@@ -54,7 +54,7 @@ void CollideEngine::ProcessBallToBallCollision(Ball& ballA,Ball& ballB)
     c.Vt=(c.Vr-c._N*c.Vn).Length();
 
 
-    if(c.Vt<=0.0f) return;
+    if(c.Vt<=0.0001f) return;
 
     c._T=-GetNormalize(c.Vr-c._N*c.Vn);
 
@@ -102,7 +102,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
 
     //topleft
     extra=ball.getPosition().getY()-(table.getCheckp())[0].getY()-ball.getRadius();
-    if(extra<0)
+    if(extra<-0.001)
     {
         if(ball.getPosition().getX()>=(table.getCheckp())[0].getX() \
                 && ball.getPosition().getX()<=(table.getCheckp())[1].getX())
@@ -116,7 +116,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
 
     //topright
     extra=ball.getPosition().getY()-(table.getCheckp())[2].getY()-ball.getRadius();
-    if(extra<0)
+    if(extra<-0.001)
     {
         if(ball.getPosition().getX()>=(table.getCheckp())[2].getX() \
                 && ball.getPosition().getX()<=(table.getCheckp())[3].getX())
@@ -130,7 +130,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
 
     //bottomleft
     extra=(table.getCheckp())[4].getY()-ball.getPosition().getY()-ball.getRadius();
-    if(extra<0)
+    if(extra<-0.001)
     {
         if(ball.getPosition().getX()>=(table.getCheckp())[4].getX() \
                 && ball.getPosition().getX()<=(table.getCheckp())[5].getX())
@@ -144,7 +144,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
 
     //bottomright
     extra=(table.getCheckp())[6].getY()-ball.getPosition().getY()-ball.getRadius();
-    if(extra<0)
+    if(extra<-0.001)
     {
         if(ball.getPosition().getX()>=(table.getCheckp())[6].getX() \
                 && ball.getPosition().getX()<=(table.getCheckp())[7].getX())
@@ -158,7 +158,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
 
     //left
     extra=ball.getPosition().getX()-(table.getCheckp())[8].getX()-ball.getRadius();
-    if(extra<0)
+    if(extra<-0.001)
     {
         if(ball.getPosition().getY()>=(table.getCheckp())[8].getY() \
                 && ball.getPosition().getY()<=(table.getCheckp())[9].getY())
@@ -172,7 +172,7 @@ bool CollideEngine::WallToBallCollision(const Table& table,Ball& ball)
 
     //right
     extra=(table.getCheckp())[10].getX()-ball.getPosition().getX()-ball.getRadius();
-    if(extra<0)
+    if(extra<-0.001)
     {
         if(ball.getPosition().getY()>=(table.getCheckp())[10].getY() \
                 && ball.getPosition().getY()<=(table.getCheckp())[11].getY())
@@ -225,7 +225,7 @@ bool CollideEngine::CornerWallToBallCollision(const Table& table,Ball& ball)
 
     for(unsigned i=0;i<col_N.size();i++)
     {
-        if(extra[i]<0)
+        if(extra[i]<-0.001)
         {
             vp=ball.getPosition()-col_N[i]*extra[i]-col_N[i]*ball.getRadius();
             k=DistanceBetween(vp,Vector3(table.getPocketp()[i]))\
@@ -323,7 +323,7 @@ void CollideEngine::CornerRadWallToBallCollision(const Table& table,Ball& ball)
 
     for(unsigned i=0;i<extra.size();i++)
     {
-        if(extra[i]<0)
+        if(extra[i]<-0.01)
         {
             d=(double)DotProduct(ball.getPosition()-Vector3(centre[i]),Vector3(table.getCheckp()[i])-Vector3(centre[i]));
             d/=(ball.getPosition()-Vector3(centre[i])).Length()*(Vector3(table.getCheckp()[i])-Vector3(centre[i])).Length();
@@ -358,7 +358,7 @@ void CollideEngine::ProcessWallToBallCollision(Ball& ball,const Vector3& col_N,f
     c.Vr=c.Va;
     c.Vn=DotProduct(c._N,c.Vr);
 
-    if(c.Vn>=0.0f) return;
+    if(c.Vn>=-0.0001f) return;
 
     c.Ca=1.0f/M;
     c.In=-c._N*c.Vn*(1+E_WallToBall)/(c.Ca);
@@ -366,7 +366,7 @@ void CollideEngine::ProcessWallToBallCollision(Ball& ball,const Vector3& col_N,f
     ball.ApplyImpulse(c.In,c.CollidePosition);
 
     c.Vt=(c.Vr-c._N*c.Vn).Length();
-    if(c.Vt<=0.0f) return;
+    if(c.Vt<=0.0001f) return;
 
     c._T=-GetNormalize(c.Vr-c._N*c.Vn);
     c.Ca=1.0f/M+DotProduct(c._T, CrossProduct((CrossProduct(c.Ra, c._T) / ball.getIm()), c.Ra)) ;
