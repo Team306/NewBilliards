@@ -34,7 +34,7 @@ void GameClient::GameConnect(){
     IP_Address.append(QString::number(counter1));
     std::cout<<IP_Address.toStdString()<<std::endl;
     connectToHost(IP_Address,19999);
-    waitForConnected(30);
+    waitForConnected(45);
     counter1++;
     counter1 =counter1%256;
 }

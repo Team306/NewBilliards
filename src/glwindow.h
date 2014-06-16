@@ -38,6 +38,7 @@ private slots:
     void serverRead();
     void clientRead();
     void clientConnected();
+    void tryConnect();
 
     void test();
 
@@ -46,6 +47,7 @@ private:
 
 	QTimer timer;
     QTimer testTime;
+    QTimer connectTimer;
     int countTest;
     QByteArray ReadData;
     QByteArray SendData;

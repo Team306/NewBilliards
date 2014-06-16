@@ -26,6 +26,9 @@ GLWindow::GLWindow(QWidget *parent)
     timer.setSingleShot(false);
     connect(&timer, SIGNAL(timeout()), this, SLOT(MainLoop()));
     timer.start(msPerFrame);
+    connectTimer.setSingleShot(false);
+    connect(&connectTimer,SIGNAL(timeout()),this,SLOT(tryConnect()));
+    connectTimer.start(50);
     sound = new QSound("./sound/UserEnter.wav");
 
     setAutoFillBackground(false);
@@ -208,7 +211,7 @@ void GLWindow::MainLoop()
 {
     countTest++;
     if(game.getGameMode() == NETWORK_MODE && game.getNetworkRule() == CLIENT && game.getClientConnected() == false){
-        game.getGameClient()->GameConnect();
+        //game.getGameClient()->GameConnect();
         game.Update();
         update();
         return;
@@ -371,4 +374,10 @@ void GLWindow::ServerProcessList(){
 void GLWindow::test(){
     std::cout<<countTest<<std::endl;
     countTest = 0;
+}
+
+void GLWindow::tryConnect(){
+    if(game.getGameMode() == NETWORK_MODE && game.getNetworkRule() == CLIENT && game.getClientConnected() == false){
+    game.getGameClient()->GameConnect();
+    }
 }
