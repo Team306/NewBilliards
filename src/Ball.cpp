@@ -168,7 +168,7 @@ void Ball::setColor(QColor c)
 void Ball::ApplyImpulse(const Vector3& impulse,const Vector3& collideposition)
 {
     this->speed += (impulse/M);
-    std::cout<<"speed"<<speed[0]<<","<<speed[1]<<","<<speed[2]<<endl;
+    //std::cout<<"speed"<<speed[0]<<","<<speed[1]<<","<<speed[2]<<endl;
     //??
     if(impulse[2]!=0.0 && fabs(impulse[2])>1)
     {
