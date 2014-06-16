@@ -16,9 +16,9 @@ const int msPerFrame = 16;
 // update times in each frame
 const int updateCount = 5;
 
-GLfloat lightAmbient[4] = { 0.8, 0.8, 0.8, 1.0 };
-GLfloat lightDiffuse[4] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat lightPosition[4] = { 0.0, 0.0, -600.0, 1.0};
+GLfloat lightAmbient[4] = { 0.7, 0.7, 0.7, 1.0 };
+GLfloat lightDiffuse[4] = { 0.4, 0.4, 0.4, 1.0 };
+GLfloat lightPosition[4] = { -10.0, 0, -900.0, 1.0};
 
 GLWindow::GLWindow(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
@@ -26,6 +26,9 @@ GLWindow::GLWindow(QWidget *parent)
     timer.setSingleShot(false);
     connect(&timer, SIGNAL(timeout()), this, SLOT(MainLoop()));
     timer.start(msPerFrame);
+    connectTimer.setSingleShot(false);
+    connect(&connectTimer,SIGNAL(timeout()),this,SLOT(tryConnect()));
+    connectTimer.start(50);
     sound = new QSound("./sound/UserEnter.wav");
 
     setAutoFillBackground(false);
@@ -142,7 +145,7 @@ void GLWindow::mouseMoveEvent(QMouseEvent *event)
             QString sendStr = QVariant(SendData).toString();
             if(game.getNetworkRule() == SERVER){
                 game.getGameSever()->sendMessage(SendData);
-                std::cout<<sendStr.toStdString()<<std::endl;
+                //std::cout<<sendStr.toStdString()<<std::endl;
             }
             if(game.getNetworkRule() == CLIENT){
                 game.getGameClient()->sendMessage(SendData);
@@ -208,7 +211,7 @@ void GLWindow::MainLoop()
 {
     countTest++;
     if(game.getGameMode() == NETWORK_MODE && game.getNetworkRule() == CLIENT && game.getClientConnected() == false){
-        game.getGameClient()->GameConnect();
+        //game.getGameClient()->GameConnect();
         game.Update();
         update();
         return;
@@ -277,7 +280,7 @@ void GLWindow::ClientProcessList(){
             //ReadData = game.getGameClient()->getMessage();
             QString readStr = QVariant(ReadData).toString();
 
-            std::cout<<readStr.toStdString()<<std::endl;
+            //std::cout<<readStr.toStdString()<<std::endl;
             QStringList readlist = readStr.split("#");
 
             for(int i = 0; i<readlist.size();){
@@ -369,6 +372,12 @@ void GLWindow::ServerProcessList(){
 }
 
 void GLWindow::test(){
-    std::cout<<countTest<<std::endl;
+    //std::cout<<countTest<<std::endl;
     countTest = 0;
+}
+
+void GLWindow::tryConnect(){
+    if(game.getGameMode() == NETWORK_MODE && game.getNetworkRule() == CLIENT && game.getClientConnected() == false){
+        game.getGameClient()->GameConnect();
+    }
 }

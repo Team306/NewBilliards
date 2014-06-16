@@ -188,7 +188,7 @@ void Cue::Stroke(Ball& cueBall, Vector2 mousePosition, Vector2 hitPosition, int 
     //debug info
     //std::cout<<"speed::"<<speed.getX()<<","<<speed.getY()<<std::endl;
     //std::cout<<"mousepos::"<<mousePosition.getX()<<","<<mousePosition.getY()<<std::endl;
-    //std::cout<<"scale::"<<powerGainCount<<std::endl;
+   // std::cout<<"scale::"<<powerGainCount<<std::endl;
 }
 
 void Cue::enablePowerGain()

@@ -32,7 +32,7 @@ void GameClient::GameConnect(){
     IP_Address.append(Host_IP[2]);
     IP_Address.append(QString("."));
     IP_Address.append(QString::number(counter1));
-    std::cout<<IP_Address.toStdString()<<std::endl;
+    //std::cout<<IP_Address.toStdString()<<std::endl;
     connectToHost(IP_Address,19999);
     waitForConnected(30);
     counter1++;
@@ -40,11 +40,7 @@ void GameClient::GameConnect(){
 }
 
 void GameClient::DisConnect(){
-    //disconnectFromHost();
     close();
-    //if(ConnectingState){
-       //waitForDisconnected(5);
-    //}
 }
 
 void GameClient::sendMessage(QByteArray message){

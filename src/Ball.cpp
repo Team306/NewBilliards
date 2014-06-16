@@ -2,9 +2,9 @@
 
 #include "Ball.h"
 GLfloat mat_Ambient[4] = { 0.8, 0.8, 0.8, 1.0 };
-GLfloat mat_Diffuse[4] = { 0.8, 0.8, 0.8, 1.0 };
-GLfloat mat_Specular[4] = {1.0, 1.0, 1.0,1.0};
-GLfloat mat_Shininess[]={1.0};
+GLfloat mat_Diffuse[4] = { 0.6, 0.6, 0.6, 1.0 };
+GLfloat mat_Specular[4] = {1, 1, 1, 1.0};
+GLfloat mat_Shininess[]={50};
 
 Ball::Ball()
 {
@@ -168,6 +168,7 @@ void Ball::setColor(QColor c)
 void Ball::ApplyImpulse(const Vector3& impulse,const Vector3& collideposition)
 {
     this->speed += (impulse/M);
+    //std::cout<<"speed"<<speed[0]<<","<<speed[1]<<","<<speed[2]<<endl;
     //??
     if(impulse[2]!=0.0 && fabs(impulse[2])>1)
     {
@@ -250,7 +251,7 @@ void Ball::Draw3D()
     double fovy=5;
     double hy=2*tan(fovy/2.0*M_PI/180.0)*0.1;
     double hx=2*tan(fovy/2.0*M_PI/180.0)*0.1*(1120.0/700.0);
-    double z=800;
+    double z=1000-19.5;
     Matrix3 m=this->oriention.MakeMatrix3FromQ();
     GLfloat GLm[16]={m[0],m[1],m[2],0,\
                      m[3],m[4],m[5],0,\
@@ -261,7 +262,7 @@ void Ball::Draw3D()
      glMultMatrixf(GLm);
      glMaterialfv(GL_FRONT,GL_AMBIENT,mat_Ambient);
      glMaterialfv(GL_FRONT,GL_DIFFUSE,mat_Diffuse);
-     //glMaterialfv(GL_FRONT,GL_SPECULAR,mat_Specular);
+     glMaterialfv(GL_FRONT,GL_SPECULAR,mat_Specular);
      glMaterialfv(GL_FRONT,GL_SHININESS,mat_Shininess);
      quadratic=gluNewQuadric();
      gluQuadricNormals(quadratic, GLU_SMOOTH);

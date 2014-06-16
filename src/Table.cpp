@@ -195,7 +195,7 @@ void Table::Draw3D()
 {
     float va = 5;
        float hy = 700 / (2 * tan(va / 2 * M_PI / 180) * 0.1);
-       float z = 1000;
+       float z = 1000+25;
 
        glLoadIdentity();
        glBegin(GL_QUADS);
@@ -240,7 +240,7 @@ void Table::Draw3D()
        glEnable(GL_TEXTURE_2D);
        glBindTexture(GL_TEXTURE_2D, texture[1]);
        glBegin(GL_QUADS);
-       z=1100;
+       z=1000;
        glTexCoord2f(0.0, 0.0);glVertex3f((position.getX() - 560) * z / hy /0.1, (-position.getY() + 350) * z / hy / 0.1, -z);
        glTexCoord2f(1.0, 0.0);glVertex3f((position.getX() - 560) *z/ hy /0.1, (-position.getY() - size.getY() + 350) *z/ hy/0.1, -z);
        glTexCoord2f(1.0, 1.0);glVertex3f((position.getX() +size.getX() - 560) * z / hy / 0.1, (-position.getY() - size.getY() + 350) *z/ hy/0.1, -z);
