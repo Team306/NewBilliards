@@ -16,9 +16,9 @@ const int msPerFrame = 16;
 // update times in each frame
 const int updateCount = 5;
 
-GLfloat lightAmbient[4] = { 0.8, 0.8, 0.8, 1.0 };
-GLfloat lightDiffuse[4] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat lightPosition[4] = { 0.0, 0.0, -600.0, 1.0};
+GLfloat lightAmbient[4] = { 0.7, 0.7, 0.7, 1.0 };
+GLfloat lightDiffuse[4] = { 0.4, 0.4, 0.4, 1.0 };
+GLfloat lightPosition[4] = { -10.0, 0, -900.0, 1.0};
 
 GLWindow::GLWindow(QWidget *parent)
     : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
