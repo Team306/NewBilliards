@@ -141,7 +141,7 @@ void Table::Draw(QPainter& painter)
 void Table::loadGLTextures()
 {
   QImage tex, buf;
-  if ( !buf.load( "./textures/table.jpg" ) )
+  if ( !buf.load( "./textures/table.bmp" ) )
   {
     qWarning( "Could not read image file, using single-color instead." );
     QImage dummy(128,128,QImage::Format_RGB32);
