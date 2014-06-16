@@ -94,6 +94,11 @@ void Game::Update()
             if (!ballsManager.isRunning())
 			{
                 // std::cout<<current_player->getCueball_in()<<std::endl;
+                
+                // reset hit point
+                hitPosition = Vector2(0, 0);
+                hitAngle = 0;
+
                 if(gameMode == PRACTICE_MODE){
                     if(referee.judge(current_player, &ballsManager) == TO_FREE_BALL){
                        gameState = FREE_BALL;

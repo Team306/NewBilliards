@@ -50,7 +50,7 @@ Ball::~Ball()
 void Ball::loadGLTextures()
 {
   QImage tex, buf;
-  QString s=QString::fromStdString("./data/BallTex"+this->name+".bmp");
+  QString s=QString::fromStdString("./textures/BallTex"+this->name+".bmp");
   if ( !buf.load( s ) )
   {
     qWarning( "Could not read image file, using single-color instead." );

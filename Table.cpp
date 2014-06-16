@@ -141,7 +141,7 @@ void Table::Draw(QPainter& painter)
 void Table::loadGLTextures()
 {
   QImage tex, buf;
-  if ( !buf.load( "./data/table.jpg" ) )
+  if ( !buf.load( "./textures/table.jpg" ) )
   {
     qWarning( "Could not read image file, using single-color instead." );
     QImage dummy(128,128,QImage::Format_RGB32);
@@ -157,7 +157,7 @@ void Table::loadGLTextures()
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-  if ( !buf.load( "./data/table2.bmp" ) )
+  if ( !buf.load( "./textures/table2.bmp" ) )
   {
     qWarning( "Could not read image file, using single-color instead." );
     QImage dummy(128,128,QImage::Format_RGB32);
@@ -173,7 +173,7 @@ void Table::loadGLTextures()
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
   glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-  if ( !buf.load( "./data/table4.bmp" ) )
+  if ( !buf.load( "./textures/table4.bmp" ) )
   {
     qWarning( "Could not read image file, using single-color instead." );
     QImage dummy(128,128,QImage::Format_RGB32);
